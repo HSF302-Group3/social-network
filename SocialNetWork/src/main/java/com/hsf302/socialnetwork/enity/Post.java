@@ -1,0 +1,52 @@
+package com.hsf302.socialnetwork.enity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Table
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(columnDefinition = "TEXT")
+    private String content;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @Column(columnDefinition = "BIT DEFAULT 1")
+    private boolean active;
+    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL )
+    private List<Image> imagePost = new ArrayList<>();
+    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL )
+    private List<Comment> comments = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "usercreate_id")
+    private Users usercreate;
+
+    @ManyToMany(mappedBy = "postsLike")
+    private Set<Users> users = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "active=" + active +
+                ", createdAt=" + createdAt +
+                ", content='" + content + '\'' +
+                ", id=" + id +
+                '}';
+    }
+}
