@@ -1,12 +1,9 @@
 package com.hsf302.socialnetwork.enity;
 
-import com.hsf302.socialnetwork.emums.Gender;
-import com.hsf302.socialnetwork.emums.Role;
+import com.hsf302.socialnetwork.enums.Gender;
+import com.hsf302.socialnetwork.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -21,6 +18,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Users {
 
     @Id
@@ -31,12 +29,13 @@ public class Users {
     private String password;
     private String email;
     private String phone;
+    private String avatarUrl;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @Column(columnDefinition = "BIT DEFAULT 1")
-    private boolean active;
+    private boolean active = true;
     @CreationTimestamp
     private LocalDateTime created;
 
@@ -47,7 +46,7 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "User_Like_Post",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -55,7 +54,7 @@ public class Users {
     )
     private Set<Post> postsLike = new HashSet<>();
 
-    @OneToMany(mappedBy = "usercreate")
+    @OneToMany(mappedBy = "usercreate", cascade = CascadeType.ALL)
     private List<Post> postcreate = new ArrayList<>();
     @ManyToMany
     @JoinTable(
@@ -65,16 +64,52 @@ public class Users {
     )
     private Set<Conversation> conversations = new HashSet<>();
 
-    public Users(Long userId, String username, String name, String password, String email, String phone, Role role, Gender gender, boolean active, LocalDateTime created) {
-        this.userId = userId;
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.role = role;
-        this.gender = gender;
-        this.active = active;
-        this.created = created;
+    public void addPostCreate(Post post) {
+        postcreate.add(post);
+        post.setUsercreate(this);
     }
+
+    public void addLikePost(Post post) {
+
+        postsLike.add(post);
+        post.getUsers().add(this);
+    }
+
+    @OneToMany(mappedBy = "sendInvite")
+    private List<AddFriend> sendInvites = new ArrayList<>();
+    @OneToMany(mappedBy = "reciveInvite")
+    private List<AddFriend> reciveInvites = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "created=" + created +
+                ", active=" + active +
+                ", gender=" + gender +
+                ", role=" + role +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Users)) return false;
+        Users other = (Users) o;
+        return this.userId != null && this.userId.equals(other.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return userId != null ? userId.hashCode() : 0;
+    }
+
+
+
 }

@@ -34,4 +34,6 @@ public class Conversation {
                 ", type='" + type + '\'' +
                 '}';
     }
+    @Column(columnDefinition = "BIT DEFAULT 1")
+    private boolean active = true;
 }

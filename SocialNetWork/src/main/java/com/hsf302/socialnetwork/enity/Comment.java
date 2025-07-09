@@ -23,7 +23,8 @@ public class Comment {
     private Long  parentCommentId;
     @CreationTimestamp
     private LocalDateTime createdAt;
-
+    @Column(columnDefinition = "BIT DEFAULT 1")
+    private boolean active = true;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Image> imageComment  = new ArrayList<Image>();
