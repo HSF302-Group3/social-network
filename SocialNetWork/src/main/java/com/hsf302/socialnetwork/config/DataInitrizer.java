@@ -1,10 +1,12 @@
 package com.hsf302.socialnetwork.config;
 
+import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enums.Gender;
 import com.hsf302.socialnetwork.enums.Role;
 import com.hsf302.socialnetwork.enity.Image;
 import com.hsf302.socialnetwork.enity.Post;
 import com.hsf302.socialnetwork.enity.Users;
+import com.hsf302.socialnetwork.repo.AddFriendRepo;
 import com.hsf302.socialnetwork.repo.PostRepo;
 import com.hsf302.socialnetwork.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class DataInitrizer implements CommandLineRunner {
     PostRepo postRepo;
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    AddFriendRepo addFriend;
     @Override
     public void run(String... args) throws Exception {
 
@@ -57,7 +61,6 @@ public class DataInitrizer implements CommandLineRunner {
         post.addImage(i5);
         post.addImage(i6);
         users.addPostCreate(post);
-        userRepo.save(users);
 
 
 
@@ -101,7 +104,7 @@ public class DataInitrizer implements CommandLineRunner {
 
         users2.addPostCreate(post2);
         users2.addPostCreate(post3);
-        userRepo.save(users2);
+
 
 
         Users users3 = new Users();
@@ -131,9 +134,22 @@ public class DataInitrizer implements CommandLineRunner {
         users5.setPhone("123456789");
         users5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users5.setRole(Role.USER);
+
+        userRepo.save(users2);
+        userRepo.save(users);
+        AddFriend f = new AddFriend();
+        f.setSendInvite(users);
+        f.setReciveInvite(users2);
+        f.setFriended(true);
+        addFriend.save(f);
+
         userRepo.save(users3);
         userRepo.save(users4);
         userRepo.save(users5);
+        userRepo.save(users2);
+        userRepo.save(users);
+
+
 
     }
 }

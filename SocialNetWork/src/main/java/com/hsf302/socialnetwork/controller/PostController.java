@@ -27,7 +27,7 @@ private UserRepo repo;
 
         // de test thoi tuong lai se bo no di
         if (users == null) {
-            users = repo.findByUsername("user5");
+            users = repo.findByUsername("hsf302");
             System.out.println(users.getUsername());
             session.setAttribute("user", users);
         }
