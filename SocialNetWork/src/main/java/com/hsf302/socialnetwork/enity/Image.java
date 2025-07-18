@@ -18,10 +18,10 @@ public class Image {
     private Long imageId;
     private String imageUrl;
     @ManyToOne
-    @JoinColumn(name = "comment_id" , nullable = true )
+    @JoinColumn(name = "comment_id")
     private Comment comment;
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = true )
+    @JoinColumn(name = "post_id")
     private Post post;
     @Override
     public String toString() {

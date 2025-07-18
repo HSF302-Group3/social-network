@@ -1,11 +1,8 @@
 package com.hsf302.socialnetwork.controller;
 
-import com.hsf302.socialnetwork.enity.Comment;
 import com.hsf302.socialnetwork.enity.Post;
 import com.hsf302.socialnetwork.enity.Users;
-import com.hsf302.socialnetwork.repo.CommentRepo;
 import com.hsf302.socialnetwork.repo.UserRepo;
-import com.hsf302.socialnetwork.service.impl.CommentService;
 import com.hsf302.socialnetwork.service.impl.PostService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +19,8 @@ import java.util.List;
 public class PostController {
   @Autowired
   private PostService postService;
-  @Autowired
-  private CommentService commentService;
 @Autowired // de test sau khi login co roi thi se xoa no di
 private UserRepo repo;
-    @Autowired
-    private CommentRepo commentRepo;
-
     @GetMapping
     public String getALL(Model model, HttpSession session, @RequestParam(name = "active",defaultValue = "true") boolean active) {
         Users users = (Users) session.getAttribute("user");
@@ -108,23 +100,6 @@ private UserRepo repo;
         Users users = (Users) session.getAttribute("user");
 
         postService.likePost(users,id);
-        return "redirect:/posts/friendPost";
-  }
-
-  @PostMapping("/comment/{id}")
-    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ) throws IOException {
-        Users users = (Users) session.getAttribute("user");
-        Post post = postService.getPostById(id);
-        commentService.addComment(post,users,cmt );
-        return "redirect:/posts/friendPost";
-  }
-  @PostMapping("/reply/{id}")
-    public String replyComment(@PathVariable Long id,HttpSession session, @RequestParam("replyContent") String cmt ) throws IOException {
-        Users users = (Users) session.getAttribute("user");
-        Comment comment = commentRepo.getReferenceById(id);
-        Post post = comment.getPost();
-
-        commentService.replyComment(users,cmt ,id,post);
         return "redirect:/posts/friendPost";
   }
 }

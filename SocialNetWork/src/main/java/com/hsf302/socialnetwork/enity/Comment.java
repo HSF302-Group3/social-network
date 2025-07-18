@@ -27,7 +27,7 @@ public class Comment {
     private boolean active = true;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Image> imageComment  = new ArrayList<>();
+    private List<Image> imageComment  = new ArrayList<Image>();
     @ManyToOne
     @JoinColumn(name = "post_id")
     private  Post post;
@@ -35,13 +35,10 @@ public class Comment {
     @JoinColumn(name = "users_id")
     private Users users;
 
-    public void addImage(Image image) {
-        this.imageComment.add(image);
-        image.setComment(this);
-    }
-
-
-
+   public void addComment(Image comment) {
+        this.imageComment.add(comment);
+        comment.setComment(this);
+   }
    public void removeComment(Image comment) {
         this.imageComment.remove(comment);
    }
