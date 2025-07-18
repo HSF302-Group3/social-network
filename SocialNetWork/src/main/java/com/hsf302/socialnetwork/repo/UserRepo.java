@@ -2,6 +2,7 @@ package com.hsf302.socialnetwork.repo;
 
 import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enity.Users;
+import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -51,4 +52,6 @@ public interface UserRepo extends JpaRepository<Users, Long> {
                  
             """)
     List<Users> getALlInvitedFriendByStatus(Users user,String search);
+
+
 }

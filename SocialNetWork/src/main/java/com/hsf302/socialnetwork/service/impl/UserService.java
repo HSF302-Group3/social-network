@@ -3,6 +3,7 @@ package com.hsf302.socialnetwork.service.impl;
 import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enity.Users;
 import com.hsf302.socialnetwork.repo.AddFriendRepo;
+import com.hsf302.socialnetwork.repo.AuthRepo;
 import com.hsf302.socialnetwork.repo.UserRepo;
 import com.hsf302.socialnetwork.service.IsUserService;
 import org.apache.catalina.User;
@@ -18,6 +19,8 @@ public class UserService implements IsUserService {
     private AddFriendRepo addFriendRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    AuthRepo authRepo;
     @Override
     public void addFriend(Long friendI, Users user) {
         Users recive = userRepo.findById(friendI).get();
@@ -84,7 +87,29 @@ public class UserService implements IsUserService {
          else {
              addFriendRepo.delete(addFriends);
          }
-
-
     }
+
+
+    public Users authenticate(String email, String password) {
+        Users account = authRepo.findByEmail(email);
+        if (account == null) {
+            throw new RuntimeException("Email not found");
+        }
+        if(!password.equals(account.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+        if (account.isActive() == false) {
+            throw new RuntimeException("Account is locked");
+        }
+        return account;
+    }
+
+
+    public  void saveAccount(Users user) {
+        authRepo.save(user);
+    }
+
+
+
+
 }
