@@ -28,8 +28,8 @@ public class Post {
     @CreationTimestamp
     private LocalDateTime createdAt;
     @Column(columnDefinition = "BIT DEFAULT 1")
-    private boolean active;
-    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL )
+    private boolean active = true;
+    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL,orphanRemoval = true )
     private List<Image> imagePost = new ArrayList<>();
     @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL )
     private List<Comment> comments = new ArrayList<>();
@@ -48,5 +48,13 @@ public class Post {
                 ", content='" + content + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public void addImage(Image image) {
+        imagePost.add(image);
+        image.setPost(this);
+    }
+    public void removeImage(Image image) {
+        imagePost.remove(image);
     }
 }

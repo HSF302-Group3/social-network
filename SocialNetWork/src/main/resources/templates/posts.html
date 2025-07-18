@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài đăng tháng 5</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .post-container {
+            width: 750px;
+            margin: 30px auto;
+            padding: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .post-avatar img {
+            width: 100%;
+            height: auto;
+        }
+
+        .post-user {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .post-date {
+            font-size: 1em;
+            color: gray;
+        }
+
+        .post-content {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .post-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .post-images img,
+        .overlay-image img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .overlay-image {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .overlay-image::after {
+            content: attr(data-more);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .post-footer {
+            margin-top: 15px;
+            font-size: 1em;
+            color: gray;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #prevBtn, #nextBtn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            padding: 10px;
+        }
+
+        #prevBtn {
+            left: 30px;
+        }
+
+        #nextBtn {
+            right: 30px;
+        }
+
+        .create-post-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-left: 680px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-create { background-color: #2ecc71; }
+        .btn-create:hover { background-color: #27ae60; }
+
+        .btn-delete { background-color: #e74c3c; }
+        .btn-delete:hover { background-color: #c0392b; }
+
+        .btn-edit { background-color: #f39c12; }
+        .btn-edit:hover { background-color: #d68910; }
+
+        .btn-active { background-color: #3498db; }
+        .btn-active:hover { background-color: #2980b9; }
+
+        .btn-like { background-color: #1abc9c; }
+        .btn-like:hover { background-color: #16a085; }
+
+        .btn-unlike { background-color: #7f8c8d; }
+        .btn-unlike:hover { background-color: #636e72; }
+
+        .btn-comment { background-color: #9b59b6; }
+        .btn-comment:hover { background-color: #8e44ad; }
+
+        .action {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .action > div {
+            display: contents;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Sử dụng th:insert -->
+<div th:replace="fragments/HeaderUser :: HeaderUser"></div>
+
+<!-- Nút Create Post -->
+<div class="create-post-wrapper">
+    <a class="btn btn-create" th:href="@{/posts/create}"><i class="fa fa-plus"></i> Create Post</a>
+</div>
+
+<!-- Danh sách bài đăng -->
+<div th:each="p : ${posts}" class="post-container">
+    <div class="post-header">
+        <div class="post-avatar">
+            <img th:src="${p.usercreate.avatarUrl}" alt="avatar">
+        </div>
+        <div>
+            <div class="post-user" th:text="${p.usercreate.name}">Tên người dùng</div>
+            <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Ngày đăng</div>
+        </div>
+    </div>
+
+    <div class="post-content" th:text="${p.content}">Nội dung bài đăng</div>
+
+    <div class="post-images" th:with="images=${p.imagePost}">
+        <div th:each="img, stat : ${images}">
+            <img th:if="${stat.index < 3}"
+                 th:src="${img.imageUrl}"
+                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                 class="clickable-image"
+                 alt="ảnh"/>
+
+            <div th:if="${stat.index == 3 and images.size() > 4}"
+                 class="overlay-image clickable-image"
+                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
+                <img th:src="${img.imageUrl}" alt="ảnh"/>
+            </div>
+
+            <img th:if="${stat.index == 3 and images.size() == 4}"
+                 th:src="${img.imageUrl}"
+                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                 class="clickable-image"
+                 alt="ảnh"/>
+
+            <img th:if="${stat.index > 3}"
+                 th:src="${img.imageUrl}"
+                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                 style="display: none"
+                 class="clickable-image"
+                 alt="ảnh"/>
+        </div>
+    </div>
+
+    <div class="post-footer">
+        <span th:text="${p.users.size()} + ' likes'">0 likes</span> ·
+        <span th:text="${p.comments.size()} + ' comments'">0 comments</span>
+    </div>
+
+    <div class="action">
+        <div th:if="${user.userId == p.usercreate.userId}">
+            <div th:if="${p.active == true}">
+                <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}"><i class="fa fa-trash"></i> Delete</a>
+            </div>
+            <div th:if="${p.active == false}">
+                <a class="btn btn-active" th:href="@{'/posts/active/'+${p.id}}"><i class="fa fa-check-circle"></i> Active</a>
+            </div>
+            <div>
+                <a class="btn btn-edit" th:href="@{'/posts/edit/'+${p.id}}"><i class="fa fa-edit"></i> Edit</a>
+            </div>
+        </div>
+
+        <div th:if="${user.userId != p.usercreate.userId}">
+            <div th:if="${p.users.contains(user)}">
+                <a class="btn btn-unlike" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-down"></i> Unlike</a>
+            </div>
+            <div th:if="${!p.users.contains(user)}">
+                <a class="btn btn-like" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-up"></i> Like</a>
+            </div>
+            <div>
+                <button type="button" class="btn btn-comment" onclick="toggleCommentForm(this)">
+                    <i class="fa fa-comment"></i> Comment
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
+              class="comment-form" style="display: none; margin-top: 10px;">
+            <input type="text" name="content" placeholder="Viết bình luận..."
+                   style="width: 100%; padding: 6px; margin-bottom: 8px;">
+            <input type="file" name="file" id="Image" multiple>
+            <input type="submit" value="Gửi"
+                   style="display: inline-block; padding: 6px 12px; background: #007bff; color: white; border: none; cursor: pointer;">
+        </form>
+    </div>
+    <div th:if="${p.comments != null}">
+        <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" style="margin-bottom: 12px;">
+            <!-- Hiển thị comment gốc -->
+            <strong th:text="${c.users.name}">Tên người bình luận</strong>:
+            <span th:text="${c.comment}">Nội dung bình luận</span><br>
+            <span th:text="${c.createdAt}"></span>
+
+            <!-- Nút mở form phản hồi -->
+            <button type="button" class="btn-reply" onclick="toggleReplyForm(this)" style="margin-top: 6px;">
+                Trả lời
+            </button>
+
+            <!-- Form nhập phản hồi -->
+            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;">
+                <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
+                <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
+            </form>
+
+            <!-- 💬 Hiển thị các phản hồi cho comment này -->
+            <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
+                <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
+                    <strong th:text="${r.users.name}">Tên người trả lời</strong>:
+                    <span th:text="${r.comment}">Nội dung trả lời</span><br>
+                    <span th:text="${r.createdAt}"></span>
+                </div>
+                <button type="button" class="btn-reply" onclick="toggleReplyForm(this)" style="margin-top: 6px;">
+                    Trả lời
+                </button>
+                <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;">
+                    <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
+                    <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Modal xem ảnh -->
+<div id="lightboxModal" class="modal" onclick="closeModal()">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <img id="modalImg" src="" alt="Image Preview">
+    <button id="prevBtn" onclick="prevImage(event)">&#10094;</button>
+    <button id="nextBtn" onclick="nextImage(event)">&#10095;</button>
+</div>
+
+<script>
+    let currentImages = [];
+    let currentIndex = 0;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const posts = document.querySelectorAll(".post-container");
+
+        posts.forEach(post => {
+            const images = post.querySelectorAll(".clickable-image");
+
+            images.forEach((img, index) => {
+                img.setAttribute("data-index", index);
+
+                img.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    currentImages = Array.from(images).map(i => i.getAttribute("data-url"));
+                    currentIndex = parseInt(img.getAttribute("data-index"));
+                    showModal(currentImages[currentIndex]);
+                });
+            });
+        });
+    });
+
+    function showModal(url) {
+        const modal = document.getElementById('lightboxModal');
+        const modalImg = document.getElementById('modalImg');
+        modalImg.src = url;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('lightboxModal').style.display = 'none';
+    }
+
+    function prevImage(event) {
+        event.stopPropagation();
+        if (currentIndex > 0) {
+            currentIndex--;
+            showModal(currentImages[currentIndex]);
+        }
+    }
+
+    function toggleCommentForm(button) {
+        const postContainer = button.closest(".post-container");
+        const form = postContainer.querySelector(".comment-form");
+        if (form) {
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+    }
+    function toggleReplyForm(button) {
+        const replyForm = button.nextElementSibling;
+        if (replyForm && replyForm.classList.contains("reply-form")) {
+            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+        }
+    }
+
+    function nextImage(event) {
+        event.stopPropagation();
+        if (currentIndex < currentImages.length - 1) {
+            currentIndex++;
+            showModal(currentImages[currentIndex]);
+        }
+    }
+</script>
+
+</body>
+</html>
