@@ -286,7 +286,45 @@
                 <a class="btn btn-like" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-up"></i> Like</a>
             </div>
             <div>
-                <a class="btn btn-comment" th:href="@{'/posts/comment/'+${p.id}}"><i class="fa fa-comment"></i> Comment</a>
+                <button type="button" class="btn btn-comment" onclick="toggleCommentForm(this)">
+                    <i class="fa fa-comment"></i> Comment
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
+              class="comment-form" style="display: none; margin-top: 10px;">
+            <input type="text" name="content" placeholder="Viết bình luận..."
+                   style="width: 100%; padding: 6px; margin-bottom: 8px;">
+            <input type="submit" value="Gửi"
+                   style="display: inline-block; padding: 6px 12px; background: #007bff; color: white; border: none; cursor: pointer;">
+        </form>
+    </div>
+    <div th:if="${p.comments != null}">
+        <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" style="margin-bottom: 12px;">
+            <strong th:text="${c.users.name}">Tên người bình luận</strong>:
+            <span th:text="${c.comment}">Nội dung bình luận</span><br>
+            <span th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
+
+
+            <button type="button" class="btn-reply" onclick="toggleReplyForm(this)" style="margin-top: 6px;">
+                Trả lời
+            </button>
+
+
+            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;">
+                <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
+                <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
+            </form>
+
+
+            <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
+                <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
+                    <strong th:text="${r.users.name}">Tên người trả lời</strong>:
+                    <span th:text="${r.comment}">Nội dung trả lời</span><br>
+                    <span th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -347,6 +385,19 @@
         if (currentIndex < currentImages.length - 1) {
             currentIndex++;
             showModal(currentImages[currentIndex]);
+        }
+    }
+    function toggleCommentForm(button) {
+        const postContainer = button.closest(".post-container");
+        const form = postContainer.querySelector(".comment-form");
+        if (form) {
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+    }
+    function toggleReplyForm(button) {
+        const replyForm = button.nextElementSibling;
+        if (replyForm && replyForm.classList.contains("reply-form")) {
+            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
         }
     }
 </script>

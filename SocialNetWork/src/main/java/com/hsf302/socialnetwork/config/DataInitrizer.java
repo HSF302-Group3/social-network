@@ -119,7 +119,7 @@ public class DataInitrizer implements CommandLineRunner {
         users3.setRole(Role.USER);
         Users users4 = new Users();
         users4.setUsername("user4");
-        users4.setEmail("user5@gmail.com");
+        users4.setEmail("user4@gmail.com");
         users4.setPassword("hsf302");
         users4.setName("user4");
         users4.setGender(Gender.F);
