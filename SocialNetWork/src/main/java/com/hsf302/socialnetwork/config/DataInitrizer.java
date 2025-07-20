@@ -40,7 +40,7 @@ public class DataInitrizer implements CommandLineRunner {
         users.setGender(Gender.F);
         users.setPhone("0234567899");
         users.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
-        users.setRole(Role.USER);
+        users.setRole(Role.ADMIN);
 
 
         Image i1 = new Image();
