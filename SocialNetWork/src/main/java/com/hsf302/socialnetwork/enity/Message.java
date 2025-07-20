@@ -19,7 +19,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String message;
     @CreationTimestamp
     private LocalDateTime createddate;

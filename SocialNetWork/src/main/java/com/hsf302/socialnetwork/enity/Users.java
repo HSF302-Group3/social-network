@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,6 +54,7 @@ public class Users {
     @Column(columnDefinition = "BIT DEFAULT 1")
     private boolean active = true;
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime created = LocalDateTime.now();
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)

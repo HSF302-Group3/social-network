@@ -871,10 +871,14 @@
       0% { transform: translateY(-50%) rotate(0deg); }
       100% { transform: translateY(-50%) rotate(360deg); }
     }
+
+
+
   </style>
 </head>
 
 <body>
+
 <div th:replace="fragments/HeaderUser :: HeaderUser"></div>
 
 <div class="header-spacer"></div>
@@ -895,6 +899,7 @@
         </a>
       </div>
 
+
       <!-- Search Section -->
       <div class="search-section">
         <form th:action="@{/chat/search}" method="get" class="search-form">
@@ -910,6 +915,7 @@
         </form>
       </div>
 
+
       <!-- Friend Search Results -->
       <ul class="friend-search-list" th:if="${friends != null}">
         <li th:each="friend : ${friends}">
@@ -918,6 +924,7 @@
               <img th:src="${friend.avatarUrl}" alt="Avatar" class="avatar-sm" />
             </div>
             <div class="friend-name" th:text="${friend.name}">Tên bạn bè</div>
+
           </a>
         </li>
       </ul>
@@ -1021,6 +1028,7 @@
         </form>
       </div>
     </div>
+
   </div>
 </div>
 

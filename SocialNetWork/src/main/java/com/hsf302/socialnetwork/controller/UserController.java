@@ -1,6 +1,7 @@
 package com.hsf302.socialnetwork.controller;
 
 import com.hsf302.socialnetwork.enity.Users;
+import com.hsf302.socialnetwork.enums.Role;
 import com.hsf302.socialnetwork.repo.UserRepo;
 import com.hsf302.socialnetwork.service.impl.UserService;
 import jakarta.annotation.Priority;
@@ -25,10 +26,13 @@ public class UserController {
 
     @GetMapping
     public String user(org.springframework.ui.Model model, HttpSession session,@RequestParam(name = "keysearch",required = false) String search) {
+
+        model.addAttribute("search", search);
         Users user = (Users) session.getAttribute("user");
         if(user == null) {
             return "redirect:/login";
         }
+
         model.addAttribute("fr", userService.allUser(user,search));
         return "friend";
     }
@@ -39,6 +43,7 @@ public class UserController {
         if(user == null) {
             return "redirect:/login";
         }
+        model.addAttribute("search", search);
         System.out.println(user);
         System.out.println(search+"search");
         model.addAttribute("unfr", userService.friendInvites(user,search));
@@ -92,5 +97,37 @@ public class UserController {
         userService.saveAccount(user);
         session.setAttribute("user", userService.findById(user.getUserId()));
          return "redirect:/posts";
+    }
+
+    @GetMapping("/getAll")
+    private String getALl(HttpSession session, Model model,@RequestParam(defaultValue ="true") boolean active,@RequestParam(required = false) String search) {
+
+
+        model.addAttribute("search", search);
+        model.addAttribute("active", active);
+        Users user = (Users) session.getAttribute("user");
+        if(user == null || !user.getRole().equals(Role.ADMIN)) {
+            return "redirect:/login";
+        }
+        model.addAttribute("users", userService.getALlUsers(active,search));
+        return "admind-users";
+    }
+    @GetMapping("/active/{id}")
+    public String active(HttpSession session, @PathVariable Long id) {
+        Users user = (Users) session.getAttribute("user");
+        if(user == null || !user.getRole().equals(Role.ADMIN)) {
+            return "redirect:/login";
+        }
+        userService.activeUser(id);
+        return "redirect:/user/getAll";
+    }
+    @GetMapping("/inactive/{id}")
+    public String inactive(HttpSession session, @PathVariable Long id) {
+        Users user = (Users) session.getAttribute("user");
+        if(user == null || !user.getRole().equals(Role.ADMIN)) {
+            return "redirect:/login";
+        }
+        userService.inactiveUser(id);
+        return "redirect:/user/getAll";
     }
 }

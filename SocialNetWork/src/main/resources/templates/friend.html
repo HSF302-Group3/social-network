@@ -548,12 +548,12 @@
     <!-- Search Form -->
     <div class="search-form">
         <form action="/user/friends" method="get" th:if="${unfr != null}">
-            <input placeholder="🔍 Tìm kiếm bạn bè theo tên..." type="text" name="keysearch">
+            <input placeholder="🔍 Tìm kiếm bạn bè theo tên..." type="text" name="keysearch" th:value="${search}">
             <button type="submit"><i class="fa fa-search"></i> Tìm kiếm</button>
         </form>
 
         <form action="/user" method="get" th:if="${unfr == null}">
-            <input placeholder="🔍 Tìm kiếm người dùng theo tên..." type="text" name="keysearch">
+            <input placeholder="🔍 Tìm kiếm người dùng theo tên..." type="text" name="keysearch" th:value="${search}">
             <button type="submit"><i class="fa fa-search"></i> Tìm kiếm</button>
         </form>
     </div>
