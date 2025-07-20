@@ -63,7 +63,7 @@ public class ChatController {
         model.addAttribute("messages", messages);
         model.addAttribute("currentUser", currentUser);
 
-        return "chat"; // sử dụng lại template chat.html
+        return "chat";
     }
 
     @PostMapping("/send")
@@ -164,7 +164,6 @@ public class ChatController {
             member.getConversations().add(newGroup);
             userService.save(member);
         }
-        session.invalidate();
         session.setAttribute("user", refreshedUser);
         return "redirect:/chat/" + newGroup.getId();
     }
