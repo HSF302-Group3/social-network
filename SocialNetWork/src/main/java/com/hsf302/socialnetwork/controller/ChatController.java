@@ -33,6 +33,9 @@ public class ChatController {
     @GetMapping
     public String chatHome(Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         List<Conversation> conversations = conversationService.findByUserId(currentUser.getUserId());
         model.addAttribute("conversations", conversations);
 
@@ -53,6 +56,9 @@ public class ChatController {
     @GetMapping("/{conversationId}")
     public String chatDetail(@PathVariable Long conversationId, Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         List<Conversation> conversations = conversationService.findByUserId(currentUser.getUserId());
 
         Conversation currentConversation = conversationService.findById(conversationId);
@@ -71,6 +77,9 @@ public class ChatController {
                               @RequestParam String message,
                               HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         messageService.sendMessage(conversationId, currentUser.getUserId(), message);
         return "redirect:/chat/" + conversationId;
     }
@@ -78,7 +87,9 @@ public class ChatController {
     @GetMapping("/search")
     public String searchFriends(@RequestParam(required = false) String keyword, Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
-
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         // Tìm bạn bè phù hợp (bạn implement trong userService)
         List<Users> friends = userService.friends(currentUser, keyword);
 
@@ -102,6 +113,9 @@ public class ChatController {
     @GetMapping("/start/{friendUserId}")
     public String startConversation(@PathVariable Long friendUserId, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         Users friend = userService.findById(friendUserId);
 
         currentUser = userService.findById(currentUser.getUserId());
@@ -141,6 +155,9 @@ public class ChatController {
     @GetMapping("/new-group")
     public String newGroupForm(Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         // Lấy danh sách bạn bè (giả sử userService.friends(...) trả về friend list)
         List<Users> friends = userService.friends(currentUser, null);
         model.addAttribute("friends", friends);
@@ -155,6 +172,9 @@ public class ChatController {
             memberIds = new ArrayList<>();
         }
         Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         Conversation newGroup = conversationService.createGroupConversation(name, memberIds, currentUser);
         Users refreshedUser = userService.findById(currentUser.getUserId());
         refreshedUser.getConversations().add(newGroup);

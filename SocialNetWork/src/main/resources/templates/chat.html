@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -233,11 +233,13 @@
     .message-input button:hover {
       background-color: #155db2;
     }
+
+
+
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <!-- Cột bên trái: Danh sách các cuộc hội thoại -->
     <div class="chat-list-pane">
       <div style="padding:10px; text-align:center;">
         <a th:href="@{/chat/new-group}">
@@ -263,13 +265,19 @@
       </ul>
 
       <ul class="conversation-list">
-        <!-- Lặp qua danh sách các cuộc hội thoại -->
         <li th:each="conv : ${conversations}"
             th:classappend="${conv.id} == ${currentConversation.id} ? 'active'">
-          <!-- Mỗi cuộc hội thoại hiển thị avatar, tên và tin nhắn gần nhất -->
           <a th:href="@{/chat/{id}(id=${conv.id})}" class="conversation-item">
+            <img class="avatar-sm"
+                 th:if="${conv.type == 'PRIVATE'} and ${conv.users[0].userId != currentUser.userId}"
+                 th:src="${conv.users[0].avatarUrl}"
+                 alt="Avatar" />
+            <img class="avatar-sm"
+                 th:if="${conv.type == 'PRIVATE'} and ${conv.users[1].userId != currentUser.userId}"
+                 th:src="${conv.users[1].avatarUrl}"
+                 alt="Avatar" />
             <div class="conversation-info">
-              <div class="conversation-name" th:text="${conv.type == 'GROUP' ? conv.name : conv.getDisplayName(currentUser)}">Tên Người Dùng</div>
+              <div class="conversation-name" th:text="${conv.type == 'GROUP' ? 'Group: ' + conv.name :  conv.getDisplayName(currentUser)}">Tên Người Dùng</div>
               <div class="conversation-snippet" th:text="${#lists.isEmpty(conv.messages) ? '...' : conv.messages.get(conv.messages.size() - 1).message}">
                 Tin nhắn gần đây...
               </div>
@@ -281,32 +289,28 @@
 
 
 
-    <!-- Cột bên phải: Khung hiển thị nội dung chat -->
     <div class="chat-messages-pane">
-      <!-- Danh sách tin nhắn trong cuộc trò chuyện đã chọn -->
       <div class="messages-list">
-        <!-- Lặp qua các tin nhắn của cuộc hội thoại -->
         <div th:each="msg : ${messages}"
              th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
              class="message-container">
 
-          <!-- Ảnh avatar người gửi -->
           <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
 
-          <!-- Nội dung một tin nhắn -->
           <div>
             <div class="message-content" th:text="${msg.message}">Nội dung tin nhắn</div>
-            <div class="message-time" th:text="${#temporals.format(msg.createddate, 'HH:mm')}">00:00</div>
+            <div class="message-time">
+              <span th:if="${#temporals.format(msg.createddate,'yyyy-MM-dd') == #temporals.format(T(java.time.LocalDate).now(),'yyyy-MM-dd')}"
+                    th:text="${#temporals.format(msg.createddate,'HH:mm')}"></span>
+              <span th:unless="${#temporals.format(msg.createddate,'yyyy-MM-dd') == #temporals.format(T(java.time.LocalDate).now(),'yyyy-MM-dd')}"
+                    th:text="${#temporals.format(msg.createddate,'dd/MM/yyyy HH:mm')}"></span>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Form gửi tin nhắn mới -->
       <form th:action="@{/chat/send}" method="post" class="message-input">
-        <!-- Ô input nhập nội dung tin nhắn -->
         <input type="text" name="message" placeholder="Nhập tin nhắn..." />
-        <!-- Trường ẩn gửi ID cuộc hội thoại hiện tại -->
         <input th:if="${currentConversation != null}" type="hidden" name="conversationId" th:value="${currentConversation.id}" />
-        <!-- Nút gửi tin nhắn -->
         <button type="submit">Gửi</button>
       </form>
     </div>
