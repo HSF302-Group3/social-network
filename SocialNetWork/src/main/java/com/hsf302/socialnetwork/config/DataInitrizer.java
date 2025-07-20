@@ -67,8 +67,6 @@ public class DataInitrizer implements CommandLineRunner {
         post.addImage(i6);
         users.addPostCreate(post);
 
-
-
         Users users2 = new Users();
         users2.setUsername("Quyết");
         users2.setEmail("user2@gmail.com");

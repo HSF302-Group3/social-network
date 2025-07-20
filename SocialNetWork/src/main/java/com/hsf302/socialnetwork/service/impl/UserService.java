@@ -2,6 +2,7 @@ package com.hsf302.socialnetwork.service.impl;
 
 import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enity.Users;
+import com.hsf302.socialnetwork.enums.Role;
 import com.hsf302.socialnetwork.repo.AddFriendRepo;
 import com.hsf302.socialnetwork.repo.AuthRepo;
 import com.hsf302.socialnetwork.repo.UserRepo;
@@ -120,6 +121,27 @@ public class UserService implements IsUserService {
         userRepo.save(user);
     }
 
+ public List<Users> getALlUsers(boolean active ,String search) {
+          if(search == null || search.trim().isEmpty()) {
+              return userRepo.findByActiveAndRoleIsNotLike(active, Role.ADMIN);
+          }
+          return userRepo.findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(active,search,Role.ADMIN);
+ }
+
+    @Override
+    public void activeUser(Long id) {
+        Users user = findById(id);
+        user.setActive(true);
+        userRepo.save(user);
+
+    }
+
+    @Override
+    public void inactiveUser(Long id) {
+        Users user = findById(id);
+        user.setActive(false);
+        userRepo.save(user);
+    }
 
 
 }
