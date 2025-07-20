@@ -294,17 +294,23 @@
     </div>
     <div>
         <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
-              class="comment-form" style="display: none; margin-top: 10px;">
+              class="comment-form" style="display: none; margin-top: 10px;"  enctype="multipart/form-data">
             <input type="text" name="content" placeholder="Viết bình luận..."
                    style="width: 100%; padding: 6px; margin-bottom: 8px;">
             <input type="submit" value="Gửi"
                    style="display: inline-block; padding: 6px 12px; background: #007bff; color: white; border: none; cursor: pointer;">
+            <input type="file" name="images" id="Image" multiple>
         </form>
     </div>
     <div th:if="${p.comments != null}">
         <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" style="margin-bottom: 12px;">
             <strong th:text="${c.users.name}">Tên người bình luận</strong>:
             <span th:text="${c.comment}">Nội dung bình luận</span><br>
+            <div th:if="${c.imageComment != null}">
+                <div th:each="img : ${c.imageComment}">
+                    <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                </div>
+            </div>
             <span th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
 
 
@@ -313,16 +319,21 @@
             </button>
 
 
-            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;">
+            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;" enctype="multipart/form-data">
                 <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
+                <input type="file" name="images" id="images" multiple>
                 <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
             </form>
-
 
             <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
                 <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
                     <strong th:text="${r.users.name}">Tên người trả lời</strong>:
                     <span th:text="${r.comment}">Nội dung trả lời</span><br>
+                    <div th:if="${r.imageComment != null}">
+                        <div th:each="img : ${r.imageComment}">
+                            <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                        </div>
+                    </div>
                     <span th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
                 </div>
             </div>

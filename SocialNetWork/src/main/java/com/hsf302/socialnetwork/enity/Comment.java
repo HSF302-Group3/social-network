@@ -36,10 +36,10 @@ public class Comment {
     @JoinColumn(name = "users_id")
     private Users users;
 
-   public void addComment(Image comment) {
-        this.imageComment.add(comment);
-        comment.setComment(this);
-   }
+    public void addImageComment(Image image) {
+        imageComment.add(image);
+        image.setComment(this);
+    }
    public void removeComment(Image comment) {
         this.imageComment.remove(comment);
    }
