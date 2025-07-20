@@ -1,43 +1,447 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Social Network</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #667eea;
+            width: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input:read-only {
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-message i {
+            font-size: 0.75rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .readonly-badge {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #e5e7eb;
+            object-fit: cover;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .gender-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .gender-option {
+            display: none;
+        }
+
+        .gender-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            gap: 8px;
+        }
+
+        .gender-option:checked + .gender-label {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .gender-label:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .gender-option:checked + .gender-label:hover {
+            background: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .card-body {
+                padding: 30px 20px;
+            }
+
+            .card-header {
+                padding: 25px 20px;
+            }
+
+            .card-header h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Animation for form appearance */
+        .form-group {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+        .form-group:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
 <div th:replace="fragments/HeaderUser :: HeaderUser"></div>
-<h2>Edit Profile</h2>
-<form method="post" th:action="@{/user/update}" th:object="${user}">
-    <input th:field="*{userId}" type="hidden"/>
-    <input th:field="*{role}" type="hidden"/>
-    <input th:field="*{password}" type="hidden"/>
-    <label>Username:</label>
-    <input readonly th:field="*{username}" type="text"/><br/><br/>
-    <p style="color: red" th:errors="*{username}"></p>
-    <label>Name:</label>
-    <input required th:field="*{name}" type="text"/><br/><br/>
-    <p style="color: red" th:errors="*{name}"></p>
-    <label>Email:</label>
-    <input required th:field="*{email}" type="email"/><br/><br/>
-    <p style="color: red" th:errors="*{email}"></p>
-    <label>Phone:</label>
-    <input required th:field="*{phone}" type="text"/><br/><br/>
-    <p style="color: red" th:errors="*{phone}"></p>
-    <label>Avatar URL:</label>
-    <input th:field="*{avatarUrl}" type="text"/><br/><br/>
-    <p style="color: red" th:errors="*{avatarUrl}"></p>
-    <label>Gender:</label>
-    <select th:field="*{gender}">
-        <option th:selected="${T(com.hsf302.socialnetwork.enums.Gender).equals(session.user.getGender())}"
-                th:text="'Female'"
-                th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}"
-        />
-        <option th:selected="${T(com.hsf302.socialnetwork.enums.Gender).equals(session.user.getGender())}"
-                th:text="'Male'"
-                th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}"
-        />
-    </select><br/>
-    <button type="submit">Update</button>
-</form>
 
+<div class="container">
+    <div class="profile-card">
+        <div class="card-header">
+            <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+            <p>Update your personal information</p>
+        </div>
+
+        <div class="card-body">
+            <form method="post" th:action="@{/user/update}" th:object="${user}">
+                <!-- Hidden fields -->
+                <input th:field="*{userId}" type="hidden"/>
+                <input th:field="*{role}" type="hidden"/>
+                <input th:field="*{password}" type="hidden"/>
+
+                <!-- Username (readonly) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <div style="position: relative;">
+                        <input readonly th:field="*{username}" type="text" class="form-input"/>
+                        <span class="readonly-badge">Read-only</span>
+                    </div>
+                    <div th:if="${#fields.hasErrors('username')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{username}"></span>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input required th:field="*{name}" type="text" class="form-input" placeholder="Enter your full name"/>
+                    <div th:if="${#fields.hasErrors('name')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{name}"></span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input required th:field="*{email}" type="email" class="form-input" placeholder="Enter your email address"/>
+                    <div th:if="${#fields.hasErrors('email')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{email}"></span>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input required th:field="*{phone}" type="text" class="form-input" placeholder="Enter your phone number"/>
+                    <div th:if="${#fields.hasErrors('phone')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{phone}"></span>
+                    </div>
+                </div>
+
+                <!-- Avatar URL -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i>
+                        Avatar URL
+                    </label>
+                    <input th:field="*{avatarUrl}" type="url" class="form-input" placeholder="Enter avatar image URL (optional)"/>
+                    <img th:if="*{avatarUrl != null and !#strings.isEmpty(avatarUrl)}"
+                         th:src="*{avatarUrl}"
+                         alt="Avatar Preview"
+                         class="avatar-preview"
+                         onerror="this.style.display='none'"/>
+                    <div th:if="${#fields.hasErrors('avatarUrl')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{avatarUrl}"></span>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-venus-mars"></i>
+                        Gender
+                    </label>
+                    <div class="gender-options">
+                        <div>
+                            <input type="radio"
+                                   th:field="*{gender}"
+                                   th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}"
+                                   id="gender-female"
+                                   class="gender-option"/>
+                            <label for="gender-female" class="gender-label">
+                                <i class="fas fa-venus"></i>
+                                Female
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio"
+                                   th:field="*{gender}"
+                                   th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}"
+                                   id="gender-male"
+                                   class="gender-option"/>
+                            <label for="gender-male" class="gender-label">
+                                <i class="fas fa-mars"></i>
+                                Male
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-save"></i>
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Avatar preview functionality
+    document.querySelector('input[th\\:field="*{avatarUrl}"]').addEventListener('input', function(e) {
+        const avatarPreview = document.querySelector('.avatar-preview');
+        if (e.target.value) {
+            if (avatarPreview) {
+                avatarPreview.src = e.target.value;
+                avatarPreview.style.display = 'block';
+            } else {
+                const img = document.createElement('img');
+                img.src = e.target.value;
+                img.alt = 'Avatar Preview';
+                img.className = 'avatar-preview';
+                img.onerror = function() { this.style.display = 'none'; };
+                e.target.parentNode.appendChild(img);
+            }
+        } else if (avatarPreview) {
+            avatarPreview.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>
