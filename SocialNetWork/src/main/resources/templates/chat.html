@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      display: flex;
+      width: 900px;
+      height: 600px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      background: white;
+    }
+
+    /* Cột danh sách hội thoại (bên trái) */
+    .chat-list-pane {
+      width: 300px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-list-pane form {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .chat-list-pane form input[type="text"] {
+      width: calc(100% - 50px);
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px 0 0 6px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .chat-list-pane form button {
+      width: 50px;
+      border: none;
+      background-color: #1877f2;
+      color: white;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .friend-search-list {
+      list-style: none;
+      padding: 0 10px;
+      margin: 0;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .friend-search-list li {
+      margin-bottom: 8px;
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      padding: 6px;
+      border-radius: 8px;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .friend-item:hover {
+      background-color: #f0f2f5;
+    }
+
+    .avatar-sm {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+
+    /* Danh sách cuộc hội thoại */
+    .conversation-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .conversation-list li {
+      cursor: pointer;
+    }
+
+    .conversation-item {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .conversation-item:hover {
+      background-color: #f0f2f5;
+    }
+
+    .conversation-list li.active .conversation-item {
+      background-color: #e7f3ff;
+      font-weight: bold;
+    }
+
+    .conversation-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .conversation-snippet {
+      font-size: 13px;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Khung tin nhắn bên phải */
+    .chat-messages-pane {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .messages-list {
+      flex-grow: 1;
+      padding: 15px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Tin nhắn */
+    .message-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      max-width: 70%;
+    }
+
+    .message-container.sent {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .message-content {
+      background-color: #f1f0f0;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.3;
+      color: #000;
+      word-wrap: break-word;
+      max-width: 100%;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+    }
+
+    .message-container.sent .message-content {
+      background-color: #1877f2;
+      color: #fff;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+      text-align: center;
+      min-width: 40px;
+    }
+
+    /* Form gửi tin nhắn */
+    .message-input {
+      display: flex;
+      padding: 15px 20px;
+      border-top: 1px solid #ddd;
+      background: #f9fafb;
+    }
+
+    .message-input input[type="text"] {
+      flex-grow: 1;
+      padding: 12px 15px;
+      font-size: 15px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .message-input button {
+      margin-left: 15px;
+      background-color: #1877f2;
+      border: none;
+      color: white;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 12px 25px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .message-input button:hover {
+      background-color: #155db2;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Cột bên trái: Danh sách các cuộc hội thoại -->
+    <div class="chat-list-pane">
+      <div style="padding:10px; text-align:center;">
+        <a th:href="@{/chat/new-group}">
+          <button style="width:100%; padding:.5em; background:#1877f2; color:white; border:none; border-radius:4px;">
+            + Tạo nhóm mới
+          </button>
+        </a>
+      </div>
+
+      <form th:action="@{/chat/search}" method="get">
+        <input type="text" name="keyword" placeholder="Tìm bạn bè..."
+               th:value="${keyword}" />
+        <button type="submit">Tìm</button>
+      </form>
+
+      <ul class="friend-search-list" th:if="${friends != null}">
+        <li th:each="friend : ${friends}">
+          <a th:href="@{/chat/start/{userId}(userId=${friend.userId})}" class="friend-item">
+            <img th:src="${friend.avatarUrl}" alt="Avatar" class="avatar-sm" />
+            <span th:text="${friend.name}">Tên bạn bè</span>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="conversation-list">
+        <!-- Lặp qua danh sách các cuộc hội thoại -->
+        <li th:each="conv : ${conversations}"
+            th:classappend="${conv.id} == ${currentConversation.id} ? 'active'">
+          <!-- Mỗi cuộc hội thoại hiển thị avatar, tên và tin nhắn gần nhất -->
+          <a th:href="@{/chat/{id}(id=${conv.id})}" class="conversation-item">
+            <div class="conversation-info">
+              <div class="conversation-name" th:text="${conv.type == 'GROUP' ? conv.name : conv.getDisplayName(currentUser)}">Tên Người Dùng</div>
+              <div class="conversation-snippet" th:text="${#lists.isEmpty(conv.messages) ? '...' : conv.messages.get(conv.messages.size() - 1).message}">
+                Tin nhắn gần đây...
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+
+
+    <!-- Cột bên phải: Khung hiển thị nội dung chat -->
+    <div class="chat-messages-pane">
+      <!-- Danh sách tin nhắn trong cuộc trò chuyện đã chọn -->
+      <div class="messages-list">
+        <!-- Lặp qua các tin nhắn của cuộc hội thoại -->
+        <div th:each="msg : ${messages}"
+             th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
+             class="message-container">
+
+          <!-- Ảnh avatar người gửi -->
+          <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
+
+          <!-- Nội dung một tin nhắn -->
+          <div>
+            <div class="message-content" th:text="${msg.message}">Nội dung tin nhắn</div>
+            <div class="message-time" th:text="${#temporals.format(msg.createddate, 'HH:mm')}">00:00</div>
+          </div>
+        </div>
+      </div>
+      <!-- Form gửi tin nhắn mới -->
+      <form th:action="@{/chat/send}" method="post" class="message-input">
+        <!-- Ô input nhập nội dung tin nhắn -->
+        <input type="text" name="message" placeholder="Nhập tin nhắn..." />
+        <!-- Trường ẩn gửi ID cuộc hội thoại hiện tại -->
+        <input th:if="${currentConversation != null}" type="hidden" name="conversationId" th:value="${currentConversation.id}" />
+        <!-- Nút gửi tin nhắn -->
+        <button type="submit">Gửi</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

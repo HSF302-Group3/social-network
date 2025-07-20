@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+      .new-group-form { max-width: 400px; margin: 50px auto; }
+      .new-group-form h2 { margin-bottom: .5em; }
+      .new-group-form input,
+      .new-group-form button { width: 100%; padding: .6em; margin-bottom: .6em; }
+      .members-list { max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: .5em; }
+      .members-list label { display: block; margin-bottom: .4em; cursor: pointer; }
+    </style>
+</head>
+<body>
+  <div class="new-group-form">
+    <h2>Tạo nhóm chat mới</h2>
+    <form th:action="@{/chat/create-group}" method="post">
+      <input type="text" name="name" placeholder="Tên nhóm…" required/>
+
+      <div class="members-list">
+        <div th:each="f : ${friends}">
+          <label>
+            <input type="checkbox"
+                   name="members"
+                   th:value="${f.userId}"/>
+            <span th:text="${f.name}">Bạn</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit">Tạo nhóm</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -18,6 +18,7 @@ public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
     private String type;
 
@@ -36,4 +37,18 @@ public class Conversation {
     }
     @Column(columnDefinition = "BIT DEFAULT 1")
     private boolean active = true;
+
+    public String getDisplayName(Users currentUser) {
+        if ("GROUP".equals(this.type)) {
+            return this.name;
+        } else {
+            // Chat 1-1: hiển thị tên người kia
+            return this.users.stream()
+                    .filter(user -> !user.getUserId().equals(currentUser.getUserId()))
+                    .findFirst()
+                    .map(Users::getName)
+                    .orElse("Unknown");
+        }
+    }
+
 }

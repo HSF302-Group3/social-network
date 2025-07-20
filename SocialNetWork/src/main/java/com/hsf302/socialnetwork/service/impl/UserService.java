@@ -99,9 +99,26 @@ public class UserService implements IsUserService {
     public  void saveAccount(Users user) {
         authRepo.save(user);
     }
-   public  Users findById(Long id) {
-        return userRepo.findById(id).get();
-   }
+
+    @Override
+    public Users findByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
+
+    @Override
+    public Users findById(Long id) {
+        return userRepo.findById(id)
+                .map(user -> {
+                    user.getConversations().size();
+                    return user;
+                })
+                .orElse(null);
+    }
+
+    @Override
+    public void save(Users user) {
+        userRepo.save(user);
+    }
 
 
 
