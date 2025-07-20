@@ -2,77 +2,209 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Bài đăng tháng 5</title>
+    <title>Social Network - Posts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
         }
 
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Create Post Button */
+        .create-post-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Post Container */
         .post-container {
-            width: 750px;
-            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin-bottom: 30px;
             padding: 25px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
+            box-shadow:
+                    0 20px 40px rgba(0, 0, 0, 0.1),
+                    0 0 0 1px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
         }
 
+        .post-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-container:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                    0 30px 60px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Post Header */
         .post-header {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .post-avatar {
-            width: 75px;
-            height: 75px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             overflow: hidden;
             margin-right: 15px;
+            position: relative;
+            border: 3px solid transparent;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 2px;
         }
 
         .post-avatar img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .post-avatar:hover img {
+            transform: scale(1.1);
         }
 
         .post-user {
-            font-weight: bold;
-            font-size: 1.2em;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 2px;
         }
 
         .post-date {
-            font-size: 1em;
-            color: gray;
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 400;
         }
 
+        /* Post Content */
         .post-content {
-            margin-top: 15px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
+            margin: 20px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #444;
         }
 
+        /* Post Images */
         .post-images {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 12px;
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
         }
 
         .post-images img,
         .overlay-image img {
             width: 100%;
-            height: 270px;
+            height: 250px;
             object-fit: cover;
-            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .post-images img:hover,
+        .overlay-image:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
         }
 
         .overlay-image {
             position: relative;
             cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .overlay-image::after {
@@ -82,22 +214,242 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
             color: white;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
         }
 
+        /* Post Footer */
         .post-footer {
-            margin-top: 15px;
-            font-size: 1em;
-            color: gray;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            font-size: 0.95em;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
+        .post-footer i {
+            margin-right: 5px;
+            color: #667eea;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            font-size: 1em;
+            padding: 15px 30px;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+        }
+
+        .btn-active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .btn-like {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+        }
+
+        .btn-unlike {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .btn-comment {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        /* Action Buttons */
+        .action {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .action > div {
+            display: contents;
+        }
+
+        /* Comment Section */
+        .comment-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .comment-form input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .comment-form input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .comment-form input[type="submit"] {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .comment-form input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Comments Display */
+        .comment-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .comment-content {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .comment-date {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .btn-reply {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reply:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3);
+        }
+
+        .reply-form {
+            margin-top: 12px;
+            padding: 15px;
+            background: #f1f3f4;
+            border-radius: 10px;
+        }
+
+        .reply-form input[type="text"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .reply-form button {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .reply-list {
+            margin-left: 30px;
+            margin-top: 12px;
+            padding-left: 20px;
+            border-left: 2px solid #e9ecef;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -106,234 +458,273 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(10px);
         }
 
         .modal img {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 30px;
+            top: 30px;
+            right: 40px;
             font-size: 40px;
             color: white;
             cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .modal-close:hover {
+            color: #ff6b6b;
+            transform: scale(1.1);
         }
 
         #prevBtn, #nextBtn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 40px;
-            background-color: transparent;
+            font-size: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             border: none;
             color: white;
             cursor: pointer;
             z-index: 1000;
-            padding: 10px;
+            padding: 15px 20px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        #prevBtn:hover, #nextBtn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
         }
 
         #prevBtn {
-            left: 30px;
+            left: 40px;
         }
 
         #nextBtn {
-            right: 30px;
+            right: 40px;
         }
 
-        .create-post-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-            margin-left: 680px;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+
+            .post-container {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .post-images {
+                grid-template-columns: 1fr;
+            }
+
+            .action {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.85em;
+            }
+
+            .modal img {
+                max-width: 95%;
+                max-height: 80%;
+            }
+
+            #prevBtn, #nextBtn {
+                font-size: 24px;
+                padding: 12px 15px;
+            }
+
+            #prevBtn {
+                left: 20px;
+            }
+
+            #nextBtn {
+                right: 20px;
+            }
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        /* Loading Animation */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: spin 1s linear infinite;
         }
 
-        .btn-create { background-color: #2ecc71; }
-        .btn-create:hover { background-color: #27ae60; }
-
-        .btn-delete { background-color: #e74c3c; }
-        .btn-delete:hover { background-color: #c0392b; }
-
-        .btn-edit { background-color: #f39c12; }
-        .btn-edit:hover { background-color: #d68910; }
-
-        .btn-active { background-color: #3498db; }
-        .btn-active:hover { background-color: #2980b9; }
-
-        .btn-like { background-color: #1abc9c; }
-        .btn-like:hover { background-color: #16a085; }
-
-        .btn-unlike { background-color: #7f8c8d; }
-        .btn-unlike:hover { background-color: #636e72; }
-
-        .btn-comment { background-color: #9b59b6; }
-        .btn-comment:hover { background-color: #8e44ad; }
-
-        .action {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
         }
-        .action > div {
-            display: contents;
-        }
-
     </style>
 </head>
 <body>
 
-<!-- Sử dụng th:insert -->
+<!-- Header -->
 <div th:replace="fragments/HeaderUser :: HeaderUser"></div>
 
-<!-- Nút Create Post -->
-<div class="create-post-wrapper">
-    <a class="btn btn-create" th:href="@{/posts/create}"><i class="fa fa-plus"></i> Create Post</a>
-</div>
+<div class="main-container">
+    <!-- Create Post Button -->
+    <div class="create-post-wrapper">
+        <a class="btn btn-create" th:href="@{/posts/create}">
+            <i class="fa fa-plus"></i> Create New Post
+        </a>
+    </div>
 
-<!-- Danh sách bài đăng -->
-<div th:each="p : ${posts}" class="post-container">
-    <div class="post-header">
-        <div class="post-avatar">
-            <img th:src="${p.usercreate.avatarUrl}" alt="avatar">
+    <!-- Posts List -->
+    <div th:each="p : ${posts}" class="post-container">
+        <div class="post-header">
+            <div class="post-avatar">
+                <img th:src="${p.usercreate.avatarUrl}" alt="avatar">
+            </div>
+            <div>
+                <div class="post-user" th:text="${p.usercreate.name}">Username</div>
+                <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Post Date</div>
+            </div>
         </div>
+
+        <div class="post-content" th:text="${p.content}">Post Content</div>
+
+        <div class="post-images" th:with="images=${p.imagePost}">
+            <div th:each="img, stat : ${images}">
+                <img th:if="${stat.index < 3}"
+                     th:src="${img.imageUrl}"
+                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                     class="clickable-image"
+                     alt="Post Image"/>
+
+                <div th:if="${stat.index == 3 and images.size() > 4}"
+                     class="overlay-image clickable-image"
+                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
+                    <img th:src="${img.imageUrl}" alt="Post Image"/>
+                </div>
+
+                <img th:if="${stat.index == 3 and images.size() == 4}"
+                     th:src="${img.imageUrl}"
+                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                     class="clickable-image"
+                     alt="Post Image"/>
+
+                <img th:if="${stat.index > 3}"
+                     th:src="${img.imageUrl}"
+                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                     style="display: none"
+                     class="clickable-image"
+                     alt="Post Image"/>
+            </div>
+        </div>
+
+        <div class="post-footer">
+            <span><i class="fas fa-heart"></i><span th:text="${p.users.size()} + ' likes'">0 likes</span></span>
+            <span><i class="fas fa-comment"></i><span th:text="${p.comments.size()} + ' comments'">0 comments</span></span>
+        </div>
+
+        <div class="action">
+            <div th:if="${user.userId == p.usercreate.userId}">
+                <div th:if="${p.active == true}">
+                    <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}">
+                        <i class="fa fa-trash"></i> Delete
+                    </a>
+                </div>
+                <div th:if="${p.active == false}">
+                    <a class="btn btn-active" th:href="@{'/posts/active/'+${p.id}}">
+                        <i class="fa fa-check-circle"></i> Activate
+                    </a>
+                </div>
+                <div>
+                    <a class="btn btn-edit" th:href="@{'/posts/edit/'+${p.id}}">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+
+            <div th:if="${user.userId != p.usercreate.userId}">
+                <div th:if="${p.users.contains(user)}">
+                    <a class="btn btn-unlike" th:href="@{'/posts/like/'+${p.id}}">
+                        <i class="fa fa-thumbs-down"></i> Unlike
+                    </a>
+                </div>
+                <div th:if="${!p.users.contains(user)}">
+                    <a class="btn btn-like" th:href="@{'/posts/like/'+${p.id}}">
+                        <i class="fa fa-thumbs-up"></i> Like
+                    </a>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-comment" onclick="toggleCommentForm(this)">
+                        <i class="fa fa-comment"></i> Comment
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
         <div>
-            <div class="post-user" th:text="${p.usercreate.name}">Tên người dùng</div>
-            <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Ngày đăng</div>
-        </div>
-    </div>
-
-    <div class="post-content" th:text="${p.content}">Nội dung bài đăng</div>
-
-    <div class="post-images" th:with="images=${p.imagePost}">
-        <div th:each="img, stat : ${images}">
-            <img th:if="${stat.index < 3}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 class="clickable-image"
-                 alt="ảnh"/>
-
-            <div th:if="${stat.index == 3 and images.size() > 4}"
-                 class="overlay-image clickable-image"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
-                <img th:src="${img.imageUrl}" alt="ảnh"/>
-            </div>
-
-            <img th:if="${stat.index == 3 and images.size() == 4}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 class="clickable-image"
-                 alt="ảnh"/>
-
-            <img th:if="${stat.index > 3}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 style="display: none"
-                 class="clickable-image"
-                 alt="ảnh"/>
-        </div>
-    </div>
-
-    <div class="post-footer">
-        <span th:text="${p.users.size()} + ' likes'">0 likes</span> ·
-        <span th:text="${p.comments.size()} + ' comments'">0 comments</span>
-    </div>
-
-    <div class="action">
-        <div th:if="${user.userId == p.usercreate.userId}">
-            <div th:if="${p.active == true}">
-                <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}"><i class="fa fa-trash"></i> Delete</a>
-            </div>
-            <div th:if="${p.active == false}">
-                <a class="btn btn-active" th:href="@{'/posts/active/'+${p.id}}"><i class="fa fa-check-circle"></i> Active</a>
-            </div>
-            <div>
-                <a class="btn btn-edit" th:href="@{'/posts/edit/'+${p.id}}"><i class="fa fa-edit"></i> Edit</a>
-            </div>
-        </div>
-
-        <div th:if="${user.userId != p.usercreate.userId}">
-            <div th:if="${p.users.contains(user)}">
-                <a class="btn btn-unlike" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-down"></i> Unlike</a>
-            </div>
-            <div th:if="${!p.users.contains(user)}">
-                <a class="btn btn-like" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-up"></i> Like</a>
-            </div>
-            <div>
-                <button type="button" class="btn btn-comment" onclick="toggleCommentForm(this)">
-                    <i class="fa fa-comment"></i> Comment
-                </button>
-            </div>
-        </div>
-    </div>
-    <div>
-        <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
-              class="comment-form" style="display: none; margin-top: 10px;">
-            <input type="text" name="content" placeholder="Viết bình luận..."
-                   style="width: 100%; padding: 6px; margin-bottom: 8px;">
-            <input type="submit" value="Gửi"
-                   style="display: inline-block; padding: 6px 12px; background: #007bff; color: white; border: none; cursor: pointer;">
-        </form>
-    </div>
-    <div th:if="${p.comments != null}">
-        <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" style="margin-bottom: 12px;">
-            <strong th:text="${c.users.name}">Tên người bình luận</strong>:
-            <span th:text="${c.comment}">Nội dung bình luận</span><br>
-            <span th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
-
-
-            <button type="button" class="btn-reply" onclick="toggleReplyForm(this)" style="margin-top: 6px;">
-                Trả lời
-            </button>
-
-
-            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;">
-                <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
-                <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
+            <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
+                  class="comment-form" style="display: none;">
+                <input type="text" name="content" placeholder="Write a comment..." required>
+                <input type="submit" value="Post Comment">
             </form>
+        </div>
 
+        <!-- Comments Display -->
+        <div th:if="${p.comments != null}">
+            <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" class="comment-item">
+                <div class="comment-author" th:text="${c.users.name}">Comment Author</div>
+                <div class="comment-content" th:text="${c.comment}">Comment Content</div>
+                <div class="comment-date" th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
 
-            <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
-                <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
-                    <strong th:text="${r.users.name}">Tên người trả lời</strong>:
-                    <span th:text="${r.comment}">Nội dung trả lời</span><br>
-                    <span th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                <button type="button" class="btn-reply" onclick="toggleReplyForm(this)">
+                    <i class="fas fa-reply"></i> Reply
+                </button>
+
+                <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;">
+                    <input type="text" name="replyContent" placeholder="Write a reply..." required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Send Reply</button>
+                </form>
+
+                <div class="reply-list">
+                    <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}" class="comment-item">
+                        <div class="comment-author" th:text="${r.users.name}">Reply Author</div>
+                        <div class="comment-content" th:text="${r.comment}">Reply Content</div>
+                        <div class="comment-date" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal xem ảnh -->
+<!-- Image Modal -->
 <div id="lightboxModal" class="modal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">&times;</span>
-    <img id="modalImg" src="" alt="Image Preview">
+    <img id="modalImg" src="/placeholder.svg" alt="Image Preview">
     <button id="prevBtn" onclick="prevImage(event)">&#10094;</button>
     <button id="nextBtn" onclick="nextImage(event)">&#10095;</button>
 </div>
@@ -359,6 +750,15 @@
                 });
             });
         });
+
+        // Add loading states to buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            if (btn.tagName === 'A') {
+                btn.addEventListener('click', function() {
+                    this.classList.add('loading');
+                });
+            }
+        });
     });
 
     function showModal(url) {
@@ -366,10 +766,12 @@
         const modalImg = document.getElementById('modalImg');
         modalImg.src = url;
         modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         document.getElementById('lightboxModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 
     function prevImage(event) {
@@ -387,19 +789,45 @@
             showModal(currentImages[currentIndex]);
         }
     }
+
     function toggleCommentForm(button) {
         const postContainer = button.closest(".post-container");
         const form = postContainer.querySelector(".comment-form");
         if (form) {
-            form.style.display = form.style.display === "none" ? "block" : "none";
+            const isHidden = form.style.display === "none";
+            form.style.display = isHidden ? "block" : "none";
+
+            if (isHidden) {
+                form.querySelector('input[type="text"]').focus();
+            }
         }
     }
+
     function toggleReplyForm(button) {
         const replyForm = button.nextElementSibling;
         if (replyForm && replyForm.classList.contains("reply-form")) {
-            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+            const isHidden = replyForm.style.display === "none";
+            replyForm.style.display = isHidden ? "block" : "none";
+
+            if (isHidden) {
+                replyForm.querySelector('input[type="text"]').focus();
+            }
         }
     }
+
+    // Smooth scroll animations
+    window.addEventListener('scroll', () => {
+        const posts = document.querySelectorAll('.post-container');
+        posts.forEach(post => {
+            const rect = post.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+            if (isVisible) {
+                post.style.opacity = '1';
+                post.style.transform = 'translateY(0)';
+            }
+        });
+    });
 </script>
 
 </body>
