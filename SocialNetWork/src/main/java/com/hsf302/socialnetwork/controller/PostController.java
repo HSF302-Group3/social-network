@@ -104,19 +104,19 @@ private UserRepo repo;
         return "redirect:/posts/friendPost";
   }
     @PostMapping("/comment/{id}")
-    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ) throws IOException {
+    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ,@RequestParam(name = "images",required = false) List<MultipartFile> fileList) throws IOException {
         Users users = (Users) session.getAttribute("user");
         Post post = postService.getPostById(id);
-        commentService.addComment(post,users,cmt );
+        commentService.addComment(post,users,cmt , fileList );
         return "redirect:/posts/friendPost";
     }
     @PostMapping("/reply/{id}")
-    public String replyComment(@PathVariable Long id,HttpSession session, @RequestParam("replyContent") String cmt ) throws IOException {
+    public String replyComment(@PathVariable Long id,HttpSession session, @RequestParam("replyContent") String cmt ,@RequestParam(name = "images",required = false) List<MultipartFile> fileList) throws IOException {
         Users users = (Users) session.getAttribute("user");
         Comment comment = commentService.getReferenceById(id);
         Post post = comment.getPost();
 
-        commentService.replyComment(users,cmt ,id,post);
+        commentService.replyComment(users,cmt ,id,post, fileList);
         return "redirect:/posts/friendPost";
     }
 }

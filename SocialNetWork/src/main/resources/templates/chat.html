@@ -1,167 +1,391 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
     .chat-container {
       display: flex;
-      width: 900px;
-      height: 600px;
-      border-radius: 10px;
+      width: 100%;
+      max-width: 1200px;
+      height: 700px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
       background: white;
+      backdrop-filter: blur(10px);
     }
 
-    /* Cột danh sách hội thoại (bên trái) */
+    /* Left Sidebar - Chat List */
     .chat-list-pane {
-      width: 300px;
-      background: #fff;
-      border-right: 1px solid #ddd;
+      width: 350px;
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
-    .chat-list-pane form {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .chat-list-pane form input[type="text"] {
-      width: calc(100% - 50px);
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 6px 0 0 6px;
-      outline: none;
-      font-size: 14px;
-    }
-
-    .chat-list-pane form button {
-      width: 50px;
-      border: none;
-      background-color: #1877f2;
+    .chat-list-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      border-radius: 0 6px 6px 0;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-list-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="white" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+    }
+
+    .chat-list-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .new-group-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
       cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .new-group-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .search-section {
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .search-form {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 45px;
+      border: 2px solid #e2e8f0;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .search-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+      background: #5a67d8;
     }
 
     .friend-search-list {
       list-style: none;
-      padding: 0 10px;
+      padding: 0 20px;
       margin: 0;
-      max-height: 150px;
+      max-height: 180px;
       overflow-y: auto;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
     }
 
-    .friend-search-list li {
-      margin-bottom: 8px;
+    .friend-search-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .friend-search-list::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    .friend-search-list::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 2px;
     }
 
     .friend-item {
       display: flex;
       align-items: center;
-      padding: 6px;
-      border-radius: 8px;
-      color: #333;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: #374151;
       text-decoration: none;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
     }
 
     .friend-item:hover {
-      background-color: #f0f2f5;
+      background: #f0f4ff;
+      transform: translateX(4px);
     }
 
     .avatar-sm {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 10px;
+      margin-right: 12px;
+      border: 2px solid #e2e8f0;
     }
 
-    /* Danh sách cuộc hội thoại */
+    .friend-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
     .conversation-list {
       list-style: none;
       margin: 0;
       padding: 0;
       overflow-y: auto;
       flex-grow: 1;
+      background: white;
+    }
+
+    .conversation-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .conversation-list::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    .conversation-list::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 2px;
     }
 
     .conversation-list li {
       cursor: pointer;
+      position: relative;
     }
 
     .conversation-item {
       display: flex;
-      flex-direction: column;
-      padding: 12px 15px;
-      border-bottom: 1px solid #eee;
-      color: #333;
+      align-items: center;
+      padding: 16px 20px;
+      color: #374151;
       text-decoration: none;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+      position: relative;
     }
 
     .conversation-item:hover {
-      background-color: #f0f2f5;
+      background: #f8fafc;
     }
 
     .conversation-list li.active .conversation-item {
-      background-color: #e7f3ff;
-      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .conversation-list li.active .conversation-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #667eea;
+    }
+
+    .conversation-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .conversation-list li.active .conversation-avatar {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .conversation-info {
+      flex-grow: 1;
+      min-width: 0;
     }
 
     .conversation-name {
       font-weight: 600;
       margin-bottom: 4px;
-      font-size: 15px;
-    }
-
-    .conversation-snippet {
-      font-size: 13px;
-      color: #666;
+      font-size: 1rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Khung tin nhắn bên phải */
+    .conversation-snippet {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .conversation-time {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Right Side - Messages */
     .chat-messages-pane {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      background: #fff;
-      border-radius: 0 10px 10px 0;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .messages-header {
+      background: white;
+      padding: 20px 25px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .current-chat-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e2e8f0;
+    }
+
+    .current-chat-info h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 2px;
+    }
+
+    .current-chat-status {
+      font-size: 0.85rem;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
     }
 
     .messages-list {
       flex-grow: 1;
-      padding: 15px 20px;
+      padding: 25px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
+      background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
     }
 
-    /* Tin nhắn */
+    .messages-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .messages-list::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 3px;
+    }
+
+    .messages-list::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
     .message-container {
       display: flex;
       align-items: flex-end;
-      gap: 10px;
-      max-width: 70%;
+      gap: 12px;
+      max-width: 75%;
+      animation: messageSlideIn 0.3s ease-out;
     }
 
     .message-container.sent {
@@ -169,69 +393,247 @@
       flex-direction: row-reverse;
     }
 
+    @keyframes messageSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .message-avatar {
       width: 36px;
       height: 36px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .message-bubble {
+      position: relative;
     }
 
     .message-content {
-      background-color: #f1f0f0;
-      padding: 10px 14px;
-      border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.3;
-      color: #000;
+      background: #f1f5f9;
+      padding: 12px 16px;
+      border-radius: 20px 20px 20px 6px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #1f2937;
       word-wrap: break-word;
       max-width: 100%;
-      box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      position: relative;
     }
 
     .message-container.sent .message-content {
-      background-color: #1877f2;
-      color: #fff;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px 20px 6px 20px;
     }
 
     .message-time {
-      font-size: 12px;
-      color: #888;
-      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 6px;
       text-align: center;
-      min-width: 40px;
+      opacity: 0.8;
     }
 
-    /* Form gửi tin nhắn */
+    .message-container.sent .message-time {
+      color: #cbd5e1;
+    }
+
+    /* Message Input */
+    .message-input-container {
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      padding: 20px 25px;
+    }
+
     .message-input {
       display: flex;
-      padding: 15px 20px;
-      border-top: 1px solid #ddd;
-      background: #f9fafb;
+      align-items: center;
+      gap: 15px;
+      background: #f8fafc;
+      border-radius: 25px;
+      padding: 8px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .message-input:focus-within {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
     .message-input input[type="text"] {
       flex-grow: 1;
-      padding: 12px 15px;
-      font-size: 15px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      border: none;
+      background: transparent;
       outline: none;
+      color: #374151;
     }
 
-    .message-input button {
-      margin-left: 15px;
-      background-color: #1877f2;
+    .message-input input[type="text"]::placeholder {
+      color: #94a3b8;
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
       color: white;
       font-weight: 600;
       border-radius: 20px;
-      padding: 12px 25px;
+      padding: 12px 20px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
     }
 
-    .message-input button:hover {
-      background-color: #155db2;
+    .send-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .send-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Empty State */
+    .empty-chat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .empty-chat i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-chat h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #64748b;
+    }
+
+    .empty-chat p {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .chat-container {
+        height: calc(100vh - 20px);
+        border-radius: 15px;
+      }
+
+      .chat-list-pane {
+        width: 280px;
+      }
+
+      .messages-list {
+        padding: 15px;
+      }
+
+      .message-input-container {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .chat-list-pane {
+        width: 100%;
+        position: absolute;
+        left: -100%;
+        z-index: 10;
+        transition: left 0.3s ease;
+      }
+
+      .chat-list-pane.show {
+        left: 0;
+      }
+
+      .chat-messages-pane {
+        width: 100%;
+      }
+    }
+
+    /* Online Status */
+    .online-indicator {
+      position: relative;
+    }
+
+    .online-indicator::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      background: #10b981;
+      border: 2px solid white;
+      border-radius: 50%;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #f1f5f9;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      max-width: 80px;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
 
@@ -247,17 +649,28 @@
             + Tạo nhóm mới
           </button>
         </a>
-      </div>
+    </div>
 
-      <form th:action="@{/chat/search}" method="get">
-        <input type="text" name="keyword" placeholder="Tìm bạn bè..."
+    <!-- Search Section -->
+    <div class="search-section">
+      <form th:action="@{/chat/search}" method="get" class="search-form">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text"
+               name="keyword"
+               class="search-input"
+               placeholder="Tìm kiếm bạn bè..."
                th:value="${keyword}" />
-        <button type="submit">Tìm</button>
+        <button type="submit" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
       </form>
+    </div>
 
-      <ul class="friend-search-list" th:if="${friends != null}">
-        <li th:each="friend : ${friends}">
-          <a th:href="@{/chat/start/{userId}(userId=${friend.userId})}" class="friend-item">
+    <!-- Friend Search Results -->
+    <ul class="friend-search-list" th:if="${friends != null}">
+      <li th:each="friend : ${friends}">
+        <a th:href="@{/chat/start/{userId}(userId=${friend.userId})}" class="friend-item">
+          <div class="online-indicator">
             <img th:src="${friend.avatarUrl}" alt="Avatar" class="avatar-sm" />
             <span th:text="${friend.name}">Tên bạn bè</span>
           </a>
@@ -282,13 +695,11 @@
                 Tin nhắn gần đây...
               </div>
             </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
     <div class="chat-messages-pane">
       <div class="messages-list">
         <div th:each="msg : ${messages}"
@@ -313,7 +724,75 @@
         <input th:if="${currentConversation != null}" type="hidden" name="conversationId" th:value="${currentConversation.id}" />
         <button type="submit">Gửi</button>
       </form>
-    </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Auto-scroll to bottom of messages
+    const messagesList = document.querySelector('.messages-list');
+    if (messagesList) {
+      messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+    // Focus on message input
+    const messageInput = document.querySelector('input[name="message"]');
+    if (messageInput) {
+      messageInput.focus();
+    }
+
+    // Handle form submission
+    const messageForm = document.querySelector('.message-input');
+    if (messageForm) {
+      messageForm.addEventListener('submit', function(e) {
+        const input = this.querySelector('input[name="message"]');
+        if (!input.value.trim()) {
+          e.preventDefault();
+          return;
+        }
+
+        // Add loading state
+        const submitBtn = this.querySelector('.send-btn');
+        const originalContent = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        submitBtn.disabled = true;
+
+        // Reset after a delay (in case of page reload)
+        setTimeout(() => {
+          submitBtn.innerHTML = originalContent;
+          submitBtn.disabled = false;
+        }, 2000);
+      });
+    }
+
+    // Handle Enter key for sending messages
+    if (messageInput) {
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          messageForm.dispatchEvent(new Event('submit'));
+        }
+      });
+    }
+
+    // Mobile responsive - toggle sidebar
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.chat-list-pane');
+      sidebar.classList.toggle('show');
+    }
+
+    // Add mobile menu button if needed
+    if (window.innerWidth <= 640) {
+      const header = document.querySelector('.messages-header');
+      if (header) {
+        const menuBtn = document.createElement('button');
+        menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        menuBtn.style.cssText = 'background: none; border: none; font-size: 1.2rem; color: #667eea; cursor: pointer; margin-right: 15px;';
+        menuBtn.onclick = toggleSidebar;
+        header.insertBefore(menuBtn, header.firstChild);
+      }
+    }
+  });
+</script>
 </body>
 </html>
