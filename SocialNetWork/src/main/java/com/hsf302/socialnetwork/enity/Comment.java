@@ -19,7 +19,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String comment;
     private Long  parentCommentId;
     @CreationTimestamp

@@ -315,12 +315,16 @@
             <i class="fas fa-lock"></i>
         </div>
 
+
+
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+
         <button type="submit" class="login-btn" id="loginBtn">
             Sign In
         </button>
     </form>
 
-    <div class="error" th:if="${param.error}" th:text="${param.error}"></div>
+
 
     <div class="forgot-password">
         <a href="#" onclick="alert('Contact administrator to reset password')">Forgot your password?</a>

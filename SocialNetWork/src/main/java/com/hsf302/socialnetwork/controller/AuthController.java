@@ -2,6 +2,7 @@ package com.hsf302.socialnetwork.controller;
 
 
 import com.hsf302.socialnetwork.enity.Users;
+import com.hsf302.socialnetwork.enums.Role;
 import com.hsf302.socialnetwork.service.impl.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AuthController {
 
     @GetMapping("/")
     public String login() {
-        return "redirect:/login";
+        return "login";
     }
     @GetMapping("/login")
     public String loginPage() {
@@ -30,17 +31,27 @@ public class AuthController {
     @PostMapping("/doLogin")
     public String doLogin(@RequestParam String email, @RequestParam String password, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         Users account = userService.authenticate(email, password);
-        if(account == null) {
+        if(account == null || !account.isActive()) {
             redirectAttributes.addFlashAttribute("error", "Invalid email or password");
             return "redirect:/login";
         }
-        session.setAttribute("user", account);
 
+        if(!account.isActive()) {
+            redirectAttributes.addFlashAttribute("error", "Account is not active");
+            return "redirect:/login";
+        }
+        session.setAttribute("user", account);
+        if(account.getRole().equals(Role.USER)) {
+            return "redirect:/posts";
+        }
         return "redirect:/posts";
 
+    }
 
-
-
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
     
 

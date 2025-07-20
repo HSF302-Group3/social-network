@@ -13,4 +13,7 @@ public interface IsUserService {
     List<Users>  allUser(Users user,String search);
     List<Users> friendInvites(Users user,String search);
     void updateRelation(Users user,Long id , boolean isFriend);
+    Users findByUsername(String username);
+    Users findById(Long id);
+    void save(Users user);
 }
