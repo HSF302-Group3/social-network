@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Application</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,9 +14,42 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: float 25s infinite linear;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-60px, -60px) rotate(360deg); }
+    }
+
+    /* Header spacing */
+    .header-spacer {
+      padding: 20px;
+    }
+
+    .chat-wrapper {
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -25,20 +59,40 @@
     .chat-container {
       display: flex;
       width: 100%;
-      max-width: 1200px;
-      height: 700px;
-      border-radius: 20px;
+      max-width: 1400px;
+      height: 750px;
+      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-      background: white;
-      backdrop-filter: blur(10px);
+      box-shadow:
+              0 32px 64px rgba(0, 0, 0, 0.12),
+              0 0 0 1px rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      position: relative;
+    }
+
+    .chat-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
+      background-size: 200% 100%;
+      animation: gradientFlow 4s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     /* Left Sidebar - Chat List */
     .chat-list-pane {
-      width: 350px;
-      background: #f8fafc;
-      border-right: 1px solid #e2e8f0;
+      width: 380px;
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+      border-right: 1px solid rgba(226, 232, 240, 0.8);
       display: flex;
       flex-direction: column;
       position: relative;
@@ -47,7 +101,7 @@
     .chat-list-header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 20px;
+      padding: 25px;
       position: relative;
       overflow: hidden;
     }
@@ -59,29 +113,37 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="white" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+      background:
+              radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
     }
 
     .chat-list-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 15px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 18px;
       position: relative;
       z-index: 1;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .chat-list-title i {
+      font-size: 1.4rem;
+      opacity: 0.9;
     }
 
     .new-group-btn {
       width: 100%;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.2);
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.15);
       color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       font-weight: 600;
       font-size: 0.95rem;
       position: relative;
@@ -89,20 +151,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       text-decoration: none;
+      backdrop-filter: blur(10px);
     }
 
     .new-group-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .new-group-btn:active {
+      transform: translateY(0);
     }
 
     .search-section {
-      padding: 20px;
+      padding: 25px;
       background: white;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
     }
 
     .search-form {
@@ -111,101 +179,141 @@
 
     .search-input {
       width: 100%;
-      padding: 12px 16px 12px 45px;
+      padding: 16px 20px 16px 50px;
       border: 2px solid #e2e8f0;
-      border-radius: 25px;
+      border-radius: 20px;
       font-size: 0.95rem;
       background: #f8fafc;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
+      font-family: inherit;
     }
 
     .search-input:focus {
       border-color: #667eea;
       background: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
     }
 
     .search-icon {
       position: absolute;
-      left: 16px;
+      left: 18px;
       top: 50%;
       transform: translateY(-50%);
       color: #94a3b8;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .search-input:focus + .search-icon {
+      color: #667eea;
     }
 
     .search-btn {
       position: absolute;
-      right: 4px;
+      right: 6px;
       top: 50%;
       transform: translateY(-50%);
-      background: #667eea;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
+      border-radius: 16px;
+      padding: 10px 18px;
       cursor: pointer;
       font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .search-btn:hover {
-      background: #5a67d8;
+      background: linear-gradient(135deg, #5a67d8, #6b46c1);
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .friend-search-list {
       list-style: none;
-      padding: 0 20px;
+      padding: 0 25px;
       margin: 0;
-      max-height: 180px;
+      max-height: 200px;
       overflow-y: auto;
       background: white;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
     }
 
     .friend-search-list::-webkit-scrollbar {
-      width: 4px;
+      width: 6px;
     }
 
     .friend-search-list::-webkit-scrollbar-track {
       background: #f1f5f9;
+      border-radius: 3px;
     }
 
     .friend-search-list::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 2px;
+      background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+      border-radius: 3px;
     }
 
     .friend-item {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      border-radius: 12px;
+      padding: 14px 18px;
+      border-radius: 16px;
       color: #374151;
       text-decoration: none;
-      transition: all 0.2s ease;
-      margin-bottom: 4px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .friend-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .friend-item:hover::before {
+      left: 100%;
     }
 
     .friend-item:hover {
-      background: #f0f4ff;
-      transform: translateX(4px);
+      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+      transform: translateX(6px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
     }
 
     .avatar-sm {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 12px;
+      margin-right: 14px;
       border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .friend-item:hover .avatar-sm {
+      border-color: #667eea;
+      transform: scale(1.05);
     }
 
     .friend-name {
       font-weight: 500;
       font-size: 0.95rem;
+      color: #1f2937;
     }
 
     .conversation-list {
@@ -214,68 +322,83 @@
       padding: 0;
       overflow-y: auto;
       flex-grow: 1;
-      background: white;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
 
     .conversation-list::-webkit-scrollbar {
-      width: 4px;
+      width: 6px;
     }
 
     .conversation-list::-webkit-scrollbar-track {
       background: #f1f5f9;
+      border-radius: 3px;
     }
 
     .conversation-list::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 2px;
+      background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+      border-radius: 3px;
     }
 
     .conversation-list li {
       cursor: pointer;
       position: relative;
+      margin: 0 15px 8px 15px;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .conversation-item {
       display: flex;
       align-items: center;
-      padding: 16px 20px;
+      padding: 18px 20px;
       color: #374151;
       text-decoration: none;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
     }
 
     .conversation-item:hover {
-      background: #f8fafc;
+      background: rgba(248, 250, 252, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .conversation-list li.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
     }
 
     .conversation-list li.active .conversation-item {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: transparent;
       color: white;
     }
 
-    .conversation-list li.active .conversation-item::before {
+    .conversation-list li.active::before {
       content: '';
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
       width: 4px;
-      background: #667eea;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 0 2px 2px 0;
     }
 
     .conversation-avatar {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 15px;
-      border: 2px solid #e2e8f0;
+      margin-right: 16px;
+      border: 2px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.3s ease;
     }
 
     .conversation-list li.active .conversation-avatar {
-      border-color: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
     }
 
     .conversation-info {
@@ -285,27 +408,30 @@
 
     .conversation-name {
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       font-size: 1rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.01em;
     }
 
     .conversation-snippet {
       font-size: 0.875rem;
-      opacity: 0.7;
+      opacity: 0.75;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      line-height: 1.3;
+      line-height: 1.4;
+      font-weight: 400;
     }
 
     .conversation-time {
       font-size: 0.75rem;
       opacity: 0.6;
-      margin-left: 10px;
+      margin-left: 12px;
       flex-shrink: 0;
+      font-weight: 500;
     }
 
     /* Right Side - Messages */
@@ -313,40 +439,60 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      background: #ffffff;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       position: relative;
     }
 
     .messages-header {
-      background: white;
-      padding: 20px 25px;
-      border-bottom: 1px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 25px 30px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 18px;
+      position: relative;
+    }
+
+    .messages-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
     }
 
     .current-chat-avatar {
-      width: 45px;
-      height: 45px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .current-chat-avatar:hover {
+      border-color: #667eea;
+      transform: scale(1.05);
     }
 
     .current-chat-info h3 {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: #1f2937;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
     }
 
     .current-chat-status {
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       color: #10b981;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      font-weight: 500;
     }
 
     .status-dot {
@@ -354,38 +500,46 @@
       height: 8px;
       background: #10b981;
       border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
     }
 
     .messages-list {
       flex-grow: 1;
-      padding: 25px;
+      padding: 30px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+      gap: 18px;
+      background:
+              radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
     }
 
     .messages-list::-webkit-scrollbar {
-      width: 6px;
+      width: 8px;
     }
 
     .messages-list::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 3px;
+      background: rgba(241, 245, 249, 0.5);
+      border-radius: 4px;
     }
 
     .messages-list::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 3px;
+      background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+      border-radius: 4px;
     }
 
     .message-container {
       display: flex;
       align-items: flex-end;
-      gap: 12px;
+      gap: 14px;
       max-width: 75%;
-      animation: messageSlideIn 0.3s ease-out;
+      animation: messageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .message-container.sent {
@@ -396,21 +550,27 @@
     @keyframes messageSlideIn {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(15px) scale(0.95);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
 
     .message-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #e2e8f0;
+      border: 2px solid rgba(226, 232, 240, 0.8);
       flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .message-avatar:hover {
+      transform: scale(1.1);
+      border-color: #667eea;
     }
 
     .message-bubble {
@@ -418,71 +578,108 @@
     }
 
     .message-content {
-      background: #f1f5f9;
-      padding: 12px 16px;
-      border-radius: 20px 20px 20px 6px;
+      background: rgba(241, 245, 249, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 14px 18px;
+      border-radius: 22px 22px 22px 8px;
       font-size: 0.95rem;
-      line-height: 1.4;
+      line-height: 1.5;
       color: #1f2937;
       word-wrap: break-word;
       max-width: 100%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
 
     .message-container.sent .message-content {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      border-radius: 20px 20px 6px 20px;
+      border-radius: 22px 22px 8px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
     }
 
     .message-time {
       font-size: 0.75rem;
       color: #94a3b8;
-      margin-top: 6px;
+      margin-top: 8px;
       text-align: center;
       opacity: 0.8;
+      font-weight: 500;
     }
 
     .message-container.sent .message-time {
-      color: #cbd5e1;
+      color: rgba(203, 213, 225, 0.9);
     }
 
     /* Message Input */
     .message-input-container {
-      background: white;
-      border-top: 1px solid #e2e8f0;
-      padding: 20px 25px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(226, 232, 240, 0.6);
+      padding: 25px 30px;
+      position: relative;
+    }
+
+    .message-input-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
     }
 
     .message-input {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
       background: #f8fafc;
-      border-radius: 25px;
-      padding: 8px;
+      border-radius: 24px;
+      padding: 10px;
       border: 2px solid #e2e8f0;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message-input::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+      transition: left 0.5s ease;
     }
 
     .message-input:focus-within {
       border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
+      background: white;
+    }
+
+    .message-input:focus-within::before {
+      left: 100%;
     }
 
     .message-input input[type="text"] {
       flex-grow: 1;
-      padding: 12px 16px;
+      padding: 14px 18px;
       font-size: 0.95rem;
       border: none;
       background: transparent;
       outline: none;
       color: #374151;
+      font-family: inherit;
     }
 
     .message-input input[type="text"]::placeholder {
       color: #94a3b8;
+      font-weight: 400;
     }
 
     .send-btn {
@@ -491,18 +688,36 @@
       color: white;
       font-weight: 600;
       border-radius: 20px;
-      padding: 12px 20px;
+      padding: 14px 22px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .send-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .send-btn:hover::before {
+      left: 100%;
     }
 
     .send-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
     }
 
     .send-btn:active {
@@ -518,66 +733,35 @@
       height: 100%;
       color: #94a3b8;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
+      background:
+              radial-gradient(circle at 30% 30%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
     }
 
     .empty-chat i {
-      font-size: 4rem;
-      margin-bottom: 20px;
-      opacity: 0.5;
+      font-size: 4.5rem;
+      margin-bottom: 24px;
+      opacity: 0.4;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .empty-chat h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
+      font-size: 1.6rem;
+      margin-bottom: 12px;
       color: #64748b;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
     .empty-chat p {
       font-size: 1rem;
       opacity: 0.8;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-
-      .chat-container {
-        height: calc(100vh - 20px);
-        border-radius: 15px;
-      }
-
-      .chat-list-pane {
-        width: 280px;
-      }
-
-      .messages-list {
-        padding: 15px;
-      }
-
-      .message-input-container {
-        padding: 15px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .chat-list-pane {
-        width: 100%;
-        position: absolute;
-        left: -100%;
-        z-index: 10;
-        transition: left 0.3s ease;
-      }
-
-      .chat-list-pane.show {
-        left: 0;
-      }
-
-      .chat-messages-pane {
-        width: 100%;
-      }
+      max-width: 300px;
+      line-height: 1.5;
     }
 
     /* Online Status */
@@ -595,197 +779,247 @@
       background: #10b981;
       border: 2px solid white;
       border-radius: 50%;
+      animation: onlinePulse 2s infinite;
     }
 
-    /* Typing Indicator */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #f1f5f9;
-      border-radius: 20px;
-      margin-bottom: 10px;
-      max-width: 80px;
+    @keyframes onlinePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
     }
 
-    .typing-dots {
-      display: flex;
-      gap: 3px;
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-spacer {
+        padding: 15px;
+      }
+
+      .chat-wrapper {
+        padding: 15px;
+      }
+
+      .chat-container {
+        height: calc(100vh - 120px);
+        border-radius: 20px;
+      }
+
+      .chat-list-pane {
+        width: 320px;
+      }
+
+      .messages-list {
+        padding: 20px;
+      }
+
+      .message-input-container {
+        padding: 20px;
+      }
+
+      .search-section {
+        padding: 20px;
+      }
+
+      .chat-list-header {
+        padding: 20px;
+      }
     }
 
-    .typing-dot {
-      width: 6px;
-      height: 6px;
-      background: #94a3b8;
+    @media (max-width: 640px) {
+      .chat-list-pane {
+        width: 100%;
+        position: absolute;
+        left: -100%;
+        z-index: 10;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .chat-list-pane.show {
+        left: 0;
+      }
+
+      .chat-messages-pane {
+        width: 100%;
+      }
+
+      .chat-container {
+        height: calc(100vh - 100px);
+        border-radius: 16px;
+      }
+    }
+
+    /* Loading states */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
       border-radius: 50%;
-      animation: typingBounce 1.4s infinite ease-in-out;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: spin 1s linear infinite;
     }
 
-    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-    @keyframes typingBounce {
-      0%, 80%, 100% {
-        transform: scale(0.8);
-        opacity: 0.5;
-      }
-      40% {
-        transform: scale(1);
-        opacity: 1;
-      }
+    @keyframes spin {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }
     }
   </style>
 </head>
+
 <body>
-<div class="chat-container">
-  <!-- Left Sidebar - Chat List -->
-  <div class="chat-list-pane">
-    <!-- Header with New Group Button -->
-    <div class="chat-list-header">
-      <div class="chat-list-title">
-        <i class="fas fa-comments"></i>
-        Messages
-      </div>
-      <a th:href="@{/chat/new-group}" class="new-group-btn">
-        <i class="fas fa-plus"></i>
-        Tạo nhóm mới
-      </a>
-    </div>
+<div th:replace="fragments/HeaderUser :: HeaderUser"></div>
 
-    <!-- Search Section -->
-    <div class="search-section">
-      <form th:action="@{/chat/search}" method="get" class="search-form">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text"
-               name="keyword"
-               class="search-input"
-               placeholder="Tìm kiếm bạn bè..."
-               th:value="${keyword}" />
-        <button type="submit" class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </form>
-    </div>
+<div class="header-spacer"></div>
 
-    <!-- Friend Search Results -->
-    <ul class="friend-search-list" th:if="${friends != null}">
-      <li th:each="friend : ${friends}">
-        <a th:href="@{/chat/start/{userId}(userId=${friend.userId})}" class="friend-item">
-          <div class="online-indicator">
-            <img th:src="${friend.avatarUrl}" alt="Avatar" class="avatar-sm" />
-          </div>
-          <div class="friend-name" th:text="${friend.name}">Tên bạn bè</div>
-        </a>
-      </li>
-    </ul>
-
-    <!-- Conversations List -->
-    <ul class="conversation-list">
-      <li th:each="conv : ${conversations}"
-          th:classappend="${conv.id} == ${currentConversation?.id} ? 'active'">
-        <a th:href="@{/chat/{id}(id=${conv.id})}" class="conversation-item">
-          <div class="online-indicator">
-            <img th:src="@{/placeholder.svg?height=50&width=50&query=user+avatar}"
-                 alt="Avatar"
-                 class="conversation-avatar" />
-          </div>
-          <div class="conversation-info">
-            <div class="conversation-name"
-                 th:text="${conv.type == 'GROUP' ? conv.name : conv.getDisplayName(currentUser)}">
-              Tên Người Dùng
-            </div>
-            <div class="conversation-snippet"
-                 th:text="${#lists.isEmpty(conv.messages) ? 'Chưa có tin nhắn...' : conv.messages.get(conv.messages.size() - 1).message}">
-              Tin nhắn gần đây...
-            </div>
-          </div>
-          <div class="conversation-time"
-               th:if="${!#lists.isEmpty(conv.messages)}"
-               th:text="${#temporals.format(conv.messages.get(conv.messages.size() - 1).createddate, 'HH:mm')}">
-            00:00
-          </div>
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Right Side - Messages -->
-  <div class="chat-messages-pane">
-    <!-- Messages Header -->
-    <div class="messages-header" th:if="${currentConversation != null}">
-      <div class="online-indicator">
-        <img th:src="@{/placeholder.svg?height=45&width=45&query=user+avatar}"
-             alt="Avatar"
-             class="current-chat-avatar" />
-      </div>
-      <div class="current-chat-info">
-        <h3 th:text="${currentConversation.type == 'GROUP' ? currentConversation.name : currentConversation.getDisplayName(currentUser)}">
-          Tên cuộc trò chuyện
-        </h3>
-        <div class="current-chat-status">
-          <span class="status-dot"></span>
-          Đang hoạt động
+<div class="chat-wrapper">
+  <div class="chat-container">
+    <!-- Left Sidebar - Chat List -->
+    <div class="chat-list-pane">
+      <!-- Header with New Group Button -->
+      <div class="chat-list-header">
+        <div class="chat-list-title">
+          <i class="fas fa-comments"></i>
+          Messages
         </div>
+        <a th:href="@{/chat/new-group}" class="new-group-btn">
+          <i class="fas fa-plus"></i>
+          Tạo nhóm mới
+        </a>
       </div>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <form th:action="@{/chat/search}" method="get" class="search-form">
+          <input type="text"
+                 name="keyword"
+                 class="search-input"
+                 placeholder="Tìm kiếm bạn bè..."
+                 th:value="${keyword}" />
+          <i class="fas fa-search search-icon"></i>
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Friend Search Results -->
+      <ul class="friend-search-list" th:if="${friends != null}">
+        <li th:each="friend : ${friends}">
+          <a th:href="@{/chat/start/{userId}(userId=${friend.userId})}" class="friend-item">
+            <div class="online-indicator">
+              <img th:src="${friend.avatarUrl}" alt="Avatar" class="avatar-sm" />
+            </div>
+            <div class="friend-name" th:text="${friend.name}">Tên bạn bè</div>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Conversations List -->
+      <ul class="conversation-list">
+        <li th:each="conv : ${conversations}"
+            th:classappend="${conv.id} == ${currentConversation?.id} ? 'active'">
+          <a th:href="@{/chat/{id}(id=${conv.id})}" class="conversation-item">
+            <div class="online-indicator">
+              <img th:src="@{/placeholder.svg?height=50&width=50&query=user+avatar}"
+                   alt="Avatar"
+                   class="conversation-avatar" />
+            </div>
+            <div class="conversation-info">
+              <div class="conversation-name"
+                   th:text="${conv.type == 'GROUP' ? conv.name : conv.getDisplayName(currentUser)}">
+                Tên Người Dùng
+              </div>
+              <div class="conversation-snippet"
+                   th:text="${#lists.isEmpty(conv.messages) ? 'Chưa có tin nhắn...' : conv.messages.get(conv.messages.size() - 1).message}">
+                Tin nhắn gần đây...
+              </div>
+            </div>
+            <div class="conversation-time"
+                 th:if="${!#lists.isEmpty(conv.messages)}"
+                 th:text="${#temporals.format(conv.messages.get(conv.messages.size() - 1).createddate, 'HH:mm')}">
+              00:00
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
 
-    <!-- Messages List -->
-    <div class="messages-list" th:if="${currentConversation != null}">
-      <!-- Individual Messages -->
-      <div th:each="msg : ${messages}"
-           th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
-           class="message-container">
-        <!-- Avatar -->
+    <!-- Right Side - Messages -->
+    <div class="chat-messages-pane">
+      <!-- Messages Header -->
+      <div class="messages-header" th:if="${currentConversation != null}">
         <div class="online-indicator">
-          <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
+          <img th:src="@{/placeholder.svg?height=45&width=45&query=user+avatar}"
+               alt="Avatar"
+               class="current-chat-avatar" />
         </div>
-        <!-- Message Bubble -->
-        <div class="message-bubble">
-          <div class="message-content" th:text="${msg.message}">
-            Nội dung tin nhắn
-          </div>
-          <div class="message-time"
-               th:text="${#temporals.format(msg.createddate, 'HH:mm')}">
-            00:00
+        <div class="current-chat-info">
+          <h3 th:text="${currentConversation.type == 'GROUP' ? currentConversation.name : currentConversation.getDisplayName(currentUser)}">
+            Tên cuộc trò chuyện
+          </h3>
+          <div class="current-chat-status">
+            <span class="status-dot"></span>
+            Đang hoạt động
           </div>
         </div>
       </div>
 
-      <!-- Typing Indicator (Optional) -->
-      <!-- <div class="typing-indicator">
-          <div class="typing-dots">
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
+      <!-- Messages List -->
+      <div class="messages-list" th:if="${currentConversation != null}">
+        <!-- Individual Messages -->
+        <div th:each="msg : ${messages}"
+             th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
+             class="message-container">
+          <!-- Avatar -->
+          <div class="online-indicator">
+            <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
           </div>
-      </div> -->
-    </div>
+          <!-- Message Bubble -->
+          <div class="message-bubble">
+            <div class="message-content" th:text="${msg.message}">
+              Nội dung tin nhắn
+            </div>
+            <div class="message-time"
+                 th:text="${#temporals.format(msg.createddate, 'HH:mm')}">
+              00:00
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Empty State -->
-    <div class="empty-chat" th:if="${currentConversation == null}">
-      <i class="fas fa-comment-dots"></i>
-      <h3>Chọn một cuộc trò chuyện</h3>
-      <p>Chọn một cuộc trò chuyện từ danh sách bên trái để bắt đầu nhắn tin</p>
-    </div>
+      <!-- Empty State -->
+      <div class="empty-chat" th:if="${currentConversation == null}">
+        <i class="fas fa-comment-dots"></i>
+        <h3>Chọn một cuộc trò chuyện</h3>
+        <p>Chọn một cuộc trò chuyện từ danh sách bên trái để bắt đầu nhắn tin</p>
+      </div>
 
-    <!-- Message Input -->
-    <div class="message-input-container" th:if="${currentConversation != null}">
-      <form th:action="@{/chat/send}" method="post" class="message-input">
-        <input type="text"
-               name="message"
-               placeholder="Nhập tin nhắn..."
-               required
-               autocomplete="off" />
-        <input th:if="${currentConversation != null}"
-               type="hidden"
-               name="conversationId"
-               th:value="${currentConversation.id}" />
-        <button type="submit" class="send-btn">
-          <i class="fas fa-paper-plane"></i>
-          Gửi
-        </button>
-      </form>
+      <!-- Message Input -->
+      <div class="message-input-container" th:if="${currentConversation != null}">
+        <form th:action="@{/chat/send}" method="post" class="message-input">
+          <input type="text"
+                 name="message"
+                 placeholder="Nhập tin nhắn..."
+                 required
+                 autocomplete="off" />
+          <input th:if="${currentConversation != null}"
+                 type="hidden"
+                 name="conversationId"
+                 th:value="${currentConversation.id}" />
+          <button type="submit" class="send-btn">
+            <i class="fas fa-paper-plane"></i>
+            Gửi
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
