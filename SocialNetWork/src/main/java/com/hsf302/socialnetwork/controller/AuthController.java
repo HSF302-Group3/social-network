@@ -44,6 +44,9 @@ public class AuthController {
         if(account.getRole().equals(Role.USER)) {
             return "redirect:/posts";
         }
+        if(account.getRole().equals(Role.ADMIN)) {
+            return "redirect:/user/getAll";
+        }
         return "redirect:/posts";
 
     }

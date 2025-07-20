@@ -597,7 +597,9 @@
             <i class="fa fa-plus"></i> Create New Post
         </a>
     </div>
-
+    <div th:if="${posts.isEmpty()}">
+        Do not have Post
+    </div>
     <!-- Posts List -->
     <div th:each="p : ${posts}" class="post-container">
         <div class="post-header">

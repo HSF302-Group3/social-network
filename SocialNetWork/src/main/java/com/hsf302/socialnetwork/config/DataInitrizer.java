@@ -67,8 +67,6 @@ public class DataInitrizer implements CommandLineRunner {
         post.addImage(i6);
         users.addPostCreate(post);
 
-
-
         Users users2 = new Users();
         users2.setUsername("user2");
         users2.setEmail("user2@gmail.com");
@@ -244,7 +242,7 @@ public class DataInitrizer implements CommandLineRunner {
         Users users7 = new Users();
         users7.setUsername("user7");
         users7.setEmail("user7@gmail.com");
-        users7.setPassword("hsf302");
+        users7.setPassword("123");
         users7.setName("Tran Thi B");
         users7.setGender(Gender.F);
         users7.setPhone("0234567896");

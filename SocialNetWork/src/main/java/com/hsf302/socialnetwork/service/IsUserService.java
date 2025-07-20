@@ -16,4 +16,7 @@ public interface IsUserService {
     Users findByUsername(String username);
     Users findById(Long id);
     void save(Users user);
+    List<Users> getALlUsers(boolean action ,String search);
+    void activeUser(Long id);
+    void inactiveUser(Long id);
 }
