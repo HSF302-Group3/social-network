@@ -25,18 +25,15 @@ public class DataInitrizer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-
-
         Users users = new Users();
         users.setUsername("hsf302");
         users.setEmail("hsf302@gmail.com");
-        users.setPassword("hsf302");
+        users.setPassword("123");
         users.setName("HSF302");
         users.setGender(Gender.F);
-        users.setPhone("123456789");
+        users.setPhone("0234567899");
         users.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users.setRole(Role.ADMIN);
-
 
 
         Image i1 = new Image();
@@ -68,10 +65,10 @@ public class DataInitrizer implements CommandLineRunner {
         Users users2 = new Users();
         users2.setUsername("user2");
         users2.setEmail("user2@gmail.com");
-        users2.setPassword("hsf302");
-        users2.setName("user2");
+        users2.setPassword("123");
+        users2.setName("User2");
         users2.setGender(Gender.F);
-        users2.setPhone("123456789");
+        users2.setPhone("0234567890");
         users2.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users2.setRole(Role.USER);
 
@@ -112,27 +109,27 @@ public class DataInitrizer implements CommandLineRunner {
         users3.setUsername("user3");
         users3.setEmail("user3@gmail.com");
         users3.setPassword("hsf302");
-        users3.setName("user3");
+        users3.setName("User3");
         users3.setGender(Gender.F);
-        users3.setPhone("123456789");
+        users3.setPhone("0223456789");
         users3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users3.setRole(Role.USER);
         Users users4 = new Users();
         users4.setUsername("user4");
         users4.setEmail("user4@gmail.com");
-        users4.setPassword("hsf302");
-        users4.setName("user4");
+        users4.setPassword("123");
+        users4.setName("User4");
         users4.setGender(Gender.F);
-        users4.setPhone("123456789");
+        users4.setPhone("0123456789");
         users4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users4.setRole(Role.USER);
         Users users5 = new Users();
         users5.setUsername("user5");
         users5.setEmail("user5@gmail.com");
-        users5.setPassword("hsf302");
-        users5.setName("user5");
+        users5.setPassword("123");
+        users5.setName("User5");
         users5.setGender(Gender.F);
-        users5.setPhone("123456789");
+        users5.setPhone("0234567890");
         users5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users5.setRole(Role.USER);
 
