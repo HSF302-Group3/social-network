@@ -55,7 +55,6 @@
         .create-post-wrapper {
             display: flex;
             justify-content: center;
-            gap: 15px;
             margin-bottom: 30px;
             animation: slideDown 0.8s ease-out;
         }
@@ -68,72 +67,6 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-
-        /* Chat Button - New Addition */
-        .btn-chat {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-chat::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-            transform: translateX(-100%);
-            transition: transform 0.6s;
-        }
-
-        .btn-chat:hover::after {
-            transform: translateX(100%);
-        }
-
-        .btn-chat:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        /* Floating Chat Button for Mobile */
-        .floating-chat-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            text-decoration: none;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            z-index: 100;
-            transition: all 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-
-        .floating-chat-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3), 0 0 0 0 rgba(102, 126, 234, 0.7);
-            }
-            70% {
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3), 0 0 0 10px rgba(102, 126, 234, 0);
-            }
-            100% {
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3), 0 0 0 0 rgba(102, 126, 234, 0);
             }
         }
 
@@ -192,14 +125,8 @@
         .post-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             margin-bottom: 20px;
             position: relative;
-        }
-
-        .post-user-info {
-            display: flex;
-            align-items: center;
         }
 
         .post-avatar {
@@ -237,30 +164,6 @@
             font-size: 0.9em;
             color: #666;
             font-weight: 400;
-        }
-
-        /* Chat Button in Post Header */
-        .post-chat-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
-
-        .post-chat-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
         }
 
         /* Post Content */
@@ -654,31 +557,6 @@
             #nextBtn {
                 right: 20px;
             }
-
-            .create-post-wrapper {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .floating-chat-btn {
-                display: flex;
-            }
-
-            .post-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .post-chat-btn {
-                align-self: flex-end;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .floating-chat-btn {
-                display: none;
-            }
         }
 
         /* Loading Animation */
@@ -710,44 +588,29 @@
 <body>
 
 <!-- Header -->
-
 <div th:replace="fragments/HeaderUser :: HeaderUser"></div>
 
 <div class="main-container">
-    <!-- Create Post Button with Chat Button -->
+    <!-- Create Post Button -->
     <div class="create-post-wrapper">
         <a class="btn btn-create" th:href="@{/posts/create}">
             <i class="fa fa-plus"></i> Create New Post
         </a>
-        <a class="btn btn-chat" th:href="@{/chat}">
-            <i class="fas fa-comments"></i> Go to Chat
-        </a>
     </div>
-    <div th:if="${posts.isEmpty()}">
-        Do not have Post
-    </div>
+
     <!-- Posts List -->
     <div th:each="p : ${posts}" class="post-container">
         <div class="post-header">
-            <div class="post-user-info">
-                <div class="post-avatar">
-                    <img th:src="${p.usercreate.avatarUrl}" alt="avatar">
-                </div>
-                <div>
-                    <div class="post-user" th:text="${p.usercreate.name}">Username</div>
-                    <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Post Date</div>
-                </div>
+            <div class="post-avatar">
+                <img th:src="${p.usercreate.avatarUrl}" alt="avatar">
             </div>
-            <!-- Chat Button in Post Header -->
-            <div th:if="${user.userId != p.usercreate.userId}">
-                <a class="post-chat-btn" th:href="@{'/chat/start/' + ${p.usercreate.userId}}">
-                    <i class="fas fa-comment-dots"></i>
-                    Chat
-                </a>
+            <div>
+                <div class="post-user" th:text="${p.usercreate.name}">Username</div>
+                <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Post Date</div>
             </div>
         </div>
 
-        <div class="post-content"  th:text="${p.content}">Post Content</div>
+        <div class="post-content" th:text="${p.content}">Post Content</div>
 
         <div class="post-images" th:with="images=${p.imagePost}">
             <div th:each="img, stat : ${images}">
@@ -823,130 +686,33 @@
 
         <!-- Comment Form -->
         <div>
-
             <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
-                  class="comment-form" style="display: none;">
+                  class="comment-form" style="display: none;" enctype="multipart/form-data">
                 <input type="text" name="content" placeholder="Write a comment..." required>
+                <input type="file" name="image" id="Image" multiple>
                 <input type="submit" value="Post Comment">
-
-            <div class="post-user" th:text="${p.usercreate.name}">Tên người dùng</div>
-            <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Ngày đăng</div>
             </form>
         </div>
-    </div>
-
-    <div class="post-content" th:text="${p.content}">Nội dung bài đăng</div>
-
-    <div class="post-images" th:with="images=${p.imagePost}">
-        <div th:each="img, stat : ${images}">
-            <img th:if="${stat.index < 3}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 class="clickable-image"
-                 alt="ảnh"/>
-
-            <div th:if="${stat.index == 3 and images.size() > 4}"
-                 class="overlay-image clickable-image"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
-                <img th:src="${img.imageUrl}" alt="ảnh"/>
-            </div>
-
-            <img th:if="${stat.index == 3 and images.size() == 4}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 class="clickable-image"
-                 alt="ảnh"/>
-
-            <img th:if="${stat.index > 3}"
-                 th:src="${img.imageUrl}"
-                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                 style="display: none"
-                 class="clickable-image"
-                 alt="ảnh"/>
-        </div>
-    </div>
-
-    <div class="post-footer">
-        <span th:text="${p.users.size()} + ' likes'">0 likes</span> ·
-        <span th:text="${p.comments.size()} + ' comments'">0 comments</span>
-    </div>
-
-    <div class="action">
-        <div th:if="${user.userId == p.usercreate.userId}">
-            <div th:if="${p.active == true}">
-                <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}"><i class="fa fa-trash"></i> Delete</a>
-            </div>
-            <div th:if="${p.active == false}">
-                <a class="btn btn-active" th:href="@{'/posts/active/'+${p.id}}"><i class="fa fa-check-circle"></i> Active</a>
-            </div>
-            <div>
-                <a class="btn btn-edit" th:href="@{'/posts/edit/'+${p.id}}"><i class="fa fa-edit"></i> Edit</a>
-            </div>
-        </div>
-
-        <div th:if="${user.userId != p.usercreate.userId}">
-            <div th:if="${p.users.contains(user)}">
-                <a class="btn btn-unlike" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-down"></i> Unlike</a>
-            </div>
-            <div th:if="${!p.users.contains(user)}">
-                <a class="btn btn-like" th:href="@{'/posts/like/'+${p.id}}"><i class="fa fa-thumbs-up"></i> Like</a>
-            </div>
-            <div>
-                <button type="button" class="btn btn-comment" onclick="toggleCommentForm(this)">
-                    <i class="fa fa-comment"></i> Comment
-                </button>
-            </div>
-        </div>
-    </div>
-    <div>
-        <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
-              class="comment-form" style="display: none; margin-top: 10px;"  enctype="multipart/form-data">
-            <input type="text" name="content" placeholder="Viết bình luận..."
-                   style="width: 100%; padding: 6px; margin-bottom: 8px;">
-            <input type="submit" value="Gửi"
-                   style="display: inline-block; padding: 6px 12px; background: #007bff; color: white; border: none; cursor: pointer;">
-            <input type="file" name="images" id="Image" multiple>
-        </form>
-    </div>
-    <div th:if="${p.comments != null}">
-        <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" style="margin-bottom: 12px;">
-            <strong th:text="${c.users.name}">Tên người bình luận</strong>:
-            <span th:text="${c.comment}">Nội dung bình luận</span><br>
-            <div th:if="${c.imageComment != null}">
-                <div th:each="img : ${c.imageComment}">
-                    <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
-                </div>
-            </div>
-            <span th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
-
-
-            <button type="button" class="btn-reply" onclick="toggleReplyForm(this)" style="margin-top: 6px;">
-                Trả lời
-            </button>
-
-
-            <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none; margin-top: 8px;" enctype="multipart/form-data">
-                <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
-                <input type="file" name="images" id="images" multiple>
-                <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
-
-            </form>
-        </div>
-
 
         <!-- Comments Display -->
         <div th:if="${p.comments != null}">
             <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" class="comment-item">
                 <div class="comment-author" th:text="${c.users.name}">Comment Author</div>
                 <div class="comment-content" th:text="${c.comment}">Comment Content</div>
+                <div th:if="${c.imageComment != null}">
+                    <div th:each="img : ${c.imageComment}">
+                        <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                    </div>
+                </div>
                 <div class="comment-date" th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
 
                 <button type="button" class="btn-reply" onclick="toggleReplyForm(this)">
                     <i class="fas fa-reply"></i> Reply
                 </button>
 
-                <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;">
+                <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;" enctype="multipart/form-data">
                     <input type="text" name="replyContent" placeholder="Write a reply..." required>
+                    <input type="file" name="images" id="images" multiple>
                     <button type="submit"><i class="fas fa-paper-plane"></i> Send Reply</button>
                 </form>
 
@@ -954,30 +720,18 @@
                     <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}" class="comment-item">
                         <div class="comment-author" th:text="${r.users.name}">Reply Author</div>
                         <div class="comment-content" th:text="${r.comment}">Reply Content</div>
+                        <div th:if="${r.imageComment != null}">
+                            <div th:each="img : ${r.imageComment}">
+                                <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                            </div>
+                        </div>
                         <div class="comment-date" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
                     </div>
-
-            <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
-                <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
-                    <strong th:text="${r.users.name}">Tên người trả lời</strong>:
-                    <span th:text="${r.comment}">Nội dung trả lời</span><br>
-                    <div th:if="${r.imageComment != null}">
-                        <div th:each="img : ${r.imageComment}">
-                            <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
-                        </div>
-                    </div>
-                    <span th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Floating Chat Button for Mobile -->
-<a class="floating-chat-btn" th:href="@{/chat}" title="Go to Chat">
-    <i class="fas fa-comments"></i>
-</a>
 
 <!-- Image Modal -->
 <div id="lightboxModal" class="modal" onclick="closeModal()">
@@ -986,9 +740,7 @@
     <button id="prevBtn" onclick="prevImage(event)">&#10094;</button>
     <button id="nextBtn" onclick="nextImage(event)">&#10095;</button>
 </div>
-</div>
-</div>
-</body>
+
 <script>
     let currentImages = [];
     let currentIndex = 0;
@@ -1090,5 +842,5 @@
     });
 </script>
 
-
+</body>
 </html>
