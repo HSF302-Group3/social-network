@@ -21,7 +21,7 @@ public class DataInitrizer implements CommandLineRunner {
     @Autowired
     UserRepo userRepo;
     @Autowired
-    AddFriendRepo addFriend;
+    AddFriendRepo addFriendRepo;
 
     @Autowired
     ConversationRepository conversationRepo;
@@ -32,307 +32,241 @@ public class DataInitrizer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Users users = new Users();
-        users.setUsername("Tú");
-        users.setEmail("hsf302@gmail.com");
-        users.setPassword("123");
-        users.setName("Uông Thanh Tú");
-        users.setGender(Gender.F);
-        users.setPhone("0234567899");
-        users.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
-        users.setRole(Role.USER);
+        Users user1 = new Users();
+        user1.setUsername("Tu");
+        user1.setEmail("hsf302@gmail.com");
+        user1.setPassword("123");
+        user1.setName("Uong Thanh Tu");
+        user1.setGender(Gender.F);
+        user1.setPhone("0234567899");
+        user1.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user1.setRole(Role.USER);
 
+        Image img1 = new Image();
+        img1.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.x0kZwbyNYdWZWNCuIgSeBwHaE7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3");
 
-        Image i1 = new Image();
-        i1.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.x0kZwbyNYdWZWNCuIgSeBwHaE7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i2 = new Image();
-        i2.setImageUrl("https://static01.nyt.com/images/2022/12/18/arts/18box-avatar1/merlin_218275158_a7867bfd-31ee-4e89-a051-15f442c403c1-videoSixteenByNine3000.jpg");
-        Image i3 = new Image();
-        i3.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i4 = new Image();
-        i4.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i5 = new Image();
-        i5.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i6 = new Image();
-        i6.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
+        Image img2 = new Image();
+        img2.setImageUrl("https://static01.nyt.com/images/2022/12/18/arts/18box-avatar1/merlin_218275158_a7867bfd-31ee-4e89-a051-15f442c403c1-videoSixteenByNine3000.jpg");
 
-        Post post = new Post();
-        post.setContent("This is a post first");
+        Image img3 = new Image();
+        img3.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
 
-        post.addImage(i1);
-        post.addImage(i2);
-        post.addImage(i3);
-        post.addImage(i4);
-        post.addImage(i5);
-        post.addImage(i6);
-        users.addPostCreate(post);
+        Post post1 = new Post();
+        post1.setContent("This is the first post");
 
-        Users users2 = new Users();
-        users2.setUsername("Quyết");
-        users2.setEmail("user2@gmail.com");
-        users2.setPassword("123");
-        users2.setName("Dương Văn Quyết");
-        users2.setGender(Gender.F);
-        users2.setPhone("0234567891");
-        users2.setAvatarUrl("https://cdn.pixabay.com/photo/2025/05/16/07/22/arcades-9603171_1280.jpg");
-        users2.setRole(Role.USER);
+        post1.addImage(img1);
+        post1.addImage(img2);
+        post1.addImage(img3);
+        user1.addPostCreate(post1);
 
-
-        Image i12 = new Image();
-        i12.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.x0kZwbyNYdWZWNCuIgSeBwHaE7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i22 = new Image();
-        i22.setImageUrl("https://static01.nyt.com/images/2022/12/18/arts/18box-avatar1/merlin_218275158_a7867bfd-31ee-4e89-a051-15f442c403c1-videoSixteenByNine3000.jpg");
-        Image i33 = new Image();
-        i33.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i44 = new Image();
-        i44.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i55 = new Image();
-        i55.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
-        Image i66 = new Image();
-        i6.setImageUrl("https://tse3.mm.bing.net/th/id/OIP.JiiX3DGnPD6Jw0Eea7vAAgHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&o=7&rm=3");
+        Users user2 = new Users();
+        user2.setUsername("Quyet");
+        user2.setEmail("user2@gmail.com");
+        user2.setPassword("123");
+        user2.setName("Duong Van Quyet");
+        user2.setGender(Gender.F);
+        user2.setPhone("0234567891");
+        user2.setAvatarUrl("https://cdn.pixabay.com/photo/2025/05/16/07/22/arcades-9603171_1280.jpg");
+        user2.setRole(Role.USER);
 
         Post post2 = new Post();
-        post2.setContent("This is a post first");
+        post2.setContent("This is another first post");
 
-        post2.addImage(i12);
-        post2.addImage(i22);
-        post2.addImage(i33);
-        post2.addImage(i44);
-        post2.addImage(i55);
-        post2.addImage(i66);
-
+        post2.addImage(img1);
+        post2.addImage(img2);
+        post2.addImage(img3);
 
         Post post3 = new Post();
-        post3.setContent("This is a post first");
+        post3.setContent("Another post content");
 
-        users2.addPostCreate(post2);
-        users2.addPostCreate(post3);
+        user2.addPostCreate(post2);
+        user2.addPostCreate(post3);
 
+        Users user3 = new Users();
+        user3.setUsername("Hung");
+        user3.setEmail("user3@gmail.com");
+        user3.setPassword("123");
+        user3.setName("Hung Mien Tay");
+        user3.setGender(Gender.F);
+        user3.setPhone("0234567892");
+        user3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user3.setRole(Role.USER);
 
+        Users user4 = new Users();
+        user4.setUsername("Huy");
+        user4.setEmail("user4@gmail.com");
+        user4.setPassword("123");
+        user4.setName("Tran Nhat Huy");
+        user4.setGender(Gender.F);
+        user4.setPhone("0234567893");
+        user4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user4.setRole(Role.USER);
 
-        Users users3 = new Users();
-        users3.setUsername("Hưng");
-        users3.setEmail("user3@gmail.com");
-        users3.setPassword("123");
-        users3.setName("Hưng Miền Tây");
-        users3.setGender(Gender.F);
-        users3.setPhone("0234567892");
-        users3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
-        users3.setRole(Role.USER);
+        Users user5 = new Users();
+        user5.setUsername("Nha");
+        user5.setEmail("user5@gmail.com");
+        user5.setPassword("123");
+        user5.setName("Thanh Nha");
+        user5.setGender(Gender.F);
+        user5.setPhone("0234567894");
+        user5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user5.setRole(Role.USER);
 
-        Users users4 = new Users();
-        users4.setUsername("Huy");
-        users4.setEmail("user4@gmail.com");
-        users4.setPassword("123");
-        users4.setName("Trần Nhật Huy");
-        users4.setGender(Gender.F);
-        users4.setPhone("0234567893");
-        users4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
-        users4.setRole(Role.USER);
+        userRepo.saveAll(Arrays.asList(user1, user2, user3, user4, user5));
 
+        AddFriend friendship1 = new AddFriend();
+        friendship1.setSendInvite(user1);
+        friendship1.setReciveInvite(user2);
+        friendship1.setFriended(true);
+        addFriendRepo.save(friendship1);
 
-        Users users5 = new Users();
-        users5.setUsername("Nhã");
-        users5.setEmail("user5@gmail.com");
-        users5.setPassword("123");
-        users5.setName("Thanh Nhã");
-        users5.setGender(Gender.F);
-        users5.setPhone("0234567894");
-        users5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
-        users5.setRole(Role.USER);
+        // Private conversation between user1 and user2
+        Conversation privateConv1 = new Conversation();
+        privateConv1.setName(user2.getName());
+        privateConv1.setType("PRIVATE");
+        privateConv1.setActive(true);
+        privateConv1.setUsers(new HashSet<>(Arrays.asList(user1, user2)));
+        conversationRepo.save(privateConv1);
 
-        userRepo.save(users2);
-        userRepo.save(users);
-        AddFriend f = new AddFriend();
-        f.setSendInvite(users);
-        f.setReciveInvite(users2);
-        f.setFriended(true);
-        addFriend.save(f);
+        Message msg1 = new Message();
+        msg1.setConversation(privateConv1);
+        msg1.setUsers(user1);
+        msg1.setMessage("Hello, this is the first message!");
+        msg1.setActive(true);
+        msg1.setCreateddate(LocalDateTime.now().minusMinutes(15));
 
-        userRepo.save(users3);
-        userRepo.save(users4);
-        userRepo.save(users5);
-        userRepo.save(users2);
-        userRepo.save(users);
+        Message msg2 = new Message();
+        msg2.setConversation(privateConv1);
+        msg2.setUsers(user2);
+        msg2.setMessage("Hello, I have received your message.");
+        msg2.setActive(true);
+        msg2.setCreateddate(LocalDateTime.now().minusMinutes(10));
 
-        // Tạo conversation 1: private chat giữa users (hsf302) và users2
-        Conversation conv1 = new Conversation();
-        conv1.setName(users2.getName());
-        conv1.setType("PRIVATE");
-        conv1.setActive(true);
+        messageRepo.saveAll(Arrays.asList(msg1, msg2));
 
-        Set<Users> participants1 = new HashSet<>();
-        participants1.add(users);
-        participants1.add(users2);
-        conv1.setUsers(participants1);
+        // Group conversation
+        Conversation groupConv = new Conversation();
+        groupConv.setName("Close Friends Group");
+        groupConv.setType("GROUP");
+        groupConv.setActive(true);
+        groupConv.setUsers(new HashSet<>(Arrays.asList(user1, user3, user4, user5)));
+        conversationRepo.save(groupConv);
 
-        conversationRepo.save(conv1);
+        Message groupMsg1 = new Message();
+        groupMsg1.setConversation(groupConv);
+        groupMsg1.setUsers(user3);
+        groupMsg1.setMessage("Hello everyone, let’s start the chat!");
+        groupMsg1.setActive(true);
+        groupMsg1.setCreateddate(LocalDateTime.now().minusHours(1));
 
-        Message m1 = new Message();
-        m1.setConversation(conv1);
-        m1.setUsers(users);
-        m1.setMessage("Chào bạn, đây là tin nhắn đầu tiên!");
-        m1.setActive(true);
-        m1.setCreateddate(LocalDateTime.now().minusMinutes(15));
+        Message groupMsg2 = new Message();
+        groupMsg2.setConversation(groupConv);
+        groupMsg2.setUsers(user1);
+        groupMsg2.setMessage("Okay, I’m ready.");
+        groupMsg2.setActive(true);
+        groupMsg2.setCreateddate(LocalDateTime.now().minusMinutes(55));
 
-        Message m2 = new Message();
-        m2.setConversation(conv1);
-        m2.setUsers(users2);
-        m2.setMessage("Chào bạn, mình đã nhận được tin nhắn rồi.");
-        m2.setActive(true);
-        m2.setCreateddate(LocalDateTime.now().minusMinutes(10));
+        messageRepo.saveAll(Arrays.asList(groupMsg1, groupMsg2));
 
-        messageRepo.save(m1);
-        messageRepo.save(m2);
+        user1.setConversations(new HashSet<>(Arrays.asList(privateConv1, groupConv)));
+        user2.setConversations(new HashSet<>(Arrays.asList(privateConv1)));
+        user3.setConversations(new HashSet<>(Arrays.asList(groupConv)));
+        user4.setConversations(new HashSet<>(Arrays.asList(groupConv)));
+        user5.setConversations(new HashSet<>(Arrays.asList(groupConv)));
 
-        Conversation conv2 = new Conversation();
-        conv2.setName("Nhóm bạn bè thân");
-        conv2.setType("GROUP");
-        conv2.setActive(true);
+        userRepo.saveAll(Arrays.asList(user1, user2, user3, user4, user5));
 
-        Set<Users> participants2 = new HashSet<>();
-        participants2.add(users);
-        participants2.add(users3);
-        participants2.add(users4);
-        participants2.add(users5);
-        conv2.setUsers(participants2);
+        // More users
+        Users user6 = new Users();
+        user6.setUsername("user6");
+        user6.setEmail("user6@gmail.com");
+        user6.setPassword("123");
+        user6.setName("Nguyen Van A");
+        user6.setGender(Gender.M);
+        user6.setPhone("0234567895");
+        user6.setAvatarUrl("https://images.pexels.com/photos/32390716/pexels-photo-32390716.jpeg");
+        user6.setRole(Role.USER);
 
-        conversationRepo.save(conv2);
+        Users user7 = new Users();
+        user7.setUsername("user7");
+        user7.setEmail("user7@gmail.com");
+        user7.setPassword("123");
+        user7.setName("Tran Thi B");
+        user7.setGender(Gender.F);
+        user7.setPhone("0234567896");
+        user7.setAvatarUrl("https://images.pexels.com/photos/33045/lion-wild-africa-african.jpg");
+        user7.setRole(Role.USER);
 
-        Message mg1 = new Message();
-        mg1.setConversation(conv2);
-        mg1.setUsers(users3);
-        mg1.setMessage("Chào mọi người, nhóm chúng ta bắt đầu trò chuyện nhé!");
-        mg1.setActive(true);
-        mg1.setCreateddate(LocalDateTime.now().minusHours(1));
+        userRepo.saveAll(Arrays.asList(user6, user7));
 
-        Message mg2 = new Message();
-        mg2.setConversation(conv2);
-        mg2.setUsers(users);
-        mg2.setMessage("Ok nhé, mình đã sẵn sàng.");
-        mg2.setActive(true);
-        mg2.setCreateddate(LocalDateTime.now().minusMinutes(55));
+        AddFriend friendship2 = new AddFriend();
+        friendship2.setSendInvite(user1);
+        friendship2.setReciveInvite(user6);
+        friendship2.setFriended(true);
+        addFriendRepo.save(friendship2);
 
-        messageRepo.save(mg1);
-        messageRepo.save(mg2);
+        AddFriend friendship3 = new AddFriend();
+        friendship3.setSendInvite(user1);
+        friendship3.setReciveInvite(user7);
+        friendship3.setFriended(true);
+        addFriendRepo.save(friendship3);
 
-        // Cuối cùng lưu lại user để cập nhật mối quan hệ conversation
-        users.setConversations(new HashSet<>(Arrays.asList(conv1, conv2)));
-        userRepo.save(users);
+        // Conversations with user6 and user7
+        Conversation convWithUser6 = new Conversation();
+        convWithUser6.setName(user6.getName());
+        convWithUser6.setType("PRIVATE");
+        convWithUser6.setActive(true);
+        convWithUser6.setUsers(new HashSet<>(Arrays.asList(user1, user6)));
+        conversationRepo.save(convWithUser6);
 
-        users2.setConversations(new HashSet<>(Arrays.asList(conv1)));
-        userRepo.save(users2);
+        Message msg3 = new Message();
+        msg3.setConversation(convWithUser6);
+        msg3.setUsers(user6);
+        msg3.setMessage("Hello HSF302, nice to meet you!");
+        msg3.setActive(true);
+        msg3.setCreateddate(LocalDateTime.now().minusMinutes(30));
+        messageRepo.save(msg3);
 
-        users3.setConversations(new HashSet<>(Arrays.asList(conv2)));
-        userRepo.save(users3);
+        Conversation convWithUser7 = new Conversation();
+        convWithUser7.setName(user7.getName());
+        convWithUser7.setType("PRIVATE");
+        convWithUser7.setActive(true);
+        convWithUser7.setUsers(new HashSet<>(Arrays.asList(user1, user7)));
+        conversationRepo.save(convWithUser7);
 
-        users4.setConversations(new HashSet<>(Arrays.asList(conv2)));
-        userRepo.save(users4);
+        Message msg4 = new Message();
+        msg4.setConversation(convWithUser7);
+        msg4.setUsers(user7);
+        msg4.setMessage("Hi, I'm Tran Thi B. We are now friends!");
+        msg4.setActive(true);
+        msg4.setCreateddate(LocalDateTime.now().minusMinutes(20));
+        messageRepo.save(msg4);
 
-        users5.setConversations(new HashSet<>(Arrays.asList(conv2)));
-        userRepo.save(users5);
+        user1.setConversations(new HashSet<>(Arrays.asList(privateConv1, groupConv, convWithUser6, convWithUser7)));
+        user6.setConversations(new HashSet<>(Arrays.asList(convWithUser6)));
+        user7.setConversations(new HashSet<>(Arrays.asList(convWithUser7)));
 
-        Users users6 = new Users();
-        users6.setUsername("user6");
-        users6.setEmail("user6@gmail.com");
-        users6.setPassword("123");
-        users6.setName("Nguyen Van A");
-        users6.setGender(Gender.M);
-        users6.setPhone("0234567895");
-        users6.setAvatarUrl("https://images.pexels.com/photos/32390716/pexels-photo-32390716.jpeg");
-        users6.setRole(Role.USER);
+        userRepo.saveAll(Arrays.asList(user1, user6, user7));
 
-        Users users7 = new Users();
-        users7.setUsername("user7");
-        users7.setEmail("user7@gmail.com");
-        users7.setPassword("123");
-        users7.setName("Tran Thi B");
-        users7.setGender(Gender.F);
-        users7.setPhone("0234567896");
-        users7.setAvatarUrl("https://images.pexels.com/photos/33045/lion-wild-africa-african.jpg");
-        users7.setRole(Role.USER);
+        // Final user
+        Users user8 = new Users();
+        user8.setUsername("testuser");
+        user8.setEmail("testuser@gmail.com");
+        user8.setPassword("123");
+        user8.setName("Uong Van C");
+        user8.setGender(Gender.M);
+        user8.setPhone("0234567897");
+        user8.setAvatarUrl("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg");
+        user8.setRole(Role.ADMIN);
 
-        userRepo.save(users6);
-        userRepo.save(users7);
+        userRepo.save(user8);
 
-        AddFriend f2 = new AddFriend();
-        f2.setSendInvite(users);
-        f2.setReciveInvite(users6);
-        f2.setFriended(true);
-        addFriend.save(f2);
+        AddFriend friendship4 = new AddFriend();
+        friendship4.setSendInvite(user1);
+        friendship4.setReciveInvite(user8);
+        friendship4.setFriended(true);
+        addFriendRepo.save(friendship4);
 
-        AddFriend f3 = new AddFriend();
-        f3.setSendInvite(users);
-        f3.setReciveInvite(users7);
-        f3.setFriended(true);
-        addFriend.save(f3);
-
-        Conversation conv3 = new Conversation();
-        conv3.setName(users6.getName());
-        conv3.setType("PRIVATE");
-        conv3.setActive(true);
-
-        Set<Users> participants3 = new HashSet<>();
-        participants3.add(users);
-        participants3.add(users6);
-        conv3.setUsers(participants3);
-        conversationRepo.save(conv3);
-
-        Message m3 = new Message();
-        m3.setConversation(conv3);
-        m3.setUsers(users6);
-        m3.setMessage("Chào HSF302, rất vui được kết bạn với bạn!");
-        m3.setActive(true);
-        m3.setCreateddate(LocalDateTime.now().minusMinutes(30));
-        messageRepo.save(m3);
-
-        Conversation conv4 = new Conversation();
-        conv4.setName(users7.getName());
-        conv4.setType("PRIVATE");
-        conv4.setActive(true);
-
-        Set<Users> participants4 = new HashSet<>();
-        participants4.add(users);
-        participants4.add(users7);
-        conv4.setUsers(participants4);
-        conversationRepo.save(conv4);
-
-        Message m4 = new Message();
-        m4.setConversation(conv4);
-        m4.setUsers(users7);
-        m4.setMessage("Hi, mình là Trần Thị B. Chúng ta đã là bạn bè rồi nhé!");
-        m4.setActive(true);
-        m4.setCreateddate(LocalDateTime.now().minusMinutes(20));
-        messageRepo.save(m4);
-
-        users.setConversations(new HashSet<>(Arrays.asList(conv1, conv2, conv3, conv4)));
-        userRepo.save(users);
-
-        users6.setConversations(new HashSet<>(Arrays.asList(conv3)));
-        userRepo.save(users6);
-
-        users7.setConversations(new HashSet<>(Arrays.asList(conv4)));
-        userRepo.save(users7);
-
-        // Thêm vào cuối method run(), sau khi save users7
-        Users users8 = new Users();
-        users8.setUsername("testuser");
-        users8.setEmail("testuser@gmail.com");
-        users8.setPassword("123");
-        users8.setName("Uong Van C");
-        users8.setGender(Gender.M);
-        users8.setPhone("0234567897");
-        users8.setAvatarUrl("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg");
-        users8.setRole(Role.USER);
-
-        userRepo.save(users8);
-
-        AddFriend f4 = new AddFriend();
-        f4.setSendInvite(users);
-        f4.setReciveInvite(users8);
-        f4.setFriended(true);
-        addFriend.save(f4);
-
-        userRepo.save(users8);
+        userRepo.save(user8);
     }
 }

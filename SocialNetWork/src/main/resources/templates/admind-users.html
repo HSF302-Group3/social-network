@@ -119,10 +119,18 @@
             font-size: 16px;
             color: #888;
         }
+        .but{
+            padding: 10px 25px;
+            background-color: #1abc9c;
+             color: white;
+            border-radius:10px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+
     <div class="user-header">
         <div class="user-info">
             <a th:href="@{/user/update}" class="avatar">
@@ -130,6 +138,7 @@
             </a>
             <div class="user-name" th:text="${session.user.getName()}">User Name</div>
         </div>
+        <a class="but" th:href="@{/logout}">Logout</a>
     </div>
 
     <h1 class="title">Manage Users</h1>

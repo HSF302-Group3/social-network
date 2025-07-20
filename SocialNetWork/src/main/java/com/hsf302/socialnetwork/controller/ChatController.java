@@ -64,6 +64,19 @@ public class ChatController {
         Conversation currentConversation = conversationService.findById(conversationId);
         List<Message> messages = messageService.findByConversationId(conversationId);
 
+
+        if(currentConversation != null && currentConversation.getType().equalsIgnoreCase("Private")) {
+
+            currentConversation.getUsers().forEach(user -> {
+                if(!user.getUserId().equals(currentUser.getUserId())) {
+                    model.addAttribute("frim", user.getAvatarUrl());
+                }
+
+            });
+
+        }else {
+            model.addAttribute("frim", "https://cdn-icons-png.flaticon.com/512/6387/6387947.png");
+        }
         model.addAttribute("conversations", conversations);
         model.addAttribute("currentConversation", currentConversation);
         model.addAttribute("messages", messages);

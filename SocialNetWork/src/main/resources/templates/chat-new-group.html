@@ -17,9 +17,19 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            padding-top: 100px; /* Add space for fixed header */
+        }
+
+        /* Header spacing adjustment */
+        .header-spacer {
+            height: 80px; /* Space for the header */
+        }
+
+        .chat-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: calc(100vh - 160px); /* Adjust for header and padding */
         }
 
         .new-group-form {
@@ -323,6 +333,7 @@
         @media (max-width: 768px) {
             body {
                 padding: 15px;
+                padding-top: 90px;
             }
 
             .new-group-form {
@@ -343,6 +354,10 @@
 
             .members-list {
                 max-height: 240px;
+            }
+
+            .chat-wrapper {
+                min-height: calc(100vh - 120px);
             }
         }
 
@@ -379,101 +394,116 @@
                 transform: translateY(0);
             }
         }
+
+        /* Header integration styles */
+        .header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
-<div>
+<!-- Header Integration -->
+<div class="header-container">
     <div th:replace="fragments/HeaderUser :: HeaderUser"></div>
-
 </div>
 
-<div class="new-group-form">
-    <div class="form-header">
-        <h2>
-            <i class="fas fa-users"></i>
-            Tạo nhóm chat mới
-        </h2>
-        <p>Chọn bạn bè để tạo nhóm chat</p>
-    </div>
+<div class="header-spacer"></div>
 
-    <div class="form-body">
-        <form th:action="@{/chat/create-group}" method="post" id="createGroupForm">
-            <!-- Group Name Input -->
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-tag"></i>
-                    Tên nhóm
-                </label>
-                <input type="text"
-                       name="name"
-                       class="form-input"
-                       placeholder="Nhập tên nhóm chat..."
-                       required
-                       maxlength="50"/>
-            </div>
+<div class="chat-wrapper">
+    <div class="new-group-form">
+        <div class="form-header">
+            <h2>
+                <i class="fas fa-users"></i>
+                Tạo nhóm chat mới
+            </h2>
+            <p>Chọn bạn bè để tạo nhóm chat</p>
+        </div>
 
-            <!-- Members Selection -->
-            <div class="form-group members-section">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                    <label class="form-label" style="margin-bottom: 0;">
-                        <i class="fas fa-user-friends"></i>
-                        Chọn thành viên
+        <div class="form-body">
+            <form th:action="@{/chat/create-group}" method="post" id="createGroupForm">
+                <!-- Group Name Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tag"></i>
+                        Tên nhóm
                     </label>
-                    <span class="selected-count" id="selectedCount">0 đã chọn</span>
-                </div>
-
-                <!-- Search Box -->
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
                     <input type="text"
-                           class="search-input"
-                           id="searchMembers"
-                           placeholder="Tìm kiếm bạn bè..."/>
+                           name="name"
+                           class="form-input"
+                           placeholder="Nhập tên nhóm chat..."
+                           required
+                           maxlength="50"/>
                 </div>
 
-                <!-- Members List -->
-                <div class="members-list" id="membersList">
-                    <div th:if="${friends != null and !friends.empty}">
-                        <div th:each="f, iterStat : ${friends}"
-                             class="member-item"
-                             th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's'">
-                            <input type="checkbox"
-                                   name="members"
-                                   th:value="${f.userId}"
-                                   th:id="'member-' + ${f.userId}"
-                                   class="member-checkbox"/>
-                            <div class="member-avatar" th:text="${#strings.substring(f.name, 0, 1).toUpperCase()}">A</div>
-                            <div class="member-info">
-                                <div class="member-name" th:text="${f.name}">Tên bạn</div>
-                                <div class="member-status">Đang hoạt động</div>
+                <!-- Members Selection -->
+                <div class="form-group members-section">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                        <label class="form-label" style="margin-bottom: 0;">
+                            <i class="fas fa-user-friends"></i>
+                            Chọn thành viên
+                        </label>
+                        <span class="selected-count" id="selectedCount">0 đã chọn</span>
+                    </div>
+
+                    <!-- Search Box -->
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text"
+                               class="search-input"
+                               id="searchMembers"
+                               placeholder="Tìm kiếm bạn bè..."/>
+                    </div>
+
+                    <!-- Members List -->
+                    <div class="members-list" id="membersList">
+                        <div th:if="${friends != null and !friends.empty}">
+                            <div th:each="f, iterStat : ${friends}"
+                                 class="member-item"
+                                 th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's'">
+                                <input type="checkbox"
+                                       name="members"
+                                       th:value="${f.userId}"
+                                       th:id="'member-' + ${f.userId}"
+                                       class="member-checkbox"/>
+                                <div class="member-avatar" th:text="${#strings.substring(f.name, 0, 1).toUpperCase()}">A</div>
+                                <div class="member-info">
+                                    <div class="member-name" th:text="${f.name}">Tên bạn</div>
+                                    <div class="member-status">Đang hoạt động</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Empty State -->
-                    <div th:if="${friends == null or friends.empty}" class="empty-state">
-                        <i class="fas fa-user-slash"></i>
-                        <p>Không có bạn bè nào</p>
-                        <small>Hãy kết bạn để tạo nhóm chat</small>
-                    </div>
+                        <!-- Empty State -->
+                        <div th:if="${friends == null or friends.empty}" class="empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            <p>Không có bạn bè nào</p>
+                            <small>Hãy kết bạn để tạo nhóm chat</small>
+                        </div>
 
-                    <!-- No Search Results -->
-                    <div id="noResults" class="empty-state" style="display: none;">
-                        <i class="fas fa-search"></i>
-                        <p>Không tìm thấy kết quả</p>
-                        <small>Thử tìm kiếm với từ khóa khác</small>
+                        <!-- No Search Results -->
+                        <div id="noResults" class="empty-state" style="display: none;">
+                            <i class="fas fa-search"></i>
+                            <p>Không tìm thấy kết quả</p>
+                            <small>Thử tìm kiếm với từ khóa khác</small>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="form-group">
-                <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                    <i class="fas fa-plus-circle"></i>
-                    Tạo nhóm chat
-                </button>
-            </div>
-        </form>
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        <i class="fas fa-plus-circle"></i>
+                        Tạo nhóm chat
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -57,6 +57,13 @@
             height: 100%;
             object-fit: cover;
         }
+        .but{
+            padding: 10px 25px;
+            background-color: #1abc9c;
+            color: white;
+            border-radius:10px;
+            text-decoration: none;
+        }
     </style>
 
     <div class="navbar">
@@ -81,7 +88,7 @@
                 </div>
             </a>
 
-            <a th:href="@{/logout}">Logout</a>
+            <a class="but" th:href="@{/logout}">Logout</a>
         </div>
     </div>
 </div>

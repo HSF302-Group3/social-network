@@ -747,7 +747,7 @@
             </div>
         </div>
 
-        <div class="post-content" th:text="${p.content}">Post Content</div>
+        <div class="post-content"  th:text="${p.content}">Post Content</div>
 
         <div class="post-images" th:with="images=${p.imagePost}">
             <div th:each="img, stat : ${images}">
@@ -823,14 +823,15 @@
 
         <!-- Comment Form -->
         <div>
-<<<<<<< HEAD
+
             <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
                   class="comment-form" style="display: none;">
                 <input type="text" name="content" placeholder="Write a comment..." required>
                 <input type="submit" value="Post Comment">
-=======
+
             <div class="post-user" th:text="${p.usercreate.name}">Tên người dùng</div>
             <div class="post-date" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy')}">Ngày đăng</div>
+            </form>
         </div>
     </div>
 
@@ -928,11 +929,11 @@
                 <input type="text" name="replyContent" placeholder="Viết phản hồi..." style="width: 100%; padding: 6px; margin-bottom: 4px;">
                 <input type="file" name="images" id="images" multiple>
                 <button type="submit" style="padding: 4px 10px; background-color: #28a745; color: white; border: none;">Gửi phản hồi</button>
->>>>>>> cmt
+
             </form>
         </div>
 
-<<<<<<< HEAD
+
         <!-- Comments Display -->
         <div th:if="${p.comments != null}">
             <div th:each="c : ${p.comments}" th:if="${c.parentCommentId == null}" class="comment-item">
@@ -955,7 +956,7 @@
                         <div class="comment-content" th:text="${r.comment}">Reply Content</div>
                         <div class="comment-date" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
                     </div>
-=======
+
             <div class="reply-list" style="margin-left: 20px; margin-top: 8px;">
                 <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}">
                     <strong th:text="${r.users.name}">Tên người trả lời</strong>:
@@ -966,7 +967,7 @@
                         </div>
                     </div>
                     <span th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
->>>>>>> cmt
+
                 </div>
             </div>
         </div>
@@ -985,7 +986,9 @@
     <button id="prevBtn" onclick="prevImage(event)">&#10094;</button>
     <button id="nextBtn" onclick="nextImage(event)">&#10095;</button>
 </div>
-
+</div>
+</div>
+</body>
 <script>
     let currentImages = [];
     let currentIndex = 0;
@@ -1087,5 +1090,5 @@
     });
 </script>
 
-</body>
+
 </html>
