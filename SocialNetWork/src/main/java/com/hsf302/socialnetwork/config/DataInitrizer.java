@@ -36,7 +36,7 @@ public class DataInitrizer implements CommandLineRunner {
         users.setUsername("hsf302");
         users.setEmail("hsf302@gmail.com");
         users.setPassword("123");
-        users.setName("HSF302");
+        users.setName("Hsf302");
         users.setGender(Gender.F);
         users.setPhone("0234567899");
         users.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
@@ -73,9 +73,9 @@ public class DataInitrizer implements CommandLineRunner {
         users2.setUsername("user2");
         users2.setEmail("user2@gmail.com");
         users2.setPassword("hsf302");
-        users2.setName("Nguyễn Anh Quốc");
+        users2.setName("Hsf302 User");
         users2.setGender(Gender.F);
-        users2.setPhone("123456789");
+        users2.setPhone("0234567891");
         users2.setAvatarUrl("https://cdn.pixabay.com/photo/2025/05/16/07/22/arcades-9603171_1280.jpg");
         users2.setRole(Role.USER);
 
@@ -118,25 +118,25 @@ public class DataInitrizer implements CommandLineRunner {
         users3.setPassword("hsf302");
         users3.setName("User3");
         users3.setGender(Gender.F);
-        users3.setPhone("0223456789");
+        users3.setPhone("0234567892");
         users3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users3.setRole(Role.USER);
         Users users4 = new Users();
-        users4.setUsername("user4");
+        users4.setUsername("User4");
         users4.setEmail("user4@gmail.com");
         users4.setPassword("123");
         users4.setName("User4");
         users4.setGender(Gender.F);
-        users4.setPhone("0123456789");
+        users4.setPhone("0234567893");
         users4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users4.setRole(Role.USER);
         Users users5 = new Users();
-        users5.setUsername("user5");
+        users5.setUsername("User5");
         users5.setEmail("user5@gmail.com");
         users5.setPassword("123");
         users5.setName("User5");
         users5.setGender(Gender.F);
-        users5.setPhone("0234567890");
+        users5.setPhone("0234567894");
         users5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users5.setRole(Role.USER);
 
@@ -235,9 +235,9 @@ public class DataInitrizer implements CommandLineRunner {
         users6.setUsername("user6");
         users6.setEmail("user6@gmail.com");
         users6.setPassword("hsf302");
-        users6.setName("Nguyễn Văn A");
+        users6.setName("Nguyen Van A");
         users6.setGender(Gender.M);
-        users6.setPhone("987654321");
+        users6.setPhone("0234567895");
         users6.setAvatarUrl("https://images.pexels.com/photos/32390716/pexels-photo-32390716.jpeg");
         users6.setRole(Role.USER);
 
@@ -245,9 +245,9 @@ public class DataInitrizer implements CommandLineRunner {
         users7.setUsername("user7");
         users7.setEmail("user7@gmail.com");
         users7.setPassword("hsf302");
-        users7.setName("Trần Thị B");
+        users7.setName("Tran Thi B");
         users7.setGender(Gender.F);
-        users7.setPhone("555666777");
+        users7.setPhone("0234567896");
         users7.setAvatarUrl("https://images.pexels.com/photos/33045/lion-wild-africa-african.jpg");
         users7.setRole(Role.USER);
 
@@ -318,9 +318,9 @@ public class DataInitrizer implements CommandLineRunner {
         users8.setUsername("testuser");
         users8.setEmail("testuser@gmail.com");
         users8.setPassword("hsf302");
-        users8.setName("Uong Uông");
+        users8.setName("Uong Van C");
         users8.setGender(Gender.M);
-        users8.setPhone("111222333");
+        users8.setPhone("0234567897");
         users8.setAvatarUrl("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg");
         users8.setRole(Role.USER);
 
