@@ -33,10 +33,10 @@ public class DataInitrizer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Users users = new Users();
-        users.setUsername("hsf302");
+        users.setUsername("Tú");
         users.setEmail("hsf302@gmail.com");
         users.setPassword("123");
-        users.setName("Hsf302");
+        users.setName("Uông Thanh Tú");
         users.setGender(Gender.F);
         users.setPhone("0234567899");
         users.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
@@ -70,10 +70,10 @@ public class DataInitrizer implements CommandLineRunner {
 
 
         Users users2 = new Users();
-        users2.setUsername("user2");
+        users2.setUsername("Quyết");
         users2.setEmail("user2@gmail.com");
-        users2.setPassword("hsf302");
-        users2.setName("Hsf302 User");
+        users2.setPassword("123");
+        users2.setName("Dương Văn Quyết");
         users2.setGender(Gender.F);
         users2.setPhone("0234567891");
         users2.setAvatarUrl("https://cdn.pixabay.com/photo/2025/05/16/07/22/arcades-9603171_1280.jpg");
@@ -113,28 +113,31 @@ public class DataInitrizer implements CommandLineRunner {
 
 
         Users users3 = new Users();
-        users3.setUsername("user3");
+        users3.setUsername("Hưng");
         users3.setEmail("user3@gmail.com");
-        users3.setPassword("hsf302");
-        users3.setName("User3");
+        users3.setPassword("123");
+        users3.setName("Hưng Miền Tây");
         users3.setGender(Gender.F);
         users3.setPhone("0234567892");
         users3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users3.setRole(Role.USER);
+
         Users users4 = new Users();
-        users4.setUsername("User4");
+        users4.setUsername("Huy");
         users4.setEmail("user4@gmail.com");
         users4.setPassword("123");
-        users4.setName("User4");
+        users4.setName("Trần Nhật Huy");
         users4.setGender(Gender.F);
         users4.setPhone("0234567893");
         users4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
         users4.setRole(Role.USER);
+
+
         Users users5 = new Users();
-        users5.setUsername("User5");
+        users5.setUsername("Nhã");
         users5.setEmail("user5@gmail.com");
         users5.setPassword("123");
-        users5.setName("User5");
+        users5.setName("Thanh Nhã");
         users5.setGender(Gender.F);
         users5.setPhone("0234567894");
         users5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
@@ -234,7 +237,7 @@ public class DataInitrizer implements CommandLineRunner {
         Users users6 = new Users();
         users6.setUsername("user6");
         users6.setEmail("user6@gmail.com");
-        users6.setPassword("hsf302");
+        users6.setPassword("123");
         users6.setName("Nguyen Van A");
         users6.setGender(Gender.M);
         users6.setPhone("0234567895");
@@ -244,7 +247,7 @@ public class DataInitrizer implements CommandLineRunner {
         Users users7 = new Users();
         users7.setUsername("user7");
         users7.setEmail("user7@gmail.com");
-        users7.setPassword("hsf302");
+        users7.setPassword("123");
         users7.setName("Tran Thi B");
         users7.setGender(Gender.F);
         users7.setPhone("0234567896");
@@ -317,7 +320,7 @@ public class DataInitrizer implements CommandLineRunner {
         Users users8 = new Users();
         users8.setUsername("testuser");
         users8.setEmail("testuser@gmail.com");
-        users8.setPassword("hsf302");
+        users8.setPassword("123");
         users8.setName("Uong Van C");
         users8.setGender(Gender.M);
         users8.setPhone("0234567897");
