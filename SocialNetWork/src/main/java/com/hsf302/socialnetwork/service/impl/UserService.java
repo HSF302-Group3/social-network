@@ -87,4 +87,24 @@ public class UserService implements IsUserService {
 
 
     }
+
+    @Override
+    public Users findByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
+
+    @Override
+    public Users findById(Long id) {
+        return userRepo.findById(id)
+                .map(user -> {
+                    user.getConversations().size();
+                    return user;
+                })
+                .orElse(null);
+    }
+
+    @Override
+    public void save(Users user) {
+        userRepo.save(user);
+    }
 }
