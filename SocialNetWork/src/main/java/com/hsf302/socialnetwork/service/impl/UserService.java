@@ -91,16 +91,7 @@ public class UserService implements IsUserService {
 
 
     public Users authenticate(String email, String password) {
-        Users account = authRepo.findByEmail(email);
-        if (account == null) {
-            throw new RuntimeException("Email not found");
-        }
-        if(!password.equals(account.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-        if (account.isActive() == false) {
-            throw new RuntimeException("Account is locked");
-        }
+        Users account = authRepo.findByEmailAndPassword(email,password);
         return account;
     }
 
@@ -108,7 +99,9 @@ public class UserService implements IsUserService {
     public  void saveAccount(Users user) {
         authRepo.save(user);
     }
-
+   public  Users findById(Long id) {
+        return userRepo.findById(id).get();
+   }
 
 
 
