@@ -4,6 +4,7 @@ import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enity.Users;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -66,4 +67,5 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     @EntityGraph(attributePaths = {"conversations", "conversations.users", "conversations.messages"})
     @Query("SELECT u FROM Users u WHERE u.userId = :userId")
     Optional<Users> findByIdWithConversations(@Param("userId") Long userId);
+
 }

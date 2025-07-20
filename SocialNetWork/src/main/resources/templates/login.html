@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Social Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
+        }
+
+        .login-container {
+            position: relative;
+            width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow:
+                    0 25px 50px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo i {
+            font-size: 35px;
+            color: white;
+        }
+
+        .login-container h2 {
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 18px 18px 18px 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            background: #f8f9fa;
+            font-size: 16px;
+            font-weight: 400;
+            color: #333;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group input:focus + i {
+            color: #667eea;
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+            font-weight: 300;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #fee;
+            color: #c53030;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #c53030;
+            font-size: 14px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .forgot-password {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .divider {
+            margin: 30px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                margin: 20px;
+                padding: 40px 30px;
+            }
+
+            .login-container h2 {
+                font-size: 24px;
+            }
+
+            .input-group input {
+                padding: 16px 16px 16px 45px;
+                font-size: 15px;
+            }
+
+            .login-btn {
+                padding: 16px;
+                font-size: 15px;
+            }
+        }
+
+        /* Loading animation for button */
+        .login-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .login-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">
+        <i class="fas fa-users"></i>
+    </div>
+
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in to your Social Network account</p>
+
+    <form th:action="@{/doLogin}" method="post" id="loginForm">
+        <div class="input-group">
+            <input type="text" name="email" placeholder="Enter your email" required />
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <div class="input-group">
+            <input type="password" name="password" placeholder="Enter your password" required />
+            <i class="fas fa-lock"></i>
+        </div>
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+        <button type="submit" class="login-btn" id="loginBtn">
+            Sign In
+        </button>
+    </form>
+
+
+
+    <div class="forgot-password">
+        <a href="#" onclick="alert('Contact administrator to reset password')">Forgot your password?</a>
+    </div>
+
+    <div class="divider">
+        <span>Secure Login</span>
+    </div>
+</div>
+
+<script>
+    // Add loading animation on form submit
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('loginBtn');
+        btn.classList.add('loading');
+        btn.innerHTML = 'Signing In...';
+    });
+
+    // Add focus animations
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+</script>
+</body>
+</html>

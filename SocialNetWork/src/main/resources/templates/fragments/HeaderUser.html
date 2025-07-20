@@ -3,24 +3,28 @@
     <style>
         .navbar {
             display: flex;
-            justify-content: center; /* 👈 Canh giữa toàn bộ navbar */
+            justify-content: space-between;
             align-items: center;
             background-color: #ffffff;
             padding: 15px 30px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            flex-wrap: wrap;
-            gap: 30px; /* 👈 Khoảng cách giữa các mục */
         }
 
-        .nav-links {
+        .navbar-left,
+        .navbar-center,
+        .navbar-right {
             display: flex;
+            align-items: center;
+        }
+
+        .navbar-center {
             gap: 20px;
             justify-content: center;
-            align-items: center;
-            text-align: center;
+            flex: 1;
         }
 
-        .nav-links a {
+        .navbar-center a,
+        .navbar-right a {
             text-decoration: none;
             color: #333;
             font-weight: bold;
@@ -29,9 +33,14 @@
             transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        .nav-links a:hover {
+        .navbar-center a:hover,
+        .navbar-right a:hover {
             background-color: #3498db;
             color: white;
+        }
+
+        .logo img {
+            height: 50px;
         }
 
         .post-avatar {
@@ -40,6 +49,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid #3498db;
+            margin-left: 10px;
         }
 
         .post-avatar img {
@@ -47,29 +57,32 @@
             height: 100%;
             object-fit: cover;
         }
-
-        .user-link {
-            display: flex;
-            align-items: center;
-        }
     </style>
 
     <div class="navbar">
-        <!-- Link điều hướng -->
-        <div class="nav-links">
-            <a th:href="@{/posts/friendPost}">Post</a>
-            <a th:href="@{/posts}">Your Post</a>
-            <a th:href="@{/posts?active=false}">Post deleted</a>
-            <a th:href="@{/user/friends}">Friend</a>
-            <a th:href="@{/user}">Other Person  </a>
-
+        <!-- Logo bên trái -->
+        <div class="navbar-left logo">
+            <img src="https://drive.google.com/drive/folders/1ySqpM9fo2lwgiR5pcuKrrpdgKIFC22Uz" alt="Logo">
         </div>
 
-<!--                &lt;!&ndash; Avatar user &ndash;&gt;-->
-<!--                <a th:href="@{/user}" class="user-link">-->
-<!--                    <div class="post-avatar">-->
-<!--                        <img th:src="${user.avatarUrl}" alt="avatar">-->
-<!--                    </div>-->
-<!--                </a>-->
+        <!-- Links điều hướng ở giữa -->
+        <div class="navbar-center">
+            <a th:href="@{/posts/friendPost}">Post</a>
+            <a th:href="@{/posts}">Your Post</a>
+            <a th:href="@{/posts?active=false}">Post Deleted</a>
+            <a th:href="@{/user/friends}">Friend</a>
+            <a th:href="@{/user}">Other Person</a>
+        </div>
+
+        <!-- Logout và avatar bên phải -->
+        <div class="navbar-right">
+            <a th:href="@{/user/update}" >
+                <div class="post-avatar">
+                    <img th:src="${session.user.getAvatarUrl()}" alt="Avatar">
+                </div>
+            </a>
+
+            <a th:href="@{/logout}">Logout</a>
+        </div>
     </div>
 </div>

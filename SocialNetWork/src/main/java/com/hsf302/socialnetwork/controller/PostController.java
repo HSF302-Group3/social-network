@@ -1,8 +1,10 @@
 package com.hsf302.socialnetwork.controller;
 
+import com.hsf302.socialnetwork.enity.Comment;
 import com.hsf302.socialnetwork.enity.Post;
 import com.hsf302.socialnetwork.enity.Users;
 import com.hsf302.socialnetwork.repo.UserRepo;
+import com.hsf302.socialnetwork.service.impl.CommentService;
 import com.hsf302.socialnetwork.service.impl.PostService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import java.util.List;
 public class PostController {
   @Autowired
   private PostService postService;
+  @Autowired
+  private CommentService commentService;
 @Autowired // de test sau khi login co roi thi se xoa no di
 private UserRepo repo;
     @GetMapping
@@ -27,8 +31,8 @@ private UserRepo repo;
 
         // de test thoi tuong lai se bo no di
         if (users == null) {
-            users = repo.findByUsername("hsf302");
-            System.out.println(users.getUsername());
+//            users = repo.findByUsername("hsf302");
+//            System.out.println(users.getUsername());
             session.setAttribute("user", users);
         }
         System.out.println("ac"+active);
@@ -41,8 +45,7 @@ private UserRepo repo;
     public String createPost(@ModelAttribute("post") Post post, HttpSession session,@RequestParam(name = "file",required = false) List<MultipartFile> fileList) throws IOException {
         Users users = (Users) session.getAttribute("user");
         if (users == null) {
-            users = repo.findByUsername("hsf302");
-            System.out.println(users.getUsername());
+          return "redirect:/login";
         }
 
         postService.createPost(post,fileList,users);
@@ -53,9 +56,7 @@ private UserRepo repo;
     public String create(Model model, HttpSession session) {
         Users users = (Users) session.getAttribute("user");
         if (users == null) {
-            users = repo.findByUsername("hsf302");
-            System.out.println(users.getUsername());
-            model.addAttribute("user", users);
+            return "redirect:/login";
         }
         model.addAttribute("user", users);
         model.addAttribute("post", new Post());
@@ -95,11 +96,27 @@ private UserRepo repo;
         return "posts";
     }
 
-@GetMapping("/like/{id}")
+    @GetMapping("/like/{id}")
     public String like(@PathVariable Long id,HttpSession session) {
         Users users = (Users) session.getAttribute("user");
 
         postService.likePost(users,id);
         return "redirect:/posts/friendPost";
   }
+    @PostMapping("/comment/{id}")
+    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ) throws IOException {
+        Users users = (Users) session.getAttribute("user");
+        Post post = postService.getPostById(id);
+        commentService.addComment(post,users,cmt );
+        return "redirect:/posts/friendPost";
+    }
+    @PostMapping("/reply/{id}")
+    public String replyComment(@PathVariable Long id,HttpSession session, @RequestParam("replyContent") String cmt ) throws IOException {
+        Users users = (Users) session.getAttribute("user");
+        Comment comment = commentService.getReferenceById(id);
+        Post post = comment.getPost();
+
+        commentService.replyComment(users,cmt ,id,post);
+        return "redirect:/posts/friendPost";
+    }
 }
