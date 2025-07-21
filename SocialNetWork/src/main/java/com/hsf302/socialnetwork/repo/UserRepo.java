@@ -47,7 +47,7 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     List<Users> findAllByUserIdNot(Long userId,String search);
 
 @Query("""
-     select u from AddFriend u where  u.sendInvite.userId = :userreID and u.reciveInvite.userId = :usersedId
+     select u from AddFriend u where  u.sendInvite.userId = :usersedId and u.reciveInvite.userId = :userreID
 """)
     AddFriend findBySendInvitesAndReciveInvites(Long usersedId, Long userreID);
 

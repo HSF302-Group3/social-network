@@ -79,7 +79,12 @@ public class UserService implements IsUserService {
 
     @Override
     public void updateRelation(Users user, Long id, boolean isFriend) {
+
+        System.out.println(user.getUserId());
+        System.out.println(id);
         AddFriend addFriends = userRepo.findBySendInvitesAndReciveInvites(user.getUserId(),id);
+
+        System.out.println(addFriends.getSendInvite().getUsername());
          if(isFriend){
 
              addFriends.setFriended(isFriend);

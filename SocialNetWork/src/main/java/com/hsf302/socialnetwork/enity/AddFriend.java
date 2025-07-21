@@ -19,7 +19,6 @@ public class AddFriend {
     private Long id;
     @Column(columnDefinition = "BIT DEFAULT 0")
     private boolean friended= false;
-
     @ManyToOne
     @JoinColumn(name = "usersendinvite_id")
     private Users sendInvite;
