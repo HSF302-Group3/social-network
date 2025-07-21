@@ -36,7 +36,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "usercreate_id")
     private Users usercreate;
-
+    @Column(columnDefinition = "BIT DEFAULT 0")
+    private boolean banded;
     @ManyToMany(mappedBy = "postsLike")
     private Set<Users> users = new HashSet<>();
 

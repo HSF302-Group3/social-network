@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,7 @@ public class UserController {
         }
 
         model.addAttribute("fr", userService.allUser(user,search));
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "friend";
     }
 
@@ -48,6 +50,7 @@ public class UserController {
         System.out.println(search+"search");
         model.addAttribute("unfr", userService.friendInvites(user,search));
         model.addAttribute("fr", userService.friends(user,search));
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "friend";
     }
 
@@ -58,7 +61,7 @@ public class UserController {
             return "redirect:/login";
         }
         userService.addFriend(id, user);
-
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "redirect:/user/friends";
 
     }
@@ -70,6 +73,9 @@ public class UserController {
             return "redirect:/login";
         }
         userService.updateRelation(user,id,status);
+
+        session.setAttribute("user",userService.findById(user.getUserId()));
+
         return "redirect:/user/friends";
     }
 
@@ -81,10 +87,13 @@ public class UserController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
+        session.setAttribute("user",userService.findById(user.getUserId()));
           return "editProfile";
     }
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("user") Users user, BindingResult bindingResult,Model model,HttpSession session) {
+
+
 
         Users account = (Users) session.getAttribute("user");
         if(account == null) {
@@ -110,6 +119,7 @@ public class UserController {
             return "redirect:/login";
         }
         model.addAttribute("users", userService.getALlUsers(active,search));
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "admind-users";
     }
     @GetMapping("/active/{id}")
@@ -119,6 +129,7 @@ public class UserController {
             return "redirect:/login";
         }
         userService.activeUser(id);
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "redirect:/user/getAll";
     }
     @GetMapping("/inactive/{id}")
@@ -128,6 +139,30 @@ public class UserController {
             return "redirect:/login";
         }
         userService.inactiveUser(id);
+        session.setAttribute("user",userService.findById(user.getUserId()));
         return "redirect:/user/getAll";
     }
+
+    @GetMapping("/register")
+    private  String register(Model model,HttpSession session) {
+        model.addAttribute("user", new Users());
+        return "register";
+    }
+    @PostMapping("/register")
+    public String register(@Valid @ModelAttribute("user") Users user, BindingResult bindingResult,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
+
+
+        if(bindingResult.hasErrors()) {
+            return "register";
+        }
+        if(userService.findByEmail(user.getEmail()) != null)
+        {
+            redirectAttributes.addFlashAttribute("errorEmail", "This email address is already in use");
+            return "redirect:/user/register";
+        }
+        userService.saveAccount(user);
+        session.setAttribute("user", userService.findById(user.getUserId()));
+        return "redirect:/login";
+    }
+
 }

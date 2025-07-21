@@ -89,7 +89,7 @@ public class DataInitrizer implements CommandLineRunner {
         user3.setName("Hung Mien Tay");
         user3.setGender(Gender.F);
         user3.setPhone("0234567892");
-        user3.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user3.setAvatarUrl("https://auvi.edu.vn/wp-content/uploads/2025/02/anh-avatar-doi-1.jpg");
         user3.setRole(Role.USER);
 
         Users user4 = new Users();
@@ -99,7 +99,7 @@ public class DataInitrizer implements CommandLineRunner {
         user4.setName("Tran Nhat Huy");
         user4.setGender(Gender.F);
         user4.setPhone("0234567893");
-        user4.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user4.setAvatarUrl("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJCYAq0EbLrXSdXmKp-H-HjxvJ8J4dhsMWw&s");
         user4.setRole(Role.USER);
 
         Users user5 = new Users();
@@ -109,7 +109,7 @@ public class DataInitrizer implements CommandLineRunner {
         user5.setName("Thanh Nha");
         user5.setGender(Gender.F);
         user5.setPhone("0234567894");
-        user5.setAvatarUrl("https://www.comingsoon.net/wp-content/uploads/sites/3/gallery/avatar-the-way-of-water-character-posters/avatar-the-way-of-water-3.jpg");
+        user5.setAvatarUrl("https://jbagy.me/wp-content/uploads/2025/03/hinh-anh-cute-avatar-vo-tri-3.jpg");
         user5.setRole(Role.USER);
 
         userRepo.saveAll(Arrays.asList(user1, user2, user3, user4, user5));
@@ -253,7 +253,7 @@ public class DataInitrizer implements CommandLineRunner {
         user8.setUsername("testuser");
         user8.setEmail("testuser@gmail.com");
         user8.setPassword("123");
-        user8.setName("Uong Van C");
+        user8.setName("Admin");
         user8.setGender(Gender.M);
         user8.setPhone("0234567897");
         user8.setAvatarUrl("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg");

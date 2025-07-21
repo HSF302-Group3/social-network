@@ -82,17 +82,18 @@ public class UserService implements IsUserService {
 
         System.out.println(user.getUserId());
         System.out.println(id);
-        AddFriend addFriends = userRepo.findBySendInvitesAndReciveInvites(user.getUserId(),id);
+        AddFriend addFriends  = userRepo.findBySendInvitesAndReciveInvites(user.getUserId(),id);
 
-        System.out.println(addFriends.getSendInvite().getUsername());
          if(isFriend){
-
              addFriends.setFriended(isFriend);
              addFriendRepo.save(addFriends);
          }
          else {
+
              addFriendRepo.delete(addFriends);
          }
+
+
     }
 
 
@@ -146,6 +147,9 @@ public class UserService implements IsUserService {
         Users user = findById(id);
         user.setActive(false);
         userRepo.save(user);
+    }
+    public Users findByEmail(String email) {
+        return userRepo.findByEmail(email);
     }
 
 

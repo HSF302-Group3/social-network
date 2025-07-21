@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      padding: 30px;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Register New User</h2>
+
+<form th:action="@{/user/register}" method="post" th:object="${user}">
+  <label for="username">Username</label>
+  <input type="text" th:field="*{username}" required  id="username"/>
+  <span th:errors="*{username}"></span>
+  <label for="email">Email</label>
+  <input type="email" th:field="*{email}" required  id="email"/>
+  <span style="color: red" th:if="${errorEmail != null}" th:text="${errorEmail}"></span>
+  <span th:errors="*{email}"></span>
+  <label for="password">Password</label>
+  <input type="password" th:field="*{password}" required id="password"/>
+  <span th:errors="*{password}"></span>
+  <label for="name">Full Name</label>
+  <input type="text" th:field="*{name}" required id="name"/>
+  <span th:errors="*{name}"></span>
+  <div class="gender-options">
+    <div>
+      <input type="radio"
+             th:field="*{gender}"
+             th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}"
+             id="gender-female"
+             class="gender-option"/>
+      <label for="gender-female" class="gender-label">
+        <i class="fas fa-venus"></i>
+        Female
+      </label>
+    </div>
+    <div>
+      <input type="radio"
+             th:field="*{gender}"
+             th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}"
+             id="gender-male"
+             class="gender-option"/>
+      <label for="gender-male" class="gender-label">
+        <i class="fas fa-mars"></i>
+        Male
+      </label>
+    </div>
+  </div>
+
+  <label for="phone">Phone</label>
+  <input type="text" th:field="*{phone}" required id="phone"/>
+  <span th:errors="*{phone}"></span>
+  <label for="avatarUrl">Avatar URL</label>
+  <input type="text" th:field="*{avatarUrl}" id="avatarUrl"/>
+  <span th:errors="*{avatarUrl}"></span>
+  <input type="hidden" th:field="*{role}" th:value="${T(com.hsf302.socialnetwork.enums.Role).USER}" />
+
+
+  <button type="submit">Register</button>
+</form>
+</body>
+</html>

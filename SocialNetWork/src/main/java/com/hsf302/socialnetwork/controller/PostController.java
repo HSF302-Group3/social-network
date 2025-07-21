@@ -34,6 +34,7 @@ private UserRepo repo;
 //            users = repo.findByUsername("hsf302");
 //            System.out.println(users.getUsername());
             session.setAttribute("user", users);
+            return "redirect:/login";
         }
         System.out.println("ac"+active);
         //
@@ -66,9 +67,7 @@ private UserRepo repo;
     public String edit(Model model, HttpSession session, @PathVariable Long id) {
         Users users = (Users) session.getAttribute("user");
         if (users == null) {
-            users = repo.findByUsername("hsf302");
-            System.out.println(users.getUsername());
-            model.addAttribute("user", users);
+            return "redirect:/login";
         }
         model.addAttribute("user", users);
         model.addAttribute("post", postService.getPostById(id));
@@ -76,20 +75,31 @@ private UserRepo repo;
     }
 
     @GetMapping("/delete/{id}")
-    public String delete( @PathVariable Long id) {
+    public String delete( @PathVariable Long id, HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
        postService.deletePost(id);
        return "redirect:/posts";
     }
     @GetMapping("/active/{id}")
-    public String active( @PathVariable Long id) {
+    public String active( @PathVariable Long id,HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
        postService.activatePost(id);
        return "redirect:/posts";
     }
 
     @GetMapping("/friendPost")
     public String friendPost(Model model, HttpSession session) {
-        Users users = (Users) session.getAttribute("user");
 
+        Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
         System.out.println(users.getUsername());
         model.addAttribute("user", users);
         model.addAttribute("posts",postService.postOfFriend(users));
@@ -98,14 +108,22 @@ private UserRepo repo;
 
     @GetMapping("/like/{id}")
     public String like(@PathVariable Long id,HttpSession session) {
+
         Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
 
         postService.likePost(users,id);
         return "redirect:/posts/friendPost";
   }
     @PostMapping("/comment/{id}")
-    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ,@RequestParam(name = "images",required = false) List<MultipartFile> fileList) throws IOException {
+    public String comment(@PathVariable Long id,HttpSession session, @RequestParam("content") String cmt ,@RequestParam(name = "image",required = false) List<MultipartFile> fileList) throws IOException {
+
         Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
         Post post = postService.getPostById(id);
         commentService.addComment(post,users,cmt , fileList );
         return "redirect:/posts/friendPost";
@@ -113,6 +131,9 @@ private UserRepo repo;
     @PostMapping("/reply/{id}")
     public String replyComment(@PathVariable Long id,HttpSession session, @RequestParam("replyContent") String cmt ,@RequestParam(name = "images",required = false) List<MultipartFile> fileList) throws IOException {
         Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return "redirect:/login";
+        }
         Comment comment = commentService.getReferenceById(id);
         Post post = comment.getPost();
 

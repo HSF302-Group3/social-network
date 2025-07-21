@@ -48,8 +48,6 @@ public class PostService implements IsPostService {
             }
 
         }
-
-
         if (post.getId() != null) {
             post.setUsercreate(users);
             postRepo.save(post);

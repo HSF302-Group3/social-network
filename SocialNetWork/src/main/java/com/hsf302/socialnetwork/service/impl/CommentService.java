@@ -32,7 +32,7 @@ public class CommentService implements IsCommentService {
                 if (!file.isEmpty()) {
                     Image image = new Image();
                     image.setImageUrl(cloudiaryUtil.uploadImage(file));
-                    image.setPost(post);
+
                     image.setComment(comment);
 
                     comment.addImageComment(image);
@@ -60,7 +60,7 @@ public class CommentService implements IsCommentService {
                 if (!file.isEmpty()) {
                     Image image = new Image();
                     image.setImageUrl(cloudiaryUtil.uploadImage(file));
-                    image.setPost(post);
+
                     image.setComment(comment);
 
                     comment.addImageComment(image);

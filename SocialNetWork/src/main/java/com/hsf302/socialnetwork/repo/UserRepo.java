@@ -4,10 +4,7 @@ import com.hsf302.socialnetwork.enity.AddFriend;
 import com.hsf302.socialnetwork.enity.Users;
 import com.hsf302.socialnetwork.enums.Role;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,11 +44,15 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     List<Users> findAllByUserIdNot(Long userId,String search);
 
 @Query("""
-     select u from AddFriend u where  u.sendInvite.userId = :usersedId and u.reciveInvite.userId = :userreID
+     select u from AddFriend u where  (u.sendInvite.userId = :usersedId and u.reciveInvite.userId = :userreID)
+     or (u.sendInvite.userId = :userreID and u.reciveInvite.userId = :usersedId)
 """)
     AddFriend findBySendInvitesAndReciveInvites(Long usersedId, Long userreID);
 
-
+    @Query("""
+     select u from AddFriend u where  u.sendInvite.userId = :userreID and u.reciveInvite.userId = :usersedId
+""")
+    AddFriend findBySendInvitesAndRecive(Long usersedId, Long userreID);
     @Query("""
             
                   select u from Users u where (:search is null  or lower(u.name) like lower(concat('%',:search,'%') ) )
@@ -84,4 +85,6 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     List<Users> findByActiveAndRoleIsNotLike(boolean active, @NotNull(message = "Role is required") Role role);
 
     List<Users> findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(boolean active, @NotNull(message = "Name must not be blank") @NotBlank(message = "Name must not be blank") @Size(min = 5,max = 50,message ="Name must in range 5 to 50 " ) @Pattern(regexp = "^([A-Z][A-Za-z0-9]*)(\\s[A-Z][A-Za-z0-9]*)*$",message = "Name start capital and each word gap space and do not have special character") String name, @NotNull(message = "Role is required") Role role);
+
+    Users findByEmail(@NotNull(message = "Email must not be blank") @NotBlank(message = "Email must not be blank") @Email(message = "Invalid email format") String email);
 }
