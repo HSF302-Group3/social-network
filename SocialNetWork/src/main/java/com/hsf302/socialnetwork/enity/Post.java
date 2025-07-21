@@ -36,10 +36,11 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "usercreate_id")
     private Users usercreate;
-    @Column(columnDefinition = "BIT DEFAULT 0")
-    private boolean banded;
     @ManyToMany(mappedBy = "postsLike")
     private Set<Users> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
+    private List<Report> reports = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -57,5 +58,10 @@ public class Post {
     }
     public void removeImage(Image image) {
         imagePost.remove(image);
+    }
+
+    public void addReport(Report report) {
+        reports.add(report);
+        report.setPost(this);
     }
 }

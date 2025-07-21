@@ -46,7 +46,6 @@ public class Users {
     @Lob
     private String avatarUrl;
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Role is required")
     private Role role;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Gender is required")
@@ -61,7 +60,8 @@ public class Users {
     private List<Message> messages = new ArrayList<>();
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    private List<Report> reports = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "User_Like_Post",
@@ -126,6 +126,9 @@ public class Users {
         return userId != null ? userId.hashCode() : 0;
     }
 
-
+public  void addReport(Report report) {
+        reports.add(report);
+        report.setUser(this);
+}
 
 }

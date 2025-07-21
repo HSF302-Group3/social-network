@@ -126,6 +126,39 @@
             border-radius:10px;
             text-decoration: none;
         }
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+            padding-left: 0;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li a {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: black;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination li.active a {
+            background-color: #02CAA9;
+            color: white;
+            font-weight: bold;
+            border-color: #02CAA9;
+        }
+
+        .pagination li.disabled a {
+            pointer-events: none;
+            color: #ccc;
+            background-color: #eee;
+            border-color: #ccc;
+        }
+
     </style>
 </head>
 <body>
@@ -139,6 +172,7 @@
             <div class="user-name" th:text="${session.user.getName()}">User Name</div>
         </div>
         <a class="but" th:href="@{/logout}">Logout</a>
+        <a class="but" th:href="@{/reports}">Reports</a>
     </div>
 
     <h1 class="title">Manage Users</h1>
@@ -146,13 +180,13 @@
     <form th:action="@{/user/getAll}" method="get" class="search-bar">
         <input type="hidden" name="active" th:value="${active}">
         <input type="text" name="search" placeholder="Search by name or email..."
-               th:value="${search}" />
+               th:value="${search != 'null' ? search : ''}" />
         <button type="submit">Search</button>
     </form>
 
     <form th:action="@{/user/getAll}" method="get" class="filter-toggle">
         <input type="hidden" name="active" th:value="${active ? false : true}">
-        <input type="hidden" name="search" th:value="${search}" />
+        <input type="hidden" name="search"   th:value="${search != 'null' ? search : ''}" />
         <button th:if="${active}" type="submit">Show Inactive Users</button>
         <button th:if="${!active}" type="submit">Show Active Users</button>
     </form>
@@ -185,8 +219,24 @@
             </td>
         </tr>
         </tbody>
-    </table>
 
+    </table>
+    <nav th:if="${paging.totalPages > 1}">
+        <ul class="pagination">
+            <li th:classappend="${paging.first} ? 'disabled'">
+                <a th:href="@{'/user/getAll?page='+${currentPage - 1}+'&active='+${active}+'&search='+${search}}">Previous</a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a th:href="@{'/user/getAll?page='+${i}+'&active='+${active}+'&search='+${search}}" th:text="${i + 1}"></a>
+            </li>
+
+            <li th:classappend="${paging.last} ? 'disabled'">
+                <a th:href="@{'/user/getAll?page='+${currentPage + 1}+'&active='+${active}+'&search='+${search}}">Next</a>
+            </li>
+        </ul>
+    </nav>
     <div class="no-data" th:if="${users == null or #lists.isEmpty(users)}">
         No users found.
     </div>

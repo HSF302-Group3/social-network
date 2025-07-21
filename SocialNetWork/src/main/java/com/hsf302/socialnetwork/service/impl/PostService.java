@@ -10,6 +10,8 @@ import com.hsf302.socialnetwork.service.IsPostService;
 import jakarta.transaction.Transactional;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,17 +63,17 @@ public class PostService implements IsPostService {
 
 
     @Override
-    public List<Post> getALlPostsByCurrentUser(Users users, boolean active) {
+    public Page<Post> getALlPostsByCurrentUser(Users users, boolean active, Pageable page) {
 
-        List<Post> posts = postRepo.findAllByUsercreateAndActiveAndCreatedAtOrderByCreatedAtDesc(users, active);
+        Page<Post> posts = postRepo.findAllByUsercreateAndActiveAndCreatedAtOrderByCreatedAtDesc(users, active, page);
 //        System.out.println(posts.size()+"post size");
         return posts;
     }
 
     @Override
-    public List<Post> postOfFriend(Users user) {
+    public Page<Post> postOfFriend(Users user,Pageable page) {
 
-        List<Post> posts = postRepo.getPostOfFriend(user);
+        Page<Post> posts = postRepo.getPostOfFriend(user,page);
         return posts;
     }
 

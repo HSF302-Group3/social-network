@@ -9,6 +9,8 @@ import com.hsf302.socialnetwork.repo.UserRepo;
 import com.hsf302.socialnetwork.service.IsUserService;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -127,11 +129,11 @@ public class UserService implements IsUserService {
         userRepo.save(user);
     }
 
- public List<Users> getALlUsers(boolean active ,String search) {
+ public Page<Users> getALlUsers(boolean active , String search, Pageable pageable) {
           if(search == null || search.trim().isEmpty()) {
-              return userRepo.findByActiveAndRoleIsNotLike(active, Role.ADMIN);
+              return userRepo.findByActiveAndRoleIsNotLike(active, Role.ADMIN,pageable);
           }
-          return userRepo.findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(active,search,Role.ADMIN);
+          return userRepo.findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(active,search,Role.ADMIN,pageable);
  }
 
     @Override

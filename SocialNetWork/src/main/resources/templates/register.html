@@ -42,6 +42,14 @@
       color: white;
       border-radius: 4px;
       font-size: 16px;
+    }  .is-invalid {
+         border: 1px solid red;
+       }
+
+    .invalid-feedback {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 4px;
     }
 
     button:hover {
@@ -52,56 +60,63 @@
 <body>
 
 <h2 style="text-align:center;">Register New User</h2>
-
 <form th:action="@{/user/register}" method="post" th:object="${user}">
-  <label for="username">Username</label>
-  <input type="text" th:field="*{username}" required  id="username"/>
-  <span th:errors="*{username}"></span>
-  <label for="email">Email</label>
-  <input type="email" th:field="*{email}" required  id="email"/>
-  <span style="color: red" th:if="${errorEmail != null}" th:text="${errorEmail}"></span>
-  <span th:errors="*{email}"></span>
-  <label for="password">Password</label>
-  <input type="password" th:field="*{password}" required id="password"/>
-  <span th:errors="*{password}"></span>
-  <label for="name">Full Name</label>
-  <input type="text" th:field="*{name}" required id="name"/>
-  <span th:errors="*{name}"></span>
-  <div class="gender-options">
-    <div>
-      <input type="radio"
-             th:field="*{gender}"
-             th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}"
-             id="gender-female"
-             class="gender-option"/>
-      <label for="gender-female" class="gender-label">
-        <i class="fas fa-venus"></i>
-        Female
-      </label>
-    </div>
-    <div>
-      <input type="radio"
-             th:field="*{gender}"
-             th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}"
-             id="gender-male"
-             class="gender-option"/>
-      <label for="gender-male" class="gender-label">
-        <i class="fas fa-mars"></i>
-        Male
-      </label>
-    </div>
+  <div>
+    <label for="username">Username</label>
+    <input type="text" th:field="*{username}" id="username"
+           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
+    <div class="invalid-feedback"  th:errors="*{username}"></div>
   </div>
 
-  <label for="phone">Phone</label>
-  <input type="text" th:field="*{phone}" required id="phone"/>
-  <span th:errors="*{phone}"></span>
-  <label for="avatarUrl">Avatar URL</label>
-  <input type="text" th:field="*{avatarUrl}" id="avatarUrl"/>
-  <span th:errors="*{avatarUrl}"></span>
-  <input type="hidden" th:field="*{role}" th:value="${T(com.hsf302.socialnetwork.enums.Role).USER}" />
+  <div>
+    <label for="email">Email</label>
+    <input type="email" th:field="*{email}" id="email"
+           th:classappend="${#fields.hasErrors('email') || errorEmail != null} ? 'is-invalid'"/>
+    <div class="invalid-feedback"  th:errors="*{email}"></div>
+    <div class="invalid-feedback" th:if="${errorEmail != null}" th:text="${errorEmail}"></div>
+  </div>
+
+  <div>
+    <label for="password">Password</label>
+    <input type="password" th:field="*{password}" id="password"
+           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
+    <div class="invalid-feedback"  th:errors="*{password}"></div>
+  </div>
+
+  <div>
+    <label for="name">Full Name</label>
+    <input type="text" th:field="*{name}" id="name"
+           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+    <div class="invalid-feedback" th:errors="*{name}"></div>
+  </div>
+
+  <div>
+    <label>Gender</label><br>
+    <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}" id="male"/>
+    <label for="male">Male</label>
+    <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}" id="female"/>
+    <label for="female">Female</label>
+    <div class="invalid-feedback" th:errors="*{gender}"></div>
+  </div>
+
+  <div>
+    <label for="phone">Phone</label>
+    <input type="text" th:field="*{phone}" id="phone"
+           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"/>
+    <div class="invalid-feedback"  th:errors="*{phone}"></div>
+  </div>
+
+  <div>
+    <label for="avatarUrl">Avatar URL</label>
+    <input type="text" th:field="*{avatarUrl}" id="avatarUrl"
+           th:classappend="${#fields.hasErrors('avatarUrl')} ? 'is-invalid'"/>
+    <div class="invalid-feedback"  th:errors="*{avatarUrl}"></div>
+  </div>
+
 
 
   <button type="submit">Register</button>
 </form>
+
 </body>
 </html>

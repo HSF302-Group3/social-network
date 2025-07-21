@@ -5,12 +5,23 @@
     <title>Social Network - Posts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            --danger-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            --warning-gradient: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            --info-gradient: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -137,7 +148,7 @@
             margin-right: 15px;
             position: relative;
             border: 3px solid transparent;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: var(--primary-gradient);
             padding: 2px;
         }
 
@@ -242,7 +253,7 @@
             color: #667eea;
         }
 
-        /* Buttons */
+        /* Enhanced Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -279,6 +290,8 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: white;
         }
 
         .btn:active {
@@ -286,21 +299,21 @@
         }
 
         .btn-create {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: var(--success-gradient);
             font-size: 1em;
             padding: 15px 30px;
         }
 
         .btn-delete {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: var(--danger-gradient);
         }
 
         .btn-edit {
-            background: linear-gradient(135deg, #f39c12, #d68910);
+            background: var(--warning-gradient);
         }
 
         .btn-active {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: var(--info-gradient);
         }
 
         .btn-like {
@@ -313,6 +326,10 @@
 
         .btn-comment {
             background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .btn-report {
+            background: var(--danger-gradient);
         }
 
         /* Action Buttons */
@@ -329,6 +346,63 @@
 
         .action > div {
             display: contents;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 25px 30px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border: none;
+            background: white;
+        }
+
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
         }
 
         /* Comment Section */
@@ -357,7 +431,7 @@
         }
 
         .comment-form input[type="submit"] {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--primary-gradient);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -449,8 +523,8 @@
             border-left: 2px solid #e9ecef;
         }
 
-        /* Modal Styles */
-        .modal {
+        /* Image Modal */
+        .image-modal {
             display: none;
             position: fixed;
             z-index: 999;
@@ -464,7 +538,7 @@
             backdrop-filter: blur(10px);
         }
 
-        .modal img {
+        .image-modal img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 15px;
@@ -540,7 +614,7 @@
                 font-size: 0.85em;
             }
 
-            .modal img {
+            .image-modal img {
                 max-width: 95%;
                 max-height: 80%;
             }
@@ -582,6 +656,72 @@
         @keyframes spin {
             0% { transform: translateY(-50%) rotate(0deg); }
             100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .modal-content {
+            animation: scaleFade 0.4s ease;
+        }
+
+        @keyframes scaleFade {
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Success/Error Messages */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+            padding-left: 0;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li a {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: black;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination li.active a {
+            background-color: #02CAA9;
+            color: white;
+            font-weight: bold;
+            border-color: #02CAA9;
+        }
+
+        .pagination li.disabled a {
+            pointer-events: none;
+            color: #ccc;
+            background-color: #eee;
+            border-color: #ccc;
         }
     </style>
 </head>
@@ -649,7 +789,8 @@
         <div class="action">
             <div th:if="${user.userId == p.usercreate.userId}">
                 <div th:if="${p.active == true}">
-                    <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}">
+                    <a class="btn btn-delete" th:href="@{'/posts/delete/'+${p.id}}"
+                       onclick="return confirm('Are you sure you want to delete this post?')">
                         <i class="fa fa-trash"></i> Delete
                     </a>
                 </div>
@@ -681,6 +822,14 @@
                         <i class="fa fa-comment"></i> Comment
                     </button>
                 </div>
+                <div th:each="cr: ${canreport}">
+                    <button th:if="${cr == p.id}" type="button" class="btn btn-report"
+                            data-bs-toggle="modal"
+                            th:attr="data-bs-target='#reportModal' + ${p.id}"
+                            onclick="console.log('Opening report modal for post:', this.getAttribute('data-bs-target'))">
+                        <i class="fa fa-flag"></i> Report
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -689,7 +838,7 @@
             <form th:action="@{'/posts/comment/' + ${p.id}}" method="post"
                   class="comment-form" style="display: none;" enctype="multipart/form-data">
                 <input type="text" name="content" placeholder="Write a comment..." required>
-                <input type="file" name="image" id="Image" multiple>
+                <input type="file" name="image" id="Image" multiple class="form-control mt-2">
                 <input type="submit" value="Post Comment">
             </form>
         </div>
@@ -701,7 +850,7 @@
                 <div class="comment-content" th:text="${c.comment}">Comment Content</div>
                 <div th:if="${c.imageComment != null}">
                     <div th:each="img : ${c.imageComment}">
-                        <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                        <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px; border-radius: 8px;" />
                     </div>
                 </div>
                 <div class="comment-date" th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
@@ -712,7 +861,7 @@
 
                 <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;" enctype="multipart/form-data">
                     <input type="text" name="replyContent" placeholder="Write a reply..." required>
-                    <input type="file" name="images" id="images" multiple>
+                    <input type="file" name="images" id="images" multiple class="form-control mt-2">
                     <button type="submit"><i class="fas fa-paper-plane"></i> Send Reply</button>
                 </form>
 
@@ -722,7 +871,7 @@
                         <div class="comment-content" th:text="${r.comment}">Reply Content</div>
                         <div th:if="${r.imageComment != null}">
                             <div th:each="img : ${r.imageComment}">
-                                <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px;" />
+                                <img th:src="${img.imageUrl}" style="max-width: 150px; margin: 5px; border-radius: 8px;" />
                             </div>
                         </div>
                         <div class="comment-date" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
@@ -733,33 +882,146 @@
     </div>
 </div>
 
+<!-- Report Modals for each post -->
+<div th:each="p : ${posts}">
+    <div class="modal fade" th:id="'reportModal' + ${p.id}" tabindex="-1"
+         th:attr="aria-labelledby='reportModalLabel' + ${p.id}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:id="'reportModalLabel' + ${p.id}">
+                        <i class="fa fa-flag"></i> Report Post
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{'/reports/create/' + ${p.id}}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="reportReason" class="form-label">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Reason for reporting
+                            </label>
+                            <input type="text" name="content" id="reportReason" class="form-control"
+                                   placeholder="Please describe why you're reporting this post..." required>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> False reports may result in account restrictions.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-paper-plane me-2"></i> Submit Report
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-times me-2"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Image Modal -->
-<div id="lightboxModal" class="modal" onclick="closeModal()">
+<div id="lightboxModal" class="image-modal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <img id="modalImg" src="/placeholder.svg" alt="Image Preview">
     <button id="prevBtn" onclick="prevImage(event)">&#10094;</button>
     <button id="nextBtn" onclick="nextImage(event)">&#10095;</button>
 </div>
+<nav th:if="${paging.totalPages > 1 && isYourPage}">
+    <ul class="pagination">
+        <li th:classappend="${paging.first} ? 'disabled'">
+            <a th:href="@{'/posts?page='+${currentPage - 1}+'&active='+${active}}">Previous</a>
+        </li>
+
+        <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a th:href="@{'/posts?page='+${i}+'&active='+${active}}" th:text="${i + 1}"></a>
+        </li>
+
+        <li th:classappend="${paging.last} ? 'disabled'">
+            <a th:href="@{'/posts?page='+${currentPage + 1}+'&active='+${active}}">Next</a>
+        </li>
+    </ul>
+</nav>
+<nav th:if="${paging.totalPages > 1 && !isYourPage}">
+    <ul class="pagination">
+        <li th:classappend="${paging.first} ? 'disabled'">
+            <a th:href="@{'/posts/friendPost?page='+${currentPage - 1}}">Previous</a>
+        </li>
+
+        <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a th:href="@{'/posts/friendPost?page='+${i}}" th:text="${i + 1}"></a>
+        </li>
+
+        <li th:classappend="${paging.last} ? 'disabled'">
+            <a th:href="@{'/posts/friendPost?page='+${currentPage + 1}}">Next</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     let currentImages = [];
     let currentIndex = 0;
 
     document.addEventListener("DOMContentLoaded", function () {
-        const posts = document.querySelectorAll(".post-container");
+        console.log("DOM loaded, initializing...");
 
+        // Initialize image gallery
+        const posts = document.querySelectorAll(".post-container");
         posts.forEach(post => {
             const images = post.querySelectorAll(".clickable-image");
-
             images.forEach((img, index) => {
                 img.setAttribute("data-index", index);
-
                 img.addEventListener("click", function (e) {
                     e.stopPropagation();
                     currentImages = Array.from(images).map(i => i.getAttribute("data-url"));
                     currentIndex = parseInt(img.getAttribute("data-index"));
                     showModal(currentImages[currentIndex]);
                 });
+            });
+        });
+
+        // Initialize Bootstrap modals
+        const reportModals = document.querySelectorAll('[id^="reportModal"]');
+        console.log("Found report modals:", reportModals.length);
+
+        reportModals.forEach(modal => {
+            modal.addEventListener('show.bs.modal', function (event) {
+                console.log('Report modal opening:', this.id);
+            });
+
+            modal.addEventListener('shown.bs.modal', function (event) {
+                console.log('Report modal opened:', this.id);
+                // Focus on the input field
+                const input = this.querySelector('input[name="content"]');
+                if (input) input.focus();
+            });
+        });
+
+        // Handle report buttons
+        const reportButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
+        console.log("Found report buttons:", reportButtons.length);
+
+        reportButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const targetModal = this.getAttribute('data-bs-target');
+                console.log('Report button clicked, target:', targetModal);
+
+                // Ensure modal opens
+                setTimeout(() => {
+                    const modal = document.querySelector(targetModal);
+                    if (modal && !modal.classList.contains('show')) {
+                        console.log('Manually showing modal:', targetModal);
+                        const bsModal = new bootstrap.Modal(modal);
+                        bsModal.show();
+                    }
+                }, 100);
             });
         });
 
@@ -837,6 +1099,28 @@
             if (isVisible) {
                 post.style.opacity = '1';
                 post.style.transform = 'translateY(0)';
+            }
+        });
+    });
+
+    // Form validation
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#e74c3c';
+                } else {
+                    field.style.borderColor = '#e9ecef';
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
             }
         });
     });
