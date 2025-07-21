@@ -4,6 +4,7 @@ import com.hsf302.socialnetwork.enity.*;
 import com.hsf302.socialnetwork.enums.Gender;
 import com.hsf302.socialnetwork.enums.Role;
 import com.hsf302.socialnetwork.repo.*;
+import com.hsf302.socialnetwork.service.impl.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
@@ -28,6 +29,9 @@ public class DataInitrizer implements CommandLineRunner {
 
     @Autowired
     MessageRepository messageRepo;
+
+    @Autowired
+    ReportService reportService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -266,6 +270,10 @@ public class DataInitrizer implements CommandLineRunner {
         friendship4.setReciveInvite(user8);
         friendship4.setFriended(true);
         addFriendRepo.save(friendship4);
+
+
+
+        reportService.createReport("Noi dung ko hay ",post1.getId(),user2.getUserId());
 
         userRepo.save(user8);
     }

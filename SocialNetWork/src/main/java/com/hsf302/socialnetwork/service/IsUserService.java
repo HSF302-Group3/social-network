@@ -2,6 +2,8 @@ package com.hsf302.socialnetwork.service;
 
 import com.hsf302.socialnetwork.enity.Users;
 import org.apache.catalina.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ public interface IsUserService {
     Users findByUsername(String username);
     Users findById(Long id);
     void save(Users user);
-    List<Users> getALlUsers(boolean action ,String search);
+    Page<Users> getALlUsers(boolean action , String search, Pageable pageable);
     void activeUser(Long id);
     void inactiveUser(Long id);
 }

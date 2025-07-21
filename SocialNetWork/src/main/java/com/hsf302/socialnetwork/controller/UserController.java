@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -109,16 +112,26 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    private String getALl(HttpSession session, Model model,@RequestParam(defaultValue ="true") boolean active,@RequestParam(required = false) String search) {
+    private String getALl(HttpSession session, Model model,@RequestParam(defaultValue ="true") boolean active,
+                          @RequestParam(required = false) String search,
+                          @RequestParam(required = false,defaultValue = "0") int page) {
 
 
-        model.addAttribute("search", search);
-        model.addAttribute("active", active);
+
         Users user = (Users) session.getAttribute("user");
         if(user == null || !user.getRole().equals(Role.ADMIN)) {
             return "redirect:/login";
         }
-        model.addAttribute("users", userService.getALlUsers(active,search));
+   if( search != null && search.equalsIgnoreCase("null")) {
+       search = null;
+   }
+
+        model.addAttribute("search", search);
+        model.addAttribute("active", active);
+        Pageable pageable = PageRequest.of(page,5);// chinh 5 de chay
+        model.addAttribute("users", userService.getALlUsers(active,search,pageable).getContent());
+        model.addAttribute("paging",userService.getALlUsers(active,search,pageable));
+        model.addAttribute("currentPage", page);
         session.setAttribute("user",userService.findById(user.getUserId()));
         return "admind-users";
     }
@@ -153,6 +166,7 @@ public class UserController {
 
 
         if(bindingResult.hasErrors()) {
+            System.out.println("co loi roi");
             return "register";
         }
         if(userService.findByEmail(user.getEmail()) != null)
@@ -160,8 +174,8 @@ public class UserController {
             redirectAttributes.addFlashAttribute("errorEmail", "This email address is already in use");
             return "redirect:/user/register";
         }
+        user.setRole(Role.USER);
         userService.saveAccount(user);
-        session.setAttribute("user", userService.findById(user.getUserId()));
         return "redirect:/login";
     }
 

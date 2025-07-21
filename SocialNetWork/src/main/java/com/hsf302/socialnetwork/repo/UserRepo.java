@@ -5,6 +5,8 @@ import com.hsf302.socialnetwork.enity.Users;
 import com.hsf302.socialnetwork.enums.Role;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,6 +41,7 @@ public interface UserRepo extends JpaRepository<Users, Long> {
                   and (u.userId not in  ( select  ad.sendInvite.userId from AddFriend  ad where  ad.reciveInvite.userId =:userId)
                   and u.userId not in ( select  ad.reciveInvite.userId from AddFriend  ad where  ad.sendInvite.userId =:userId ))
                    and (:search is null  or lower(u.name) like lower(concat('%',:search,'%') ) )
+                   and u.role != 'ADMIN'
                   order by u.created desc
             """)
     List<Users> findAllByUserIdNot(Long userId,String search);
@@ -82,9 +85,11 @@ public interface UserRepo extends JpaRepository<Users, Long> {
 
     List<Users> findByActiveAndNameContainingIgnoreCaseAndRoleNotContaining(boolean active, @NotNull(message = "Name must not be blank") @NotBlank(message = "Name must not be blank") @Size(min = 5,max = 50,message ="Name must in range 5 to 50 " ) @Pattern(regexp = "^([A-Z][A-Za-z0-9]*)(\\s[A-Z][A-Za-z0-9]*)*$",message = "Name start capital and each word gap space and do not have special character") String name, @NotNull(message = "Role is required") Role role);
 
-    List<Users> findByActiveAndRoleIsNotLike(boolean active, @NotNull(message = "Role is required") Role role);
+    Page<Users> findByActiveAndRoleIsNotLike(boolean active, @NotNull(message = "Role is required") Role role, Pageable pageable);
 
     List<Users> findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(boolean active, @NotNull(message = "Name must not be blank") @NotBlank(message = "Name must not be blank") @Size(min = 5,max = 50,message ="Name must in range 5 to 50 " ) @Pattern(regexp = "^([A-Z][A-Za-z0-9]*)(\\s[A-Z][A-Za-z0-9]*)*$",message = "Name start capital and each word gap space and do not have special character") String name, @NotNull(message = "Role is required") Role role);
 
     Users findByEmail(@NotNull(message = "Email must not be blank") @NotBlank(message = "Email must not be blank") @Email(message = "Invalid email format") String email);
+
+    Page<Users> findByActiveAndNameContainingIgnoreCaseAndRoleIsNotLike(boolean active, @NotNull(message = "Name must not be blank") @NotBlank(message = "Name must not be blank") @Size(min = 5,max = 50,message ="Name must in range 5 to 50 " ) @Pattern(regexp = "^([A-Z][A-Za-z0-9]*)(\\s[A-Z][A-Za-z0-9]*)*$",message = "Name start capital and each word gap space and do not have special character") String name, @NotNull(message = "Role is required") Role role, Pageable pageable);
 }
