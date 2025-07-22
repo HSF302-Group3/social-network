@@ -12,5 +12,6 @@ public interface IsConversationService {
     void save(Conversation conversation);
     Conversation createGroupConversation(String name, List<Long> memberIds, Users creator);
     List<Conversation> findByUserId(Long userId);
+    public void removeMember(Long convId, Long memberId, Long actorId);
 
 }

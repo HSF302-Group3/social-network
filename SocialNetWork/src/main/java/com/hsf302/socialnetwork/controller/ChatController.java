@@ -7,9 +7,12 @@ import com.hsf302.socialnetwork.service.impl.ConversationService;
 import com.hsf302.socialnetwork.service.impl.MessageService;
 import com.hsf302.socialnetwork.service.impl.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.*;
@@ -59,7 +62,7 @@ public class ChatController {
                 model.addAttribute("frim", "https://cdn-icons-png.flaticon.com/512/6387/6387947.png");
             }
         }
-
+        model.addAttribute("members", currentConversation.getUsers());
         model.addAttribute("currentUser", currentUser);
 
         return "chat";
@@ -93,7 +96,8 @@ public class ChatController {
         model.addAttribute("currentConversation", currentConversation);
         model.addAttribute("messages", messages);
         model.addAttribute("currentUser", currentUser);
-
+        List<Users> members = new ArrayList<>(currentConversation.getUsers());
+        model.addAttribute("members", members);
         return "chat";
     }
 
@@ -211,6 +215,32 @@ public class ChatController {
         }
         session.setAttribute("user", refreshedUser);
         return "redirect:/chat/" + newGroup.getId();
+    }
+
+    @PostMapping("/{conversationId}/remove-member")
+    public String removeMember(
+            @PathVariable Long conversationId,
+            @RequestParam Long memberId,
+            HttpSession session,
+            RedirectAttributes ra
+    ) {
+        Users currentUser = (Users) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        Long actorId = currentUser.getUserId();
+
+        try {
+            Users removed = userService.findById(memberId);
+            conversationService.removeMember(conversationId, memberId, actorId);
+            ra.addFlashAttribute("success", "Đã xóa thành viên khỏi nhóm.");
+            messageService.sendSystemMessage(
+                    conversationId, "Người dùng “" + removed.getName() + "” đã bị xóa khỏi nhóm."
+            );
+        } catch (IllegalArgumentException ex) {
+            ra.addFlashAttribute("error", ex.getMessage());
+        }
+        return "redirect:/chat/" + conversationId;
     }
 
 

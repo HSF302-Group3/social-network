@@ -40,4 +40,8 @@ public class Message {
     }
     @Column(columnDefinition = "BIT DEFAULT 1")
     private boolean active = true;
+
+    @Column(columnDefinition = "BIT DEFAULT 0")
+    private boolean system = false;
+
 }

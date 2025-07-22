@@ -26,6 +26,9 @@ public class Conversation {
     private List<Message> messages = new ArrayList<>();
     @ManyToMany(mappedBy = "conversations")
     private Set<Users> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private Users createdBy;
 
     @Override
     public String toString() {
