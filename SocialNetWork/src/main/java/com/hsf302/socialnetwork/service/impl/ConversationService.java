@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class ConversationService implements IsConversationService {
         conv.setName(name);
         conv.setType("GROUP");
         conv.setActive(true);
+        conv.setCreatedBy(creator);
 
         Users managedCreator = userRepo.findById(creator.getUserId()).orElse(creator);
         // add creator + selected members
@@ -64,4 +66,26 @@ public class ConversationService implements IsConversationService {
     public List<Conversation> findByUserId(Long userId) {
         return conversationRepository.findByUserId(userId);
     }
+
+
+    @Transactional
+    public void removeMember(Long convId, Long memberId, Long actorId) {
+        Conversation conv = conversationRepository.findById(convId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy conversation"));
+
+        // Chỉ chủ nhóm mới được xóa
+        if (!conv.getCreatedBy().getUserId().equals(actorId)) {
+            throw new IllegalArgumentException("Chỉ chủ nhóm mới có quyền xóa thành viên");
+        }
+
+        Users member = userRepo.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy user"));
+
+        conv.getUsers().remove(member);
+        member.getConversations().remove(conv);
+
+        conversationRepository.save(conv);
+        userRepo.save(member);
+    }
+
 }

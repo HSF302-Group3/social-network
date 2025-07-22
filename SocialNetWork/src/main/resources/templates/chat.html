@@ -872,7 +872,99 @@
       100% { transform: translateY(-50%) rotate(360deg); }
     }
 
-
+    .members-dropdown {
+      position: relative;
+      margin-left: auto;
+    }
+    .members-toggle {
+      background: none;
+      border: none;
+      color: #374151;
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .members-list {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      width: 240px;
+      max-height: 320px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+    .members-list .members-search {
+      padding: 8px 12px;
+      border: none;
+      border-bottom: 1px solid #e2e8f0;
+      outline: none;
+    }
+    .members-list ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .members-list li {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: default;
+    }
+    .members-list li:hover {
+      background: #f1f5f9;
+    }
+    .members-list .avatar-sm {
+      width: 30px;
+      height: 30px;
+      margin-right: 8px;
+    }.members-list li {
+       position: relative;
+     }
+    .remove-member-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #f56565;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    .remove-member-btn:hover {
+      color: #c53030;
+    }
+    .system-message {
+      text-align: center;
+      margin: 12px 0;
+      color: #6b7280;
+      font-style: italic;
+      font-size: 0.875rem;
+    }
+    .conversation-item {
+      position: relative;
+    }
+    .unread-badge {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: #e53e3e;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.75rem;
+    }
 
   </style>
 </head>
@@ -952,10 +1044,12 @@
                 Tên Người Dùng
               </div>
               <div class="conversation-snippet"
-                   th:text="${#lists.isEmpty(conv.messages) ? 'Chưa có tin nhắn...' : conv.messages.get(conv.messages.size() - 1).message}">
-                Tin nhắn gần đây...
-              </div>
-            </div>
+                   th:text="${#lists.isEmpty(conv.messages)
+               ? 'Chưa có tin nhắn...'
+               : (conv.messages[conv.messages.size()-1].users.userId == currentUser.userId
+                   ? 'You: ' + conv.messages[conv.messages.size()-1].message
+                   : conv.messages[conv.messages.size()-1].message)}"></div>
+            </div>>
             <div class="conversation-time"
                  th:if="${!#lists.isEmpty(conv.messages)}"
                  th:text="${#temporals.format(conv.messages.get(conv.messages.size() - 1).createddate, 'HH:mm')}">
@@ -984,27 +1078,61 @@
             <span class="status-dot"></span>
             Đang hoạt động
           </div>
+          <div class="members-dropdown">
+            <button type="button" class="members-toggle">
+              <i class="fas fa-user-friends"></i> Thành viên
+            </button>
+            <div class="members-list" style="display:none;">
+              <input type="text" class="members-search" placeholder="Tìm thành viên..." />
+              <ul>
+                <li th:each="m : ${members}" th:data-member-id="${m.userId}">
+                  <img th:src="${m.avatarUrl}" class="avatar-sm" alt="avatar"/>
+                  <span th:text="${m.name}">Tên thành viên</span>
+                  <!-- Chỉ show nút X khi là nhóm, createdBy không null, currentUser là creator, và m != currentUser -->
+                  <button
+                          class="remove-member-btn"
+                          th:if="
+                              ${currentConversation.type == 'GROUP'}
+                              and ${currentConversation.createdBy != null}
+                              and ${currentConversation.createdBy.userId == currentUser.userId}
+                              and ${m.userId != currentUser.userId}"
+                          title="Xoá thành viên">
+                    &times;
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Messages List -->
       <div class="messages-list" th:if="${currentConversation != null}">
         <!-- Individual Messages -->
-        <div th:each="msg : ${messages}"
-             th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
-             class="message-container">
-          <!-- Avatar -->
-          <div class="online-indicator">
-            <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
-          </div>
-          <!-- Message Bubble -->
-          <div class="message-bubble">
-            <div class="message-content" th:text="${msg.message}">
-              Nội dung tin nhắn
-            </div>
+        <div th:each="msg : ${messages}">
+          <!-- System message -->
+          <div th:if="${msg.system}" class="system-message">
+            <span th:text="${msg.message}">Hệ thống thông báo…</span>
             <div class="message-time"
                  th:text="${#temporals.format(msg.createddate, 'HH:mm')}">
               00:00
+            </div>
+          </div>
+          <!-- User message -->
+          <div th:unless="${msg.system}"
+               th:classappend="${msg.users.userId == currentUser.userId} ? ' sent' : ' received'"
+               class="message-container">
+            <div class="online-indicator">
+              <img th:src="${msg.users.avatarUrl}" alt="Avatar" class="message-avatar" />
+            </div>
+            <div class="message-bubble">
+              <div class="message-content" th:text="${msg.message}">
+                Nội dung tin nhắn
+              </div>
+              <div class="message-time"
+                   th:text="${#temporals.format(msg.createddate, 'HH:mm')}">
+                00:00
+              </div>
             </div>
           </div>
         </div>
@@ -1019,91 +1147,139 @@
 
       <!-- Message Input -->
       <div class="message-input-container" th:if="${currentConversation != null}">
-        <form th:action="@{/chat/send}" method="post" class="message-input">
-          <input type="text"
-                 name="message"
+        <div class="message-input">
+          <input id="stompInput"
+                 type="text"
                  placeholder="Nhập tin nhắn..."
-                 required
                  autocomplete="off" />
-          <input th:if="${currentConversation != null}"
-                 type="hidden"
-                 name="conversationId"
-                 th:value="${currentConversation.id}" />
-          <button type="submit" class="send-btn">
-            <i class="fas fa-paper-plane"></i>
-            Gửi
+          <button type="button"
+                  class="send-btn"
+                  onclick="sendStomp()">
+            <i class="fas fa-paper-plane"></i> Gửi
           </button>
-        </form>
-      </div>
+        </div>
     </div>
 
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+  <script th:inline="javascript">
+    const CONV_ID    = /*[[${currentConversation.id}]]*/ 0;
+    const CURRENT_ID = /*[[${currentUser.userId}]]*/ 0;
+    const topicDest  = '/topic/conversation/' + CONV_ID;
+    const sendDest   = '/app/chat/'        + CONV_ID + '/send';
+    const ALL_CONV_IDS = /*[[${conversations.![id]}]]*/ [];
+    const CURRENT_CONV = /*[[${currentConversation.id}]]*/ 0;
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Auto-scroll to bottom of messages
-    const messagesList = document.querySelector('.messages-list');
-    if (messagesList) {
-      messagesList.scrollTop = messagesList.scrollHeight;
-    }
-
-    // Focus on message input
-    const messageInput = document.querySelector('input[name="message"]');
-    if (messageInput) {
-      messageInput.focus();
-    }
-
-    // Handle form submission
-    const messageForm = document.querySelector('.message-input');
-    if (messageForm) {
-      messageForm.addEventListener('submit', function(e) {
-        const input = this.querySelector('input[name="message"]');
-        if (!input.value.trim()) {
-          e.preventDefault();
-          return;
-        }
-
-        // Add loading state
-        const submitBtn = this.querySelector('.send-btn');
-        const originalContent = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        submitBtn.disabled = true;
-
-        // Reset after a delay (in case of page reload)
-        setTimeout(() => {
-          submitBtn.innerHTML = originalContent;
-          submitBtn.disabled = false;
-        }, 2000);
+    const sock  = new SockJS('/ws-chat');
+    const stomp = Stomp.over(sock);
+    stomp.connect({}, () => {
+      // Với mỗi convId, subscribe
+      ALL_CONV_IDS.forEach(convId => {
+        stomp.subscribe('/topic/conversation/' + convId, frame => {
+          const m = JSON.parse(frame.body);
+          // Nếu đúng conversation đang mở, render thêm tin
+          if (convId === CURRENT_CONV) {
+            renderMessage(m);
+          }
+          // Luôn cập nhật sidebar
+          updateConversationList(convId, m);
+        });
       });
+    });
+
+    function sendStomp(){
+      const input = document.getElementById('stompInput');
+      const text  = input.value.trim();
+      if(!text) return;
+      if (!text) return;
+      stomp.send('/app/chat/' + CURRENT_CONV + '/send', {}, JSON.stringify({
+        userId:  CURRENT_ID,
+        message: text
+      }));
+      input.value = '';
     }
 
-    // Handle Enter key for sending messages
-    if (messageInput) {
-      messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          messageForm.dispatchEvent(new Event('submit'));
-        }
-      });
-    }
+    function renderMessage(m){
+      const list = document.querySelector('.messages-list');
+      let el;
 
-    // Mobile responsive - toggle sidebar
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.chat-list-pane');
-      sidebar.classList.toggle('show');
-    }
-
-    // Add mobile menu button if needed
-    if (window.innerWidth <= 640) {
-      const header = document.querySelector('.messages-header');
-      if (header) {
-        const menuBtn = document.createElement('button');
-        menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-        menuBtn.style.cssText = 'background: none; border: none; font-size: 1.2rem; color: #667eea; cursor: pointer; margin-right: 15px;';
-        menuBtn.onclick = toggleSidebar;
-        header.insertBefore(menuBtn, header.firstChild);
+      if (m.system) {
+        el = document.createElement('div');
+        el.className = 'system-message';
+        el.innerHTML = `
+      <span>${m.message}</span>
+      <div class="message-time">${m.time}</div>
+    `;
+      } else {
+        // xác định đây là tin của mình hay tin của người khác
+        const isMe = m.userId === CURRENT_ID;
+        el = document.createElement('div');
+        el.className = 'message-container ' + (isMe ? 'sent' : 'received');
+        el.innerHTML = `
+      <div class="online-indicator">
+        <img src="${m.avatarUrl}" class="message-avatar"/>
+      </div>
+      <div class="message-bubble">
+        <div class="message-content">${m.message}</div>
+        <div class="message-time">${m.time}</div>
+      </div>
+    `;
       }
+
+      list.appendChild(el);
+      // tự động scroll xuống cuối
+      list.scrollTop = list.scrollHeight;
+    }
+    function updateConversationList(convId, m){
+      const link = document.querySelector(`.conversation-list a[href$="/chat/${convId}"]`);
+      if (!link) return;
+      const li = link.closest('li');
+      const snippet = (m.userId === CURRENT_ID ? 'You: ' : '') + m.message;
+      link.querySelector('.conversation-snippet').textContent = snippet;
+      link.querySelector('.conversation-time').textContent    = m.time;
+
+      if (convId !== CURRENT_CONV) {
+        let badge = li.querySelector('.unread-badge');
+        let count = badge ? +badge.textContent : 0;
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'unread-badge';
+          li.append(badge);
+        }
+        badge.textContent = ++count;
+      }
+    }
+
+  </script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('.members-toggle');
+    const list   = document.querySelector('.members-list');
+    const input  = document.querySelector('.members-search');
+
+    // Bật/tắt hiển thị
+    toggle.addEventListener('click', e => {
+      e.stopPropagation();
+      list.style.display = list.style.display === 'flex' ? 'none' : 'flex';
+      input && input.focus();
+    });
+
+    // Ẩn khi click ra ngoài
+    document.addEventListener('click', () => {
+      list.style.display = 'none';
+    });
+
+    // Tìm nhanh thành viên
+    if (input) {
+      input.addEventListener('input', () => {
+        const q = input.value.toLowerCase();
+        document.querySelectorAll('.members-list li').forEach(li => {
+          const name = li.querySelector('span').textContent.toLowerCase();
+          li.style.display = name.includes(q) ? 'flex' : 'none';
+        });
+      });
     }
   });
 </script>
