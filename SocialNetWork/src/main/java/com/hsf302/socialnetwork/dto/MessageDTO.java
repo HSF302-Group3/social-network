@@ -3,6 +3,8 @@ package com.hsf302.socialnetwork.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class MessageDTO {
@@ -11,15 +13,17 @@ public class MessageDTO {
     private String time;
     private Boolean system;
     private String avatarUrl;
+    private String createdDate;
 
     public MessageDTO() {
     }
 
-    public MessageDTO(Long userId, String message, String time, Boolean system, String avatarUrl) {
+    public MessageDTO(Long userId, String message, String time, Boolean system, String avatarUrl, String createdDate) {
         this.userId = userId;
         this.message = message;
         this.time = time;
         this.system = system;
         this.avatarUrl = avatarUrl;
+        this.createdDate = createdDate;
     }
 }

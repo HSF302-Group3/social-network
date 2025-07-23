@@ -9,4 +9,7 @@ public interface IsMessageService {
     Message sendMessage(Long conversationId, Long senderId, String text);
 
     public Message sendSystemMessage(Long conversationId, String text);
+
+    public List<Message> searchInConversation(Long convId, String keyword);
+
 }
