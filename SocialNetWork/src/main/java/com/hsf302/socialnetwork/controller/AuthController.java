@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/doLogin")
     public String doLogin(@RequestParam String email, @RequestParam String password, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         Users account = userService.authenticate(email, password);
-        if(account == null || !account.isActive()) {
+        if(account == null ) {
             redirectAttributes.addFlashAttribute("error", "Invalid email or password");
             return "redirect:/login";
         }

@@ -1010,8 +1010,6 @@
                 });
             });
         });
-
-        // Initialize Bootstrap modals
         const reportModals = document.querySelectorAll('[id^="reportModal"]');
         console.log("Found report modals:", reportModals.length);
 
@@ -1028,34 +1026,32 @@
             });
         });
 
-        // Handle report buttons
+        // XÓA PHẦN GÂY LỖI: Không cưỡng bức mở modal nữa – Bootstrap tự xử lý
         const reportButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
         console.log("Found report buttons:", reportButtons.length);
 
         reportButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function () {
                 const targetModal = this.getAttribute('data-bs-target');
                 console.log('Report button clicked, target:', targetModal);
-
-                // Ensure modal opens
-                setTimeout(() => {
-                    const modal = document.querySelector(targetModal);
-                    if (modal && !modal.classList.contains('show')) {
-                        console.log('Manually showing modal:', targetModal);
-                        const bsModal = new bootstrap.Modal(modal);
-                        bsModal.show();
-                    }
-                }, 100);
+                // ✅ Không cần xử lý gì thêm
             });
         });
 
-        // Add loading states to buttons
+        // Add loading states to <a> buttons if needed
         document.querySelectorAll('.btn').forEach(btn => {
             if (btn.tagName === 'A') {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     this.classList.add('loading');
                 });
             }
+        });
+
+        // 💡 Optional safeguard: Xoá backdrop nếu có lỗi modal không đóng đúng (chỉ dùng khi bị lỗi nhiều)
+        document.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.style.overflow = 'auto';
         });
     });
 

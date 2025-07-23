@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Reports Management</title>
+    <title>Admin Dashboard - Reports Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap & FontAwesome -->
@@ -11,268 +11,370 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #8b5cf6;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --info-color: #3b82f6;
-            --dark-color: #1f2937;
-            --light-color: #f8fafc;
-            --border-color: #e5e7eb;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 2rem 0;
-        }
-
-        .main-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: var(--shadow-lg);
-            overflow: hidden;
-            margin: 0 auto;
-            max-width: 1400px;
-        }
-
-        .header-section {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 2rem;
-            position: relative;
+            padding: 0;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .admin-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .admin-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .admin-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .admin-role {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 5px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 500;
+            min-height: 52px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: #02CAA9;
+            color: white;
+            transform: translateX(2px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .nav-link:hover .nav-icon,
+        .nav-link.active .nav-icon {
+            opacity: 1;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
 
-        .header-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: translate(50%, -50%);
-        }
-
-        .header-section h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header-section .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .content-section {
-            padding: 2rem;
+        /* Stats Cards */
+        .stats-section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
         }
 
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 20px;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-radius: 16px;
-            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
-            border: 1px solid var(--border-color);
+            border: 2px solid #e2e8f0;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card .icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
+            margin: 0 auto 15px;
+            font-size: 1.2rem;
             color: white;
         }
 
-        .stat-card.reports .icon { background: var(--danger-color); }
-        .stat-card.pending .icon { background: var(--warning-color); }
-        .stat-card.resolved .icon { background: var(--success-color); }
+        .stat-card.reports .icon { background: #ef4444; }
+        .stat-card.pending .icon { background: #f59e0b; }
+        .stat-card.resolved .icon { background: #10b981; }
 
-        .reports-table-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
+        .stat-card h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
         }
 
-        .table {
+        .stat-card p {
+            color: #64748b;
+            font-size: 14px;
             margin: 0;
-            border: none;
         }
 
-        .table thead th {
-            background: linear-gradient(135deg, var(--dark-color) 0%, #374151 100%);
+        /* Table Styles */
+        .table-container {
+            padding: 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 18px 15px;
+            text-align: left;
             font-weight: 600;
+            font-size: 14px;
             text-transform: uppercase;
-            font-size: 0.875rem;
-            letter-spacing: 0.05em;
-            padding: 1.25rem 1rem;
-            border: none;
-            position: relative;
+            letter-spacing: 0.5px;
         }
 
-        .table tbody tr {
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .table tbody tr:hover {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            transform: scale(1.01);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .table tbody td {
-            padding: 1.25rem 1rem;
+        .data-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
-            border: none;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8fafc;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 12px;
         }
 
         .user-avatar {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid white;
-            box-shadow: var(--shadow-sm);
+            border: 2px solid #e2e8f0;
         }
 
         .user-name {
             font-weight: 600;
-            color: var(--dark-color);
+            color: #1e293b;
         }
 
         .reason-badge {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #fbbf24 100%);
+            background: #f59e0b;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         .date-text {
-            color: #6b7280;
-            font-size: 0.875rem;
+            color: #64748b;
+            font-size: 14px;
         }
 
         .action-btn {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background-color: #02CAA9;
             border: none;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            background-color: #01b497;
             color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            padding: 25px 30px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
         }
 
         .pagination {
             display: flex;
             list-style: none;
-            gap: 0.5rem;
-            padding-left: 0;
+            gap: 8px;
             justify-content: center;
-            margin-top: 2rem;
+            align-items: center;
         }
 
         .pagination li a {
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--border-color);
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
             text-decoration: none;
-            color: var(--dark-color);
-            background: white;
-            border-radius: 12px;
+            color: #64748b;
+            background-color: white;
+            border-radius: 8px;
             transition: all 0.3s ease;
             font-weight: 500;
-            min-width: 45px;
-            text-align: center;
-        }
-
-        .pagination li a:hover {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
         }
 
         .pagination li.active a {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background-color: #02CAA9;
             color: white;
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-md);
+            border-color: #02CAA9;
         }
 
         .pagination li.disabled a {
             pointer-events: none;
-            color: #9ca3af;
-            background: #f9fafb;
-            border-color: #e5e7eb;
+            color: #cbd5e1;
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+
+        .pagination li a:hover:not(.disabled) {
+            background-color: #02CAA9;
+            color: white;
+            border-color: #02CAA9;
+            transform: translateY(-1px);
         }
 
         /* Modal Styles */
         .modal-content {
-            border-radius: 20px;
+            border-radius: 12px;
             border: none;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: 20px 20px 0 0;
-            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+            padding: 20px 25px;
         }
 
         .modal-title {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 18px;
         }
 
         .btn-close {
@@ -280,47 +382,46 @@
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 25px;
         }
 
         .modal-body p {
-            margin-bottom: 1.5rem;
+            margin-bottom: 15px;
         }
 
         .modal-body strong {
-            color: var(--dark-color);
+            color: #1e293b;
             font-weight: 600;
         }
 
         .post-images {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
+            gap: 15px;
+            margin: 20px 0;
         }
 
         .post-images img,
         .overlay-image img {
             width: 100%;
-            height: 200px;
+            height: 150px;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 3px solid white;
-            box-shadow: var(--shadow-md);
+            border: 2px solid #e2e8f0;
         }
 
         .post-images img:hover,
         .overlay-image:hover img {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-lg);
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .overlay-image {
             position: relative;
             overflow: hidden;
-            border-radius: 16px;
+            border-radius: 8px;
         }
 
         .overlay-image::after {
@@ -328,50 +429,49 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%);
+            background: rgba(102, 126, 234, 0.9);
             color: white;
-            font-size: 2rem;
+            font-size: 24px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 16px;
-            backdrop-filter: blur(8px);
+            border-radius: 8px;
         }
 
         .modal-footer {
-            padding: 1.5rem 2rem;
+            padding: 20px 25px;
             background: #f8fafc;
-            border-radius: 0 0 20px 20px;
-            border-top: 1px solid var(--border-color);
+            border-radius: 0 0 12px 12px;
+            border-top: 1px solid #e2e8f0;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            background-color: #ef4444;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            background-color: #dc2626;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: #6b7280;
+            background-color: #64748b;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-secondary:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
+            background-color: #475569;
+            transform: translateY(-1px);
         }
 
         /* Image Preview Modal */
@@ -386,45 +486,58 @@
         }
 
         #previewImage {
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .btn-outline-light {
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            padding: 8px 16px;
             font-weight: 500;
             transition: all 0.3s ease;
         }
 
         .btn-outline-light:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 30px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding: 1rem;
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
             }
 
-            .header-section {
-                padding: 1.5rem;
-            }
-
-            .header-section h2 {
-                font-size: 2rem;
-            }
-
-            .content-section {
-                padding: 1rem;
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
             }
 
             .stats-cards {
                 grid-template-columns: 1fr;
             }
 
-            .table-responsive {
-                border-radius: 16px;
+            .data-table {
+                font-size: 14px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 12px 8px;
             }
 
             .post-images {
@@ -435,165 +548,205 @@
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="main-container">
-        <!-- Header Section -->
-        <div class="header-section">
-            <h2><i class="fas fa-shield-alt me-3"></i>Reports Management</h2>
-            <p class="subtitle">Monitor and manage reported content across the platform</p>
-        </div>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a th:href="@{/user/update}">
+            <img th:src="${session.user.getAvatarUrl()}" alt="Admin Avatar" class="admin-avatar">
+        </a>
+        <div class="admin-name" th:text="${session.user.getName()}">Admin Name</div>
+        <div class="admin-role">Administrator</div>
+    </div>
 
-        <!-- Content Section -->
-        <div class="content-section">
-            <!-- Stats Cards -->
+    <nav class="sidebar-nav">
+        <div class="nav-item">
+            <a th:href="@{/user/getAll}" class="nav-link">
+                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                </svg>
+                User Management
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="#" class="nav-link active">
+                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                </svg>
+                Reports
+            </a>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a th:href="@{/logout}" class="logout-btn">
+            <svg style="width: 16px; height: 16px; margin-right: 8px;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
+            </svg>
+            Logout
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="content-header">
+        <h1 class="page-title">Reports Management</h1>
+        <p class="page-subtitle">Monitor and manage reported content across the platform</p>
+    </div>
+
+    <div class="content-card">
+        <!-- Stats Section -->
+        <div class="stats-section">
             <div class="stats-cards">
                 <div class="stat-card reports">
                     <div class="icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <h4 th:text="${#lists.size(reports)}">0</h4>
-                    <p class="mb-0">Total Reports</p>
+                    <p>Total Reports</p>
                 </div>
                 <div class="stat-card pending">
                     <div class="icon">
                         <i class="fas fa-clock"></i>
                     </div>
                     <h4>Pending</h4>
-                    <p class="mb-0">Review Required</p>
+                    <p>Review Required</p>
                 </div>
                 <div class="stat-card resolved">
                     <div class="icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h4>Resolved</h4>
-                    <p class="mb-0">Actions Taken</p>
+                    <p>Actions Taken</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Reports Table -->
-            <div class="reports-table-container">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th><i class="fas fa-user me-2"></i>Reported By</th>
-                            <th><i class="fas fa-flag me-2"></i>Reason</th>
-                            <th><i class="fas fa-user-edit me-2"></i>Post Creator</th>
-                            <th><i class="fas fa-calendar me-2"></i>Date</th>
-                            <th><i class="fas fa-cogs me-2"></i>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="report : ${reports}">
-                            <td>
-                                <div class="user-info">
-                                    <img class="user-avatar" th:src="${report.user.avatarUrl}" alt="User Avatar">
-                                    <span class="user-name" th:text="${report.user.name}"></span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="reason-badge" th:text="${report.reason}"></span>
-                            </td>
-                            <td>
-                                <div class="user-info">
-                                    <img class="user-avatar" th:src="${report.post.usercreate.avatarUrl}" alt="Creator Avatar">
-                                    <span class="user-name" th:text="${report.post.usercreate.name}"></span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="date-text" th:text="${report.createdAt}"></span>
-                            </td>
-                            <td>
-                                <button class="action-btn"
-                                        data-bs-toggle="modal"
-                                        th:attr="data-bs-target='#modal__' + ${report.id}">
-                                    <i class="fas fa-eye me-2"></i>Review
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Reports Table -->
+        <div class="table-container">
+            <table class="data-table" th:if="${reports != null and !#lists.isEmpty(reports)}">
+                <thead>
+                <tr>
+                    <th><i class="fas fa-user me-2"></i>Reported By</th>
+                    <th><i class="fas fa-flag me-2"></i>Reason</th>
+                    <th><i class="fas fa-user-edit me-2"></i>Post Creator</th>
+                    <th><i class="fas fa-calendar me-2"></i>Date</th>
+                    <th><i class="fas fa-cogs me-2"></i>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="report : ${reports}">
+                    <td>
+                        <div class="user-info">
+                            <img class="user-avatar" th:src="${report.user.avatarUrl}" alt="User Avatar">
+                            <span class="user-name" th:text="${report.user.name}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="reason-badge" th:text="${report.reason}"></span>
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <img class="user-avatar" th:src="${report.post.usercreate.avatarUrl}" alt="Creator Avatar">
+                            <span class="user-name" th:text="${report.post.usercreate.name}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="date-text" th:text="${report.createdAt}"></span>
+                    </td>
+                    <td>
+                        <button class="action-btn"
+                                data-bs-toggle="modal"
+                                th:attr="data-bs-target='#modal__' + ${report.id}">
+                            <i class="fas fa-eye me-2"></i>Review
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="no-data" th:if="${reports == null or #lists.isEmpty(reports)}">
+                <div class="no-data-icon">📋</div>
+                <div>No reports found.</div>
             </div>
+        </div>
 
-            <!-- Pagination -->
-            <nav th:if="${paging.totalPages > 1}">
+        <!-- Pagination -->
+        <div class="pagination-container" th:if="${paging.totalPages > 1}">
+            <nav>
                 <ul class="pagination">
                     <li th:classappend="${paging.first} ? 'disabled'">
-                        <a th:href="@{'/reports?page=' + ${currentPage - 1}}">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
+                        <a th:href="@{'/reports?page=' + ${currentPage - 1}}">Previous</a>
                     </li>
                     <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
                         th:classappend="${i == currentPage} ? 'active'">
                         <a th:href="@{'/reports?page=' + ${i}}" th:text="${i + 1}"></a>
                     </li>
                     <li th:classappend="${paging.last} ? 'disabled'">
-                        <a th:href="@{'/reports?page=' + ${currentPage + 1}}">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
+                        <a th:href="@{'/reports?page=' + ${currentPage + 1}}">Next</a>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
+</main>
 
-    <!-- Modals for each report -->
-    <div th:each="report : ${reports}">
-        <div class="modal fade" th:id="'modal__' + ${report.id}" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-file-alt me-2"></i>Post Details
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong><i class="fas fa-flag me-2"></i>Report Reason:</strong>
-                            <span class="reason-badge" th:text="${report.reason}"></span></p>
-                        <p><strong><i class="fas fa-align-left me-2"></i>Post Content:</strong>
-                            <span th:text="${report.post.content}"></span></p>
+<!-- Modals for each report -->
+<div th:each="report : ${reports}">
+    <div class="modal fade" th:id="'modal__' + ${report.id}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-alt me-2"></i>Post Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong><i class="fas fa-flag me-2"></i>Report Reason:</strong>
+                        <span class="reason-badge" th:text="${report.reason}"></span></p>
+                    <p><strong><i class="fas fa-align-left me-2"></i>Post Content:</strong>
+                        <span th:text="${report.post.content}"></span></p>
 
-                        <div class="post-images" th:with="images=${report.post.imagePost}">
-                            <div th:each="img, stat : ${images}">
-                                <img th:if="${stat.index < 3}"
-                                     th:src="${img.imageUrl}"
-                                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                                     class="clickable-image"
-                                     alt="Post Image"/>
+                    <div class="post-images" th:with="images=${report.post.imagePost}">
+                        <div th:each="img, stat : ${images}">
+                            <img th:if="${stat.index < 3}"
+                                 th:src="${img.imageUrl}"
+                                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                                 class="clickable-image"
+                                 alt="Post Image"/>
 
-                                <div th:if="${stat.index == 3 and images.size() > 4}"
-                                     class="overlay-image clickable-image"
-                                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
-                                    <img th:src="${img.imageUrl}" alt="Post Image"/>
-                                </div>
-
-                                <img th:if="${stat.index == 3 and images.size() == 4}"
-                                     th:src="${img.imageUrl}"
-                                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                                     class="clickable-image"
-                                     alt="Post Image"/>
-
-                                <img th:if="${stat.index > 3}"
-                                     th:src="${img.imageUrl}"
-                                     th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
-                                     style="display: none"
-                                     class="clickable-image"
-                                     alt="Post Image"/>
+                            <div th:if="${stat.index == 3 and images.size() > 4}"
+                                 class="overlay-image clickable-image"
+                                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}, data-more='+' + ${images.size() - 4}">
+                                <img th:src="${img.imageUrl}" alt="Post Image"/>
                             </div>
+
+                            <img th:if="${stat.index == 3 and images.size() == 4}"
+                                 th:src="${img.imageUrl}"
+                                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                                 class="clickable-image"
+                                 alt="Post Image"/>
+
+                            <img th:if="${stat.index > 3}"
+                                 th:src="${img.imageUrl}"
+                                 th:attr="data-url=${img.imageUrl}, data-index=${stat.index}"
+                                 style="display: none"
+                                 class="clickable-image"
+                                 alt="Post Image"/>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <form th:action="@{'/reports/band/' + ${report.id}}" method="post" class="d-flex gap-2">
-                            <button type="submit" class="btn btn-danger" th:if="${!report.banded}">
-                                <i class="fas fa-ban me-2"></i>Ban Post
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-2"></i>Close
-                            </button>
-                        </form>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <form th:action="@{'/reports/band/' + ${report.id}}" method="post" class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger" th:if="${!report.banded}">
+                            <i class="fas fa-ban me-2"></i>Ban Post
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Close
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

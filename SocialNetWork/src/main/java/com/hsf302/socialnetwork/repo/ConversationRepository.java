@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
     @Query("SELECT c FROM Conversation c JOIN c.users u " +
             "WHERE c.type = 'PRIVATE' " +
-            "GROUP BY c.id, c.active, c.name, c.type " +
+            "GROUP BY c.id, c.active, c.name, c.type,c.createdBy " +
             "HAVING COUNT(u) = 2 AND SUM(CASE WHEN u.userId IN (:userId1, :userId2) THEN 1 ELSE 0 END) = 2")
     Optional<Conversation> findPrivateConversationBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 

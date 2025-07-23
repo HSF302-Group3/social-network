@@ -296,13 +296,13 @@ public class DataInitrizer implements CommandLineRunner {
 
 
         Users user11 = new Users();
-        user11.setUsername("LinhKa");
-        user11.setEmail("linhka@gmail.com");
+        user11.setUsername("HoangNgocTrinh");
+        user11.setEmail("nt@gmail.com");
         user11.setPassword("123");
-        user11.setName("Linh Ka");
+        user11.setName("Ngoc Trinh");
         user11.setGender(Gender.F);
         user11.setPhone("0234567899");
-        user11.setAvatarUrl("https://tse1.mm.bing.net/th/id/OIP.l6OQleGfwpU90Zj8QAbTRgHaEx?rs=1&pid=ImgDetMain&o=7&rm=3");
+        user11.setAvatarUrl("https://vcdn1-giaitri.vnecdn.net/2024/11/26/ngoctrinh-1732630649-173263066-7092-9633-1732630716.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BbVysA0vvlsQp8vQ-EmKiA");
         user11.setRole(Role.USER);
 
         Users user12 = new Users();
@@ -337,7 +337,7 @@ public class DataInitrizer implements CommandLineRunner {
 
         // Post của user11 (post6)
         Image img6 = new Image();
-        img6.setImageUrl("https://i.pinimg.com/736x/26/e1/44/26e144cf1b54ab87a71d553a4142f929.jpg");
+        img6.setImageUrl("https://images2.thanhnien.vn/528068263637045248/2023/10/8/img8947-16967640212991529741098.jpg");
 
         Post post6 = new Post();
         post6.setContent("Light selfie on the weekend");
