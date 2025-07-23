@@ -1046,10 +1046,10 @@
               <div class="conversation-snippet"
                    th:text="${#lists.isEmpty(conv.messages)
                ? 'Chưa có tin nhắn...'
-               : (conv.messages[conv.messages.size()-1].users.userId == currentUser.userId
+               : (conv.messages[conv.messages.size()-1].users != null and conv.messages[conv.messages.size()-1].users.userId == currentUser.userId
                    ? 'You: ' + conv.messages[conv.messages.size()-1].message
                    : conv.messages[conv.messages.size()-1].message)}"></div>
-            </div>>
+            </div>
             <div class="conversation-time"
                  th:if="${!#lists.isEmpty(conv.messages)}"
                  th:text="${#temporals.format(conv.messages.get(conv.messages.size() - 1).createddate, 'HH:mm')}">
@@ -1089,27 +1089,45 @@
                   <img th:src="${m.avatarUrl}" class="avatar-sm" alt="avatar"/>
                   <span th:text="${m.name}">Tên thành viên</span>
                   <!-- Chỉ show nút X khi là nhóm, createdBy không null, currentUser là creator, và m != currentUser -->
-                  <button
-                          class="remove-member-btn"
-                          th:if="
+
+                  <form th:action="@{/chat/{conversationId}/remove-member(conversationId=${currentConversation.id})}"
+                        method="post"
+                        style="display:inline">
+                    <input type="hidden" name="memberId" th:value="${m.userId}"/>
+                    <button
+                            class="remove-member-btn"
+                            th:if="
                               ${currentConversation.type == 'GROUP'}
                               and ${currentConversation.createdBy != null}
                               and ${currentConversation.createdBy.userId == currentUser.userId}
                               and ${m.userId != currentUser.userId}"
-                          title="Xoá thành viên">
-                    &times;
-                  </button>
+                            title="Xoá thành viên">
+                      &times;
+                    </button>
+                  </form>
                 </li>
               </ul>
             </div>
           </div>
         </div>
+        <form th:action="@{/chat/{id}(id=${currentConversation.id})}" method="get" class="message-search-form" style="margin-left:auto;">
+          <input
+                  type="text"
+                  name="keyword"
+                  class="search-input"
+                  placeholder="Tìm tin nhắn..."
+                  th:value="${keyword}" />
+          <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
       </div>
 
       <!-- Messages List -->
       <div class="messages-list" th:if="${currentConversation != null}">
         <!-- Individual Messages -->
-        <div th:each="msg : ${messages}">
+        <div th:each="msg : ${messages}"
+             th:attr="id=${matchedIds.contains(msg.id)} ? 'matched-' + ${msg.id} : null"
+             th:classappend="${matchedIds.contains(msg.id)} ? ' matched'">
+
           <!-- System message -->
           <div th:if="${msg.system}" class="system-message">
             <span th:text="${msg.message}">Hệ thống thông báo…</span>
@@ -1251,7 +1269,14 @@
         badge.textContent = ++count;
       }
     }
-
+  </script>
+  <script th:if="${keyword == null}">
+    document.addEventListener('DOMContentLoaded', () => {
+      const list = document.querySelector('.messages-list');
+      if (list) {
+        list.scrollTop = list.scrollHeight;
+      }
+    });
   </script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

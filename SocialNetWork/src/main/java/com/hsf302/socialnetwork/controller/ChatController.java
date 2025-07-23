@@ -1,5 +1,6 @@
 package com.hsf302.socialnetwork.controller;
 
+import com.hsf302.socialnetwork.dto.MessageDTO;
 import com.hsf302.socialnetwork.enity.Conversation;
 import com.hsf302.socialnetwork.enity.Message;
 import com.hsf302.socialnetwork.enity.Users;
@@ -7,6 +8,11 @@ import com.hsf302.socialnetwork.service.impl.ConversationService;
 import com.hsf302.socialnetwork.service.impl.MessageService;
 import com.hsf302.socialnetwork.service.impl.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/chat")
@@ -62,14 +70,18 @@ public class ChatController {
                 model.addAttribute("frim", "https://cdn-icons-png.flaticon.com/512/6387/6387947.png");
             }
         }
-        model.addAttribute("members", currentConversation.getUsers());
+        model.addAttribute("members", currentConversation != null
+                ? new ArrayList<>(currentConversation.getUsers())
+                : List.<Users>of());
         model.addAttribute("currentUser", currentUser);
-
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("matchedIds", List.<Long>of());
+        model.addAttribute("keyword", null);
         return "chat";
     }
 
     @GetMapping("/{conversationId}")
-    public String chatDetail(@PathVariable Long conversationId, Model model, HttpSession session) {
+    public String chatDetail(@PathVariable Long conversationId, @RequestParam(required = false) String keyword, Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
         if (currentUser == null) {
             return "redirect:/login";
@@ -77,8 +89,19 @@ public class ChatController {
         List<Conversation> conversations = conversationService.findByUserId(currentUser.getUserId());
 
         Conversation currentConversation = conversationService.findById(conversationId);
-        List<Message> messages = messageService.findByConversationId(conversationId);
 
+        List<Message> allMessages = messageService.findByConversationId(conversationId);
+        List<Long> matchedIds = List.of();
+        if (keyword != null && !keyword.isBlank()) {
+            matchedIds = messageService
+                    .searchInConversation(conversationId, keyword.trim())
+                    .stream()
+                    .map(Message::getId)
+                    .toList();
+            model.addAttribute("keyword", keyword.trim());
+        }else{
+            allMessages = messageService.findByConversationId(conversationId);
+        }
 
         if(currentConversation != null && currentConversation.getType().equalsIgnoreCase("Private")) {
 
@@ -94,10 +117,11 @@ public class ChatController {
         }
         model.addAttribute("conversations", conversations);
         model.addAttribute("currentConversation", currentConversation);
-        model.addAttribute("messages", messages);
         model.addAttribute("currentUser", currentUser);
         List<Users> members = new ArrayList<>(currentConversation.getUsers());
         model.addAttribute("members", members);
+        model.addAttribute("messages", allMessages);
+        model.addAttribute("matchedIds", matchedIds);
         return "chat";
     }
 

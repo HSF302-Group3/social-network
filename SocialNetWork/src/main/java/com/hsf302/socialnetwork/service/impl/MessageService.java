@@ -9,6 +9,9 @@ import com.hsf302.socialnetwork.repo.MessageRepository;
 import com.hsf302.socialnetwork.repo.UserRepo;
 import com.hsf302.socialnetwork.service.IsMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +56,8 @@ public class MessageService implements IsMessageService {
                 saved.getMessage(),
                 saved.getCreateddate().format(DateTimeFormatter.ofPattern("HH:mm")),
                 false,
-                saved.getUsers() != null ? saved.getUsers().getAvatarUrl() : null
+                saved.getUsers() != null ? saved.getUsers().getAvatarUrl() : null,
+                saved.getCreateddate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         );
 
         ws.convertAndSend("/topic/conversation/" + conversationId, dto);
@@ -76,16 +80,33 @@ public class MessageService implements IsMessageService {
         Message saved = messageRepository.save(message);
 
         var dto = new MessageDTO(
-                saved.getUsers().getUserId(),
+                null,
                 saved.getMessage(),
                 saved.getCreateddate().format(DateTimeFormatter.ofPattern("HH:mm")),
                 true,
-                saved.getUsers() != null ? saved.getUsers().getAvatarUrl() : null
+                null,
+                saved.getCreateddate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         );
 
         ws.convertAndSend("/topic/conversation/" + conversationId, dto);
 
         return saved;
+    }
+
+    public List<Message> findByConversationIdOrderCreatedDate(Long convId) {
+        return messageRepository.findByConversationIdAndSystemFalseOrderByCreateddateAsc(convId);
+    }
+
+    public List<Message> searchInConversation(Long convId, String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return findByConversationIdOrderCreatedDate(convId);
+        }
+        return messageRepository.findByConversationIdAndSystemFalseAndMessageContainingIgnoreCaseOrderByCreateddateAsc(
+                convId, keyword.trim());
+    }
+    public Page<Message> getMessagesPage(Long convId, Pageable pageable) {
+
+        return messageRepository.findByConversationId(convId, pageable);
     }
 
 }
