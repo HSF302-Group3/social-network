@@ -4,17 +4,299 @@
     <meta charset="UTF-8">
     <title>Reports Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Bootstrap & FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 1400px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .header-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-section .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-section {
+            padding: 2rem;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-card.reports .icon { background: var(--danger-color); }
+        .stat-card.pending .icon { background: var(--warning-color); }
+        .stat-card.resolved .icon { background: var(--success-color); }
+
+        .reports-table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            margin: 0;
+            border: none;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #374151 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            padding: 1.25rem 1rem;
+            border: none;
+            position: relative;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transform: scale(1.01);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .reason-badge {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #fbbf24 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .date-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            padding-left: 0;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pagination li a {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            text-decoration: none;
+            color: var(--dark-color);
+            background: white;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .pagination li a:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .pagination li.active a {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .pagination li.disabled a {
+            pointer-events: none;
+            color: #9ca3af;
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 1.5rem 2rem;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body strong {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
         .post-images {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 20px 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
 
         .post-images img,
@@ -22,129 +304,239 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 12px;
+            border: 3px solid white;
+            box-shadow: var(--shadow-md);
         }
 
         .post-images img:hover,
         .overlay-image:hover img {
             transform: scale(1.05);
-            filter: brightness(1.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .overlay-image {
             position: relative;
-            cursor: pointer;
-            border-radius: 12px;
             overflow: hidden;
+            border-radius: 16px;
         }
 
         .overlay-image::after {
             content: attr(data-more);
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%);
             color: white;
-            font-size: 28px;
+            font-size: 2rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: #f8fafc;
+            border-radius: 0 0 20px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
             border-radius: 12px;
-            backdrop-filter: blur(5px);
-        } .pagination {
-              display: flex;
-              list-style: none;
-              gap: 6px;
-              padding-left: 0;
-              justify-content: center;
-              margin-top: 20px;
-          }
-
-        .pagination li a {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            text-decoration: none;
-            color: black;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .pagination li.active a {
-            background-color: #02CAA9;
-            color: white;
-            font-weight: bold;
-            border-color: #02CAA9;
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
-        .pagination li.disabled a {
-            pointer-events: none;
-            color: #ccc;
-            background-color: #eee;
-            border-color: #ccc;
+        .btn-secondary {
+            background: #6b7280;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        /* Image Preview Modal */
+        #imagePreviewModal .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: none;
+        }
+
+        #imagePreviewModal .modal-header {
+            background: transparent;
+            border: none;
+        }
+
+        #previewImage {
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline-light {
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header-section {
+                padding: 1.5rem;
+            }
+
+            .header-section h2 {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                padding: 1rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .table-responsive {
+                border-radius: 16px;
+            }
+
+            .post-images {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2 class="mb-4">Reported Posts</h2>
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>Reported By</th>
-            <th>Reason</th>
-            <th>User Create Post</th>
-            <th>CreateAt</th>
-            <th>Action</th>
 
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="report : ${reports}">
-            <td >
-                <img width="50px" th:src="${report.user.avatarUrl}">
-                <span th:text="${report.user.name}"></span>
+<div class="container-fluid">
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h2><i class="fas fa-shield-alt me-3"></i>Reports Management</h2>
+            <p class="subtitle">Monitor and manage reported content across the platform</p>
+        </div>
 
-            </td>
-            <td th:text="${report.reason}"></td>
+        <!-- Content Section -->
+        <div class="content-section">
+            <!-- Stats Cards -->
+            <div class="stats-cards">
+                <div class="stat-card reports">
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h4 th:text="${#lists.size(reports)}">0</h4>
+                    <p class="mb-0">Total Reports</p>
+                </div>
+                <div class="stat-card pending">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>Pending</h4>
+                    <p class="mb-0">Review Required</p>
+                </div>
+                <div class="stat-card resolved">
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4>Resolved</h4>
+                    <p class="mb-0">Actions Taken</p>
+                </div>
+            </div>
 
-            <td >
-                <img width="50px" th:src="${report.post.usercreate.avatarUrl}">
-                <span th:text="${report.post.usercreate.name}"></span>
+            <!-- Reports Table -->
+            <div class="reports-table-container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Reported By</th>
+                            <th><i class="fas fa-flag me-2"></i>Reason</th>
+                            <th><i class="fas fa-user-edit me-2"></i>Post Creator</th>
+                            <th><i class="fas fa-calendar me-2"></i>Date</th>
+                            <th><i class="fas fa-cogs me-2"></i>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="report : ${reports}">
+                            <td>
+                                <div class="user-info">
+                                    <img class="user-avatar" th:src="${report.user.avatarUrl}" alt="User Avatar">
+                                    <span class="user-name" th:text="${report.user.name}"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="reason-badge" th:text="${report.reason}"></span>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <img class="user-avatar" th:src="${report.post.usercreate.avatarUrl}" alt="Creator Avatar">
+                                    <span class="user-name" th:text="${report.post.usercreate.name}"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="date-text" th:text="${report.createdAt}"></span>
+                            </td>
+                            <td>
+                                <button class="action-btn"
+                                        data-bs-toggle="modal"
+                                        th:attr="data-bs-target='#modal__' + ${report.id}">
+                                    <i class="fas fa-eye me-2"></i>Review
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            </td>
-            <td th:text="${report.createdAt}"></td>
-            <td>
-                <button class="btn btn-primary btn-sm"
-                        data-bs-toggle="modal"
-                        th:attr="data-bs-target='#modal__' + ${report.id}">
-                    View
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <nav th:if="${paging.totalPages > 1}">
-        <ul class="pagination">
-            <li th:classappend="${paging.first} ? 'disabled'">
-                <a th:href="@{'/reports?page='+${currentPage - 1}}">Previous</a>
-            </li>
-
-            <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
-                th:classappend="${i == currentPage} ? 'active'">
-                <a th:href="@{'/reports?page='+${i}}" th:text="${i + 1}"></a>
-            </li>
-
-            <li th:classappend="${paging.last} ? 'disabled'">
-                <a th:href="@{'/reports?page='+${currentPage + 1}}">Next</a>
-            </li>
-        </ul>
-    </nav>
+            <!-- Pagination -->
+            <nav th:if="${paging.totalPages > 1}">
+                <ul class="pagination">
+                    <li th:classappend="${paging.first} ? 'disabled'">
+                        <a th:href="@{'/reports?page=' + ${currentPage - 1}}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a th:href="@{'/reports?page=' + ${i}}" th:text="${i + 1}"></a>
+                    </li>
+                    <li th:classappend="${paging.last} ? 'disabled'">
+                        <a th:href="@{'/reports?page=' + ${currentPage + 1}}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 
     <!-- Modals for each report -->
     <div th:each="report : ${reports}">
@@ -152,12 +544,16 @@
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Post Detail</h5>
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-alt me-2"></i>Post Details
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Reason:</strong> <span th:text="${report.reason}"></span></p>
-                        <p><strong>Content:</strong> <span th:text="${report.post.content}"></span></p>
+                        <p><strong><i class="fas fa-flag me-2"></i>Report Reason:</strong>
+                            <span class="reason-badge" th:text="${report.reason}"></span></p>
+                        <p><strong><i class="fas fa-align-left me-2"></i>Post Content:</strong>
+                            <span th:text="${report.post.content}"></span></p>
 
                         <div class="post-images" th:with="images=${report.post.imagePost}">
                             <div th:each="img, stat : ${images}">
@@ -189,12 +585,13 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <form th:action="@{'/reports/band/'+${report.id}}" method="post">
-                            <button type="submit" class="btn btn-danger"
-                                    th:if="${!report.banded}">
-                                Ban Post
+                        <form th:action="@{'/reports/band/' + ${report.id}}" method="post" class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger" th:if="${!report.banded}">
+                                <i class="fas fa-ban me-2"></i>Ban Post
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Close
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -203,19 +600,67 @@
     </div>
 </div>
 
-<!-- Optional JS to support image preview (optional) -->
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="previewImage" src="/placeholder.svg" class="img-fluid" alt="Preview">
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <button id="prevBtn" class="btn btn-outline-light">
+                        <i class="fas fa-chevron-left me-2"></i>Previous
+                    </button>
+                    <span id="imageCounter" class="fw-bold text-white fs-5"></span>
+                    <button id="nextBtn" class="btn btn-outline-light">
+                        Next<i class="fas fa-chevron-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Preview Script -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const modals = document.querySelectorAll('.modal');
+        const previewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+        const previewImage = document.getElementById('previewImage');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const counter = document.getElementById('imageCounter');
 
-        modals.forEach(modal => {
+        let currentIndex = 0;
+        let currentImages = [];
+
+        document.querySelectorAll('.modal').forEach(modal => {
             const images = modal.querySelectorAll('.clickable-image');
-            images.forEach(img => {
+            images.forEach((img, index) => {
                 img.addEventListener("click", () => {
-                    const url = img.getAttribute("data-url");
-                    window.open(url, "_blank");
+                    currentImages = Array.from(images);
+                    currentIndex = index;
+                    showImage(currentIndex);
+                    previewModal.show();
                 });
             });
+        });
+
+        function showImage(index) {
+            const img = currentImages[index];
+            previewImage.src = img.getAttribute("data-url");
+            counter.textContent = `${index + 1} / ${currentImages.length}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+            showImage(currentIndex);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            showImage(currentIndex);
         });
     });
 </script>
