@@ -272,6 +272,122 @@ public class DataInitrizer implements CommandLineRunner {
         addFriendRepo.save(friendship4);
 
 
+        Users user9 = new Users();
+        user9.setUsername("Jack97");
+        user9.setEmail("jack@gmail.com");
+        user9.setPassword("123");
+        user9.setName("Trinh Tran Phuong Tuan");
+        user9.setGender(Gender.M);
+        user9.setPhone("0234567898");
+        user9.setAvatarUrl("https://studiochupanhdep.com/Upload/Newsimages/hinh-anh-jack-cuc-dep.jpg");
+        user9.setRole(Role.USER);
+
+
+
+        Users user10 = new Users();
+        user10.setUsername("Virus");
+        user10.setEmail("vi@gmail.com");
+        user10.setPassword("123");
+        user10.setName("Virus");
+        user10.setGender(Gender.M);
+        user10.setPhone("0234567810");
+        user10.setAvatarUrl("https://tse4.mm.bing.net/th/id/OIP.44_6GSi3SGiwPSRGeBchjQHaLH?rs=1&pid=ImgDetMain&o=7&rm=3");
+        user10.setRole(Role.USER);
+
+
+        Users user11 = new Users();
+        user11.setUsername("LinhKa");
+        user11.setEmail("linhka@gmail.com");
+        user11.setPassword("123");
+        user11.setName("Linh Ka");
+        user11.setGender(Gender.F);
+        user11.setPhone("0234567899");
+        user11.setAvatarUrl("https://tse1.mm.bing.net/th/id/OIP.l6OQleGfwpU90Zj8QAbTRgHaEx?rs=1&pid=ImgDetMain&o=7&rm=3");
+        user11.setRole(Role.USER);
+
+        Users user12 = new Users();
+        user12.setUsername("DucPhuc");
+        user12.setEmail("ducphuc@gmail.com");
+        user12.setPassword("123");
+        user12.setName("Duc Phuc");
+        user12.setGender(Gender.M);
+        user12.setPhone("0234567800");
+        user12.setAvatarUrl("https://tse2.mm.bing.net/th/id/OIP.AGDnDZFOEpfN5TjK45oftwHaFs?rs=1&pid=ImgDetMain&o=7&rm=3");
+        user12.setRole(Role.USER);
+
+        userRepo.saveAll(Arrays.asList(user9, user10, user11, user12));
+
+
+
+
+        AddFriend friendWithUser9 = new AddFriend();
+        friendWithUser9.setSendInvite(user1);
+        friendWithUser9.setReciveInvite(user9);
+        friendWithUser9.setFriended(true);
+        addFriendRepo.save(friendWithUser9);
+
+        Conversation convWithUser9 = new Conversation();
+        convWithUser9.setName(user9.getName());
+        convWithUser9.setType("PRIVATE");
+        convWithUser9.setActive(true);
+        convWithUser9.setUsers(new HashSet<>(Arrays.asList(user1, user9)));
+        conversationRepo.save(convWithUser9);
+
+        Message msgToUser9 = new Message();
+        msgToUser9.setConversation(convWithUser9);
+        msgToUser9.setUsers(user1);
+        msgToUser9.setMessage("Hey anh Jack 5 củ nhé sắp tới có show âm nhạc mời anh");
+        msgToUser9.setActive(true);
+        msgToUser9.setCreateddate(LocalDateTime.now().minusMinutes(3));
+        messageRepo.save(msgToUser9);
+
+        user9.setConversations(new HashSet<>(Arrays.asList(convWithUser9)));
+        user1.getConversations().add(convWithUser9);
+        userRepo.saveAll(Arrays.asList(user1, user9));
+
+
+
+        // Post của user9 (post4)
+        Image img4 = new Image();
+        img4.setImageUrl("https://yt3.googleusercontent.com/ytc/AMLnZu9m4wHeLpVyIhV2oFj9CbHGDgYivQPJ4VYgZ__h=s900-c-k-c0x00ffffff-no-rj");
+
+        Post post4 = new Post();
+        post4.setContent("A new day full of energy!");
+        post4.addImage(img4);
+        user9.addPostCreate(post4);
+
+        // Post của user10 (post5)
+        Image img5 = new Image();
+        img5.setImageUrl("https://tse1.mm.bing.net/th/id/OIP.SAQiiG8U8u1icmEpK-X3WAHaEj?rs=1&pid=ImgDetMain&o=7&rm=3");
+
+        Post post5 = new Post();
+        post5.setContent("The virus is here! Who is there, raise your hand!");
+        post5.addImage(img5);
+        user10.addPostCreate(post5);
+
+        // Post của user11 (post6)
+        Image img6 = new Image();
+        img6.setImageUrl("https://i.pinimg.com/736x/26/e1/44/26e144cf1b54ab87a71d553a4142f929.jpg");
+
+        Post post6 = new Post();
+        post6.setContent("Light selfie on the weekend");
+        post6.addImage(img6);
+        user11.addPostCreate(post6);
+
+        // Post của user12 (post7)
+        Image img7 = new Image();
+        img7.setImageUrl("https://media.vov.vn/sites/default/files/styles/large/public/2023-08/duc-phuc-1.jpg");
+
+        Post post7 = new Post();
+        post7.setContent("Music help me healing");
+        post7.addImage(img7);
+        user12.addPostCreate(post7);
+
+        // Lưu lại
+        userRepo.saveAll(Arrays.asList(user9, user10, user11, user12));
+
+
+        
 
         reportService.createReport("Noi dung ko hay ",post1.getId(),user2.getUserId());
 
