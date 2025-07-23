@@ -47,7 +47,7 @@ private ReportService reportService;
         }
         System.out.println("ac"+active);
         //
-        Pageable pageable = PageRequest.of(page,1);//de test thoi chu sua lai la 3 -4 la ok
+        Pageable pageable = PageRequest.of(page,2);//de test thoi chu sua lai la 3 -4 la ok
         model.addAttribute("user", users);
         model.addAttribute("posts",postService.getALlPostsByCurrentUser(users,active, pageable).getContent());
         model.addAttribute("paging",postService.getALlPostsByCurrentUser(users,active, pageable));
@@ -113,7 +113,7 @@ private ReportService reportService;
         if (users == null) {
             return "redirect:/login";
         }
-        Pageable pageable = PageRequest.of(page,1);
+        Pageable pageable = PageRequest.of(page,2);/// de test thoi
         model.addAttribute("posts",postService.postOfFriend(users,pageable).getContent());
         model.addAttribute("paging",postService.postOfFriend(users,pageable));
         model.addAttribute("currentPage", page);

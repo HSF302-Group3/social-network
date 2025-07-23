@@ -33,7 +33,7 @@ public class ReportController {
         {
             return "redirect:/login";
         }
-        PageRequest pageRequest = PageRequest.of(page, 1);//test
+        PageRequest pageRequest = PageRequest.of(page, 5);//test
 
 
         model.addAttribute("user", users);

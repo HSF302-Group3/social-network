@@ -315,36 +315,6 @@ public class DataInitrizer implements CommandLineRunner {
         user12.setAvatarUrl("https://tse2.mm.bing.net/th/id/OIP.AGDnDZFOEpfN5TjK45oftwHaFs?rs=1&pid=ImgDetMain&o=7&rm=3");
         user12.setRole(Role.USER);
 
-        userRepo.saveAll(Arrays.asList(user9, user10, user11, user12));
-
-
-
-
-        AddFriend friendWithUser9 = new AddFriend();
-        friendWithUser9.setSendInvite(user1);
-        friendWithUser9.setReciveInvite(user9);
-        friendWithUser9.setFriended(true);
-        addFriendRepo.save(friendWithUser9);
-
-        Conversation convWithUser9 = new Conversation();
-        convWithUser9.setName(user9.getName());
-        convWithUser9.setType("PRIVATE");
-        convWithUser9.setActive(true);
-        convWithUser9.setUsers(new HashSet<>(Arrays.asList(user1, user9)));
-        conversationRepo.save(convWithUser9);
-
-        Message msgToUser9 = new Message();
-        msgToUser9.setConversation(convWithUser9);
-        msgToUser9.setUsers(user1);
-        msgToUser9.setMessage("Hey anh Jack 5 củ nhé sắp tới có show âm nhạc mời anh");
-        msgToUser9.setActive(true);
-        msgToUser9.setCreateddate(LocalDateTime.now().minusMinutes(3));
-        messageRepo.save(msgToUser9);
-
-        user9.setConversations(new HashSet<>(Arrays.asList(convWithUser9)));
-        user1.getConversations().add(convWithUser9);
-        userRepo.saveAll(Arrays.asList(user1, user9));
-
 
 
         // Post của user9 (post4)
@@ -383,14 +353,50 @@ public class DataInitrizer implements CommandLineRunner {
         post7.addImage(img7);
         user12.addPostCreate(post7);
 
-        // Lưu lại
         userRepo.saveAll(Arrays.asList(user9, user10, user11, user12));
 
 
-        
 
-        reportService.createReport("Noi dung ko hay ",post1.getId(),user2.getUserId());
 
+        AddFriend friendWithUser9 = new AddFriend();
+        friendWithUser9.setSendInvite(user1);
+        friendWithUser9.setReciveInvite(user9);
+        friendWithUser9.setFriended(true);
+        addFriendRepo.save(friendWithUser9);
+
+        Conversation convWithUser9 = new Conversation();
+        convWithUser9.setName(user9.getName());
+        convWithUser9.setType("PRIVATE");
+        convWithUser9.setActive(true);
+        convWithUser9.setUsers(new HashSet<>(Arrays.asList(user1, user9)));
+        conversationRepo.save(convWithUser9);
+
+        Message msgToUser9 = new Message();
+        msgToUser9.setConversation(convWithUser9);
+        msgToUser9.setUsers(user1);
+        msgToUser9.setMessage("Hey anh Jack 5 củ nhé sắp tới có show âm nhạc mời anh");
+        msgToUser9.setActive(true);
+        msgToUser9.setCreateddate(LocalDateTime.now().minusMinutes(3));
+        messageRepo.save(msgToUser9);
+
+        user9.setConversations(new HashSet<>(Arrays.asList(convWithUser9)));
+        user1.getConversations().add(convWithUser9);
+        userRepo.saveAll(Arrays.asList(user1, user9));
+
+//        // Lưu lại
+        userRepo.saveAll(Arrays.asList(user9, user10, user11, user12));
         userRepo.save(user8);
+
+        System.out.println("Test"+post4.getContent());
+        reportService.createReport("The post contains abusive language or targets someone unfairly.",post1.getId(),user2.getUserId());
+        reportService.createReport("The post promotes violence or hatred against individuals or groups based on race, religion, gender, etc",post2.getId(),user1.getUserId());
+        reportService.createReport("The post expresses intent or encouragement of self-harm or suicide.",post3.getId(),user3.getUserId());
+        reportService.createReport("The post contains offensive, vulgar, or disrespectful language.",post4.getId(),user2.getUserId());
+        reportService.createReport("The post is attempting to deceive users for money or sensitive information.",post5.getId(),user11.getUserId());
+        reportService.createReport("The post promotes or threatens physical harm or violence.",post6.getId(),user10.getUserId());
+        reportService.createReport("The post spreads misleading or fake news.",post7.getId(),user10.getUserId());
+        reportService.createReport("The post contains inappropriate or explicit content.",post4.getId(),user3.getUserId());
+
+
     }
 }

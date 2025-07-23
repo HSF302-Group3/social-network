@@ -2,244 +2,527 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manager User</title>
+    <title>Admin Dashboard - User Management</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            padding: 40px;
-            margin: 0;
+            background-color: #f8fafc;
+            color: #334155;
         }
 
-        .container {
-            max-width: 1200px;
-            background-color: #ffffff;
-            margin: 0 auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .user-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .avatar img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 3px solid #02CAA9;
-            object-fit: cover;
-            margin-right: 20px;
-        }
-
-        .user-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        h1.title {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .search-bar,
-        .filter-toggle {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .search-bar input[type="text"] {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        /* Sidebar Styles */
+        .sidebar {
             width: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        button {
-            padding: 10px 16px;
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .admin-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .admin-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .admin-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .admin-role {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 5px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 500;
+            min-height: 52px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: #02CAA9;
+            color: white;
+            transform: translateX(2px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .nav-link:hover .nav-icon,
+        .nav-link.active .nav-icon {
+            opacity: 1;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 300px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #02CAA9;
+        }
+
+        .btn {
+            padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
             background-color: #02CAA9;
             color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
         }
 
-        button:hover {
+        .btn-primary:hover {
             background-color: #01b497;
+            transform: translateY(-1px);
         }
 
-        table {
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        /* Table Styles */
+        .table-container {
+            padding: 0;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        th {
-            background-color: #02CAA9;
-            color: #fff;
+        .data-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .data-table tr:hover {
+            background-color: #f8fafc;
         }
 
         .action-link {
-            color: #3498db;
+            color: #02CAA9;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
         }
 
         .action-link:hover {
-            text-decoration: underline;
+            background-color: #02CAA9;
+            color: white;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 30px;
-            font-size: 16px;
-            color: #888;
+        .deactivate-link {
+            color: #ef4444;
         }
-        .but{
-            padding: 10px 25px;
-            background-color: #1abc9c;
-             color: white;
-            border-radius:10px;
-            text-decoration: none;
+
+        .deactivate-link:hover {
+            background-color: #ef4444;
+            color: white;
         }
+
+        /* Pagination Styles */
+        .pagination-container {
+            padding: 25px 30px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
         .pagination {
             display: flex;
             list-style: none;
-            gap: 6px;
-            padding-left: 0;
+            gap: 8px;
             justify-content: center;
-            margin-top: 20px;
+            align-items: center;
         }
 
         .pagination li a {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
             text-decoration: none;
-            color: black;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            color: #64748b;
+            background-color: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .pagination li.active a {
             background-color: #02CAA9;
             color: white;
-            font-weight: bold;
             border-color: #02CAA9;
         }
 
         .pagination li.disabled a {
             pointer-events: none;
-            color: #ccc;
-            background-color: #eee;
-            border-color: #ccc;
+            color: #cbd5e1;
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
         }
 
+        .pagination li a:hover:not(.disabled) {
+            background-color: #02CAA9;
+            color: white;
+            border-color: #02CAA9;
+            transform: translateY(-1px);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 30px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .search-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .data-table {
+                font-size: 14px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 12px 8px;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <div class="user-header">
-        <div class="user-info">
-            <a th:href="@{/user/update}" class="avatar">
-                <img th:src="${session.user.getAvatarUrl()}" alt="Avatar">
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a th:href="@{/user/update}">
+            <img th:src="${session.user.getAvatarUrl()}" alt="Admin Avatar" class="admin-avatar">
+        </a>
+        <div class="admin-name" th:text="${session.user.getName()}">Admin Name</div>
+        <div class="admin-role">Administrator</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-item">
+            <a href="#" class="nav-link active">
+                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                </svg>
+                User Management
             </a>
-            <div class="user-name" th:text="${session.user.getName()}">User Name</div>
         </div>
-        <a class="but" th:href="@{/logout}">Logout</a>
-        <a class="but" th:href="@{/reports}">Reports</a>
-    </div>
-
-    <h1 class="title">Manage Users</h1>
-
-    <form th:action="@{/user/getAll}" method="get" class="search-bar">
-        <input type="hidden" name="active" th:value="${active}">
-        <input type="text" name="search" placeholder="Search by name or email..."
-               th:value="${search != 'null' ? search : ''}" />
-        <button type="submit">Search</button>
-    </form>
-
-    <form th:action="@{/user/getAll}" method="get" class="filter-toggle">
-        <input type="hidden" name="active" th:value="${active ? false : true}">
-        <input type="hidden" name="search"   th:value="${search != 'null' ? search : ''}" />
-        <button th:if="${active}" type="submit">Show Inactive Users</button>
-        <button th:if="${!active}" type="submit">Show Active Users</button>
-    </form>
-
-    <table th:if="${users != null and !#lists.isEmpty(users)}">
-        <thead>
-        <tr>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Gender</th>
-            <th>Role</th>
-            <th>Created At</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="u : ${users}">
-            <td th:text="${u.username}">username</td>
-            <td th:text="${u.name}">Full Name</td>
-            <td th:text="${u.email}">Email</td>
-            <td th:text="${u.phone}">Phone</td>
-            <td th:text="${u.gender}">Gender</td>
-            <td th:text="${u.role}">Role</td>
-            <td th:text="${u.created}">Created</td>
-            <td>
-                <a th:if="${u.active}" th:href="@{'/user/inactive/'+${u.userId}}" class="action-link">Deactivate</a>
-                <a th:if="${!u.active}" th:href="@{'/user/active/'+${u.userId}}" class="action-link">Restore</a>
-            </td>
-        </tr>
-        </tbody>
-
-    </table>
-    <nav th:if="${paging.totalPages > 1}">
-        <ul class="pagination">
-            <li th:classappend="${paging.first} ? 'disabled'">
-                <a th:href="@{'/user/getAll?page='+${currentPage - 1}+'&active='+${active}+'&search='+${search}}">Previous</a>
-            </li>
-
-            <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
-                th:classappend="${i == currentPage} ? 'active'">
-                <a th:href="@{'/user/getAll?page='+${i}+'&active='+${active}+'&search='+${search}}" th:text="${i + 1}"></a>
-            </li>
-
-            <li th:classappend="${paging.last} ? 'disabled'">
-                <a th:href="@{'/user/getAll?page='+${currentPage + 1}+'&active='+${active}+'&search='+${search}}">Next</a>
-            </li>
-        </ul>
+        <div class="nav-item">
+            <a th:href="@{/reports}" class="nav-link">
+                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                </svg>
+                Reports
+            </a>
+        </div>
     </nav>
-    <div class="no-data" th:if="${users == null or #lists.isEmpty(users)}">
-        No users found.
+
+    <div class="sidebar-footer">
+        <a th:href="@{/logout}" class="logout-btn">
+            <svg style="width: 16px; height: 16px; margin-right: 8px;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
+            </svg>
+            Logout
+        </a>
     </div>
-</div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="content-header">
+        <h1 class="page-title">User Management</h1>
+        <p class="page-subtitle">Manage and monitor all system users</p>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <form th:action="@{/user/getAll}" method="get" class="search-controls">
+                <input type="hidden" name="active" th:value="${active}">
+                <input type="text" name="search" placeholder="Search by name or email..."
+                       th:value="${search != 'null' ? search : ''}" class="search-input" />
+                <button type="submit" class="btn btn-primary">
+                    <svg style="width: 16px; height: 16px; margin-right: 6px; display: inline-block;" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                    </svg>
+                    Search
+                </button>
+            </form>
+
+            <form th:action="@{/user/getAll}" method="get" style="margin-top: 15px;">
+                <input type="hidden" name="active" th:value="${active ? false : true}">
+                <input type="hidden" name="search" th:value="${search != 'null' ? search : ''}" />
+                <button th:if="${active}" type="submit" class="btn btn-secondary">Show Inactive Users</button>
+                <button th:if="${!active}" type="submit" class="btn btn-secondary">Show Active Users</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${users != null and !#lists.isEmpty(users)}">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Role</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${users}">
+                    <td th:text="${u.username}">username</td>
+                    <td th:text="${u.name}">Full Name</td>
+                    <td th:text="${u.email}">Email</td>
+                    <td th:text="${u.phone}">Phone</td>
+                    <td th:text="${u.gender}">Gender</td>
+                    <td th:text="${u.role}">Role</td>
+                    <td th:text="${u.created}">Created</td>
+                    <td>
+                        <span th:if="${u.active}" class="status-badge status-active">Active</span>
+                        <span th:if="${!u.active}" class="status-badge status-inactive">Inactive</span>
+                    </td>
+                    <td>
+                        <a th:if="${u.active}" th:href="@{'/user/inactive/'+${u.userId}}" class="action-link deactivate-link"
+                           onclick="return confirm('Are you sure ?')"
+
+                        >Deactivate</a>
+                        <a th:if="${!u.active}" th:href="@{'/user/active/'+${u.userId}}" class="action-link">Restore</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="no-data" th:if="${users == null or #lists.isEmpty(users)}">
+                <div class="no-data-icon">👥</div>
+                <div>No users found matching your criteria.</div>
+            </div>
+        </div>
+
+        <div class="pagination-container" th:if="${paging.totalPages > 1}">
+            <nav>
+                <ul class="pagination">
+                    <li th:classappend="${paging.first} ? 'disabled'">
+                        <a th:href="@{'/user/getAll?page='+${currentPage - 1}+'&active='+${active}+'&search='+${search}}">Previous</a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a th:href="@{'/user/getAll?page='+${i}+'&active='+${active}+'&search='+${search}}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <li th:classappend="${paging.last} ? 'disabled'">
+                        <a th:href="@{'/user/getAll?page='+${currentPage + 1}+'&active='+${active}+'&search='+${search}}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
 </body>
 </html>

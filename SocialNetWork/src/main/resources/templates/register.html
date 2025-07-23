@@ -2,121 +2,471 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>User Registration</title>
+  <title>Register - Social Network</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
-      padding: 30px;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 20px 0;
     }
 
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: #ffffff;
-      padding: 30px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-      border-radius: 8px;
+    /* Animated background elements */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: float 20s infinite linear;
     }
 
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-50px, -50px) rotate(360deg); }
     }
 
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+    .register-container {
+      position: relative;
+      width: 500px;
+      max-width: 90%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow:
+              0 25px 50px rgba(0, 0, 0, 0.15),
+              0 0 0 1px rgba(255, 255, 255, 0.2);
+      text-align: center;
+      animation: slideUp 0.8s ease-out;
+      margin: 20px 0;
     }
 
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      border: none;
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      margin: 0 auto 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .logo i {
+      font-size: 35px;
       color: white;
-      border-radius: 4px;
+    }
+
+    .register-container h2 {
+      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #333;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-row .input-group {
+      flex: 1;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
       font-size: 16px;
-    }  .is-invalid {
-         border: 1px solid red;
-       }
+      transition: color 0.3s ease;
+      z-index: 2;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 16px 18px 16px 50px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      background: #f8f9fa;
+      font-size: 15px;
+      font-weight: 400;
+      color: #333;
+      transition: all 0.3s ease;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-group input:focus + i, .input-group select:focus + i {
+      color: #667eea;
+    }
+
+    .input-group input::placeholder {
+      color: #aaa;
+      font-weight: 300;
+    }
+
+    .input-group.is-invalid input {
+      border-color: #dc3545;
+      background: #fff5f5;
+    }
 
     .invalid-feedback {
-      color: red;
-      font-size: 0.9em;
-      margin-top: 4px;
+      color: #dc3545;
+      font-size: 12px;
+      margin-top: 5px;
+      font-weight: 400;
+      text-align: left;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .gender-group {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border: 2px solid #e1e5e9;
+    }
+
+    .gender-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .gender-option:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .gender-option input[type="radio"] {
+      width: auto;
+      margin: 0;
+      padding: 0;
+      accent-color: #667eea;
+    }
+
+    .gender-option label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 18px;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .register-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .register-btn:hover::before {
+      left: 100%;
+    }
+
+    .register-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .register-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-link {
+      margin-top: 25px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .divider {
+      margin: 25px 0;
+      position: relative;
+      text-align: center;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e1e5e9;
+    }
+
+    .divider span {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .register-container {
+        width: 95%;
+        padding: 30px 25px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .gender-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .register-container h2 {
+        font-size: 24px;
+      }
+
+      .input-group input {
+        padding: 14px 16px 14px 45px;
+        font-size: 14px;
+      }
+
+      .register-btn {
+        padding: 16px;
+        font-size: 15px;
+      }
+    }
+
+    /* Loading animation for button */
+    .register-btn.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .register-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }
     }
   </style>
 </head>
 <body>
-
-<h2 style="text-align:center;">Register New User</h2>
-<form th:action="@{/user/register}" method="post" th:object="${user}">
-  <div>
-    <label for="username">Username</label>
-    <input type="text" th:field="*{username}" id="username"
-           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
-    <div class="invalid-feedback"  th:errors="*{username}"></div>
+<div class="register-container">
+  <div class="logo">
+    <i class="fas fa-user-plus"></i>
   </div>
 
-  <div>
-    <label for="email">Email</label>
-    <input type="email" th:field="*{email}" id="email"
-           th:classappend="${#fields.hasErrors('email') || errorEmail != null} ? 'is-invalid'"/>
-    <div class="invalid-feedback"  th:errors="*{email}"></div>
-    <div class="invalid-feedback" th:if="${errorEmail != null}" th:text="${errorEmail}"></div>
+  <h2>Create Account</h2>
+  <p class="subtitle">Join our Social Network community</p>
+
+  <form th:action="@{/user/register}" method="post" th:object="${user}" id="registerForm">
+    <div class="form-row">
+      <div class="input-group" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'">
+        <input type="text" th:field="*{username}" id="username" placeholder="Username" required />
+        <i class="fas fa-user"></i>
+        <div class="invalid-feedback" th:errors="*{username}"></div>
+      </div>
+
+      <div class="input-group" th:classappend="${#fields.hasErrors('email') || errorEmail != null} ? 'is-invalid'">
+        <input type="email" th:field="*{email}" id="email" placeholder="Email address" required />
+        <i class="fas fa-envelope"></i>
+        <div class="invalid-feedback" th:errors="*{email}"></div>
+        <div class="invalid-feedback" th:if="${errorEmail != null}" th:text="${errorEmail}"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="input-group" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+        <input type="text" th:field="*{name}" id="name" placeholder="Full Name" required />
+        <i class="fas fa-id-card"></i>
+        <div class="invalid-feedback" th:errors="*{name}"></div>
+      </div>
+
+      <div class="input-group" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+        <input type="text" th:field="*{phone}" id="phone" placeholder="Phone number" />
+        <i class="fas fa-phone"></i>
+        <div class="invalid-feedback" th:errors="*{phone}"></div>
+      </div>
+    </div>
+
+    <div class="input-group" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+      <input type="password" th:field="*{password}" id="password" placeholder="Create password" required />
+      <i class="fas fa-lock"></i>
+      <div class="invalid-feedback" th:errors="*{password}"></div>
+    </div>
+
+    <div class="input-group" th:classappend="${#fields.hasErrors('avatarUrl')} ? 'is-invalid'">
+      <input type="url" th:field="*{avatarUrl}" id="avatarUrl" placeholder="Avatar URL (optional)" />
+      <i class="fas fa-image"></i>
+      <div class="invalid-feedback" th:errors="*{avatarUrl}"></div>
+    </div>
+
+    <div class="gender-group">
+      <div class="gender-option">
+        <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}" id="male"/>
+        <label for="male"><i class="fas fa-mars"></i> Male</label>
+      </div>
+      <div class="gender-option">
+        <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}" id="female"/>
+        <label for="female"><i class="fas fa-venus"></i> Female</label>
+      </div>
+    </div>
+    <div class="invalid-feedback" th:errors="*{gender}" style="text-align: center;"></div>
+
+    <button type="submit" class="register-btn" id="registerBtn">
+      <i class="fas fa-user-plus"></i> Create Account
+    </button>
+  </form>
+
+  <div class="login-link">
+    Already have an account? <a th:href="@{/login}">Sign in here</a>
   </div>
 
-  <div>
-    <label for="password">Password</label>
-    <input type="password" th:field="*{password}" id="password"
-           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
-    <div class="invalid-feedback"  th:errors="*{password}"></div>
+  <div class="divider">
+    <span>Secure Registration</span>
   </div>
+</div>
 
-  <div>
-    <label for="name">Full Name</label>
-    <input type="text" th:field="*{name}" id="name"
-           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
-    <div class="invalid-feedback" th:errors="*{name}"></div>
-  </div>
+<script>
+  // Add loading animation on form submit
+  document.getElementById('registerForm').addEventListener('submit', function() {
+    const btn = document.getElementById('registerBtn');
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+  });
 
-  <div>
-    <label>Gender</label><br>
-    <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).M}" id="male"/>
-    <label for="male">Male</label>
-    <input type="radio" th:field="*{gender}" th:value="${T(com.hsf302.socialnetwork.enums.Gender).F}" id="female"/>
-    <label for="female">Female</label>
-    <div class="invalid-feedback" th:errors="*{gender}"></div>
-  </div>
+  // Add focus animations
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.style.transform = 'translateY(-2px)';
+    });
 
-  <div>
-    <label for="phone">Phone</label>
-    <input type="text" th:field="*{phone}" id="phone"
-           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"/>
-    <div class="invalid-feedback"  th:errors="*{phone}"></div>
-  </div>
+    input.addEventListener('blur', function() {
+      this.parentElement.style.transform = 'translateY(0)';
+    });
+  });
 
-  <div>
-    <label for="avatarUrl">Avatar URL</label>
-    <input type="text" th:field="*{avatarUrl}" id="avatarUrl"
-           th:classappend="${#fields.hasErrors('avatarUrl')} ? 'is-invalid'"/>
-    <div class="invalid-feedback"  th:errors="*{avatarUrl}"></div>
-  </div>
+  // Password strength indicator
+  document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strength = getPasswordStrength(password);
+    // You can add password strength indicator here if needed
+  });
 
-
-
-  <button type="submit">Register</button>
-</form>
-
+  function getPasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+  }
+</script>
 </body>
 </html>

@@ -860,12 +860,21 @@
                 </button>
 
                 <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;" enctype="multipart/form-data">
-                    <input type="text" name="replyContent" placeholder="Write a reply..." required>
+                    <input type="text"
+                           name="replyContent"
+                           th:value="${c.users.userId != user.userId} ? '@' + ${c.users.name} + ' ' : ''"
+                           th:attr="data-prefix=${c.users.userId != user.userId} ? '@' + ${c.users.name} + ' ' : ''"
+                           placeholder="Write a reply..."
+                           onfocus="moveCursorToEnd(this)"
+                           onkeydown="preventPrefixEdit(event, this)"
+                           required />
                     <input type="file" name="images" id="images" multiple class="form-control mt-2">
                     <button type="submit"><i class="fas fa-paper-plane"></i> Send Reply</button>
                 </form>
+                <a href="javascript:void(0);" class="show-replies" onclick="toggleReplies(this)">View reply comments</a>
 
-                <div class="reply-list">
+
+                <div class="reply-list" style="display: none;">
                     <div th:each="r : ${p.comments}" th:if="${r.parentCommentId == c.commentId}" class="comment-item">
                         <div class="comment-author" th:text="${r.users.name}">Reply Author</div>
                         <div class="comment-content" th:text="${r.comment}">Reply Content</div>
@@ -875,6 +884,21 @@
                             </div>
                         </div>
                         <div class="comment-date" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                        <button type="button" class="btn-reply" onclick="toggleReplyForm(this)">
+                            <i class="fas fa-reply"></i> Reply
+                        </button>
+
+                        <form method="post" th:action="@{'/posts/reply/'+${c.getCommentId()}}" class="reply-form" style="display: none;" enctype="multipart/form-data">
+                            <input type="text"
+                                   name="replyContent"
+                                   th:value="${r.users.userId != user.userId} ? '@' + ${r.users.name} + ' ' : ''"
+                                   th:attr="data-prefix=${r.users.userId != user.userId} ? '@' + ${r.users.name} + ' ' : ''"
+                                   placeholder="Write a reply..."
+                                   onfocus="moveCursorToEnd(this)"
+                                   onkeydown="preventPrefixEdit(event, this)"
+                                   required />                            <input type="file" name="images"  multiple class="form-control mt-2">
+                            <button type="submit"><i class="fas fa-paper-plane"></i> Send Reply</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1056,6 +1080,19 @@
         }
     }
 
+    function toggleReplies(link) {
+        const replyList = link.nextElementSibling;
+        if (replyList.style.display === "none") {
+            replyList.style.display = "block";
+            link.textContent = "Hide comments";
+        } else {
+            replyList.style.display = "none";
+            const count = replyList.querySelectorAll(".comment-item").length;
+            link.textContent = `View reply comments (${count})`;
+        }
+    }
+
+
     function nextImage(event) {
         event.stopPropagation();
         if (currentIndex < currentImages.length - 1) {
@@ -1075,6 +1112,39 @@
                 form.querySelector('input[type="text"]').focus();
             }
         }
+    }
+    const prefixCache = {};
+
+    function moveCursorToEnd(input) {
+        const prefix = input.getAttribute("data-prefix");
+        if (prefix) {
+            prefixCache[input.name] = prefix;
+            setTimeout(() => {
+                input.setSelectionRange(prefix.length, prefix.length);
+            }, 0);
+        }
+    }
+
+    function preventPrefixEdit(event, input) {
+        const prefix = prefixCache[input.name];
+        if (!prefix) return;
+
+        const cursor = input.selectionStart;
+        const allowedKeys = ["ArrowRight", "ArrowLeft", "Tab", "Shift", "Control"];
+
+        // Nếu con trỏ nằm trong vùng prefix, chặn
+        if (cursor < prefix.length && !allowedKeys.includes(event.key)) {
+            event.preventDefault();
+            input.setSelectionRange(prefix.length, prefix.length);
+        }
+
+        // Nếu người dùng xoá hoặc ghi đè prefix → tự động khôi phục
+        setTimeout(() => {
+            if (!input.value.startsWith(prefix)) {
+                input.value = prefix;
+                input.setSelectionRange(prefix.length, prefix.length);
+            }
+        }, 0);
     }
 
     function toggleReplyForm(button) {
