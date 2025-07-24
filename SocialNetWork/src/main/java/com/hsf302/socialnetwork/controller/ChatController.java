@@ -1,5 +1,7 @@
 package com.hsf302.socialnetwork.controller;
 
+import com.hsf302.socialnetwork.dto.ConversationDTO;
+import com.hsf302.socialnetwork.dto.ConversationEventDTO;
 import com.hsf302.socialnetwork.dto.MessageDTO;
 import com.hsf302.socialnetwork.enity.Conversation;
 import com.hsf302.socialnetwork.enity.Message;
@@ -8,6 +10,7 @@ import com.hsf302.socialnetwork.service.impl.ConversationService;
 import com.hsf302.socialnetwork.service.impl.MessageService;
 import com.hsf302.socialnetwork.service.impl.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,8 @@ public class ChatController {
     private final ConversationService conversationService;
     private final MessageService messageService;
     private final UserService userService;
+    @Autowired
+    private SimpMessagingTemplate messaging;
 
     public ChatController(ConversationService conversationService,
                           MessageService messageService,
@@ -81,7 +87,7 @@ public class ChatController {
     }
 
     @GetMapping("/{conversationId}")
-    public String chatDetail(@PathVariable Long conversationId, @RequestParam(required = false) String keyword, Model model, HttpSession session) {
+    public String chatDetail(@PathVariable Long conversationId, @RequestParam(required = false) String keyword,@RequestParam(required = false) boolean ajax, Model model, HttpSession session) {
         Users currentUser = (Users) session.getAttribute("user");
         if (currentUser == null) {
             return "redirect:/login";
@@ -122,6 +128,9 @@ public class ChatController {
         model.addAttribute("members", members);
         model.addAttribute("messages", allMessages);
         model.addAttribute("matchedIds", matchedIds);
+        if (ajax) {
+            return "fragments/ChatMessages :: messagesList";
+        }
         return "chat";
     }
 
@@ -158,7 +167,7 @@ public class ChatController {
         model.addAttribute("messages", messages);
 
         model.addAttribute("friends", friends);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("friendKeyword", keyword);
 
         return "chat";
     }
@@ -232,10 +241,27 @@ public class ChatController {
         Users refreshedUser = userService.findById(currentUser.getUserId());
         refreshedUser.getConversations().add(newGroup);
         userService.save(refreshedUser);
+        List<Users> allRecipients = new ArrayList<>();
         for (Long memberId : memberIds) {
             Users member = userService.findById(memberId);
             member.getConversations().add(newGroup);
             userService.save(member);
+            allRecipients.add(member);
+        }
+
+        ConversationDTO dto = ConversationDTO.builder()
+                .id(newGroup.getId())
+                .name(newGroup.getName())
+                .type(newGroup.getType())
+                .lastMessage("")
+                .build();
+
+        for (Users u : allRecipients) {
+            messaging.convertAndSendToUser(
+                    u.getUsername(),
+                    "/queue/conversation-events",
+                    new ConversationEventDTO("ADD", dto)
+            );
         }
         session.setAttribute("user", refreshedUser);
         return "redirect:/chat/" + newGroup.getId();
@@ -260,6 +286,15 @@ public class ChatController {
             ra.addFlashAttribute("success", "Đã xóa thành viên khỏi nhóm.");
             messageService.sendSystemMessage(
                     conversationId, "Người dùng “" + removed.getName() + "” đã bị xóa khỏi nhóm."
+            );
+            ConversationEventDTO ev = new ConversationEventDTO(
+                    "REMOVE",
+                    ConversationDTO.builder().id(conversationId).build()
+            );
+            messaging.convertAndSendToUser(
+                    removed.getUsername(),
+                    "/queue/conversation-events",
+                    ev
             );
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", ex.getMessage());

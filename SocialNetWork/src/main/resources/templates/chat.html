@@ -965,6 +965,20 @@
       padding: 2px 6px;
       font-size: 0.75rem;
     }
+    .matched {
+      animation: highlightFade 20s ease forwards;
+    }
+
+    @keyframes highlightFade {
+      0% {
+        background-color: rgba(173, 216, 230, 0.8);
+        font-weight: bold;
+      }
+      100% {
+        background-color: transparent;
+        font-weight: normal;
+      }
+    }
 
   </style>
 </head>
@@ -996,10 +1010,10 @@
       <div class="search-section">
         <form th:action="@{/chat/search}" method="get" class="search-form">
           <input type="text"
-                 name="keyword"
+                 name="friendKeyword"
                  class="search-input"
                  placeholder="Tìm kiếm bạn bè..."
-                 th:value="${keyword}" />
+                 th:value="${friendKeyword}" />
           <i class="fas fa-search search-icon"></i>
           <button type="submit" class="search-btn">
             <i class="fas fa-search"></i>
@@ -1177,42 +1191,75 @@
           </button>
         </div>
     </div>
-
+    </div>
+  </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <script th:inline="javascript">
-    const CONV_ID    = /*[[${currentConversation.id}]]*/ 0;
-    const CURRENT_ID = /*[[${currentUser.userId}]]*/ 0;
-    const topicDest  = '/topic/conversation/' + CONV_ID;
-    const sendDest   = '/app/chat/'        + CONV_ID + '/send';
+    const CONV_ID      = /*[[${currentConversation.id}]]*/ 0;
+    const CURRENT_ID   = /*[[${currentUser.userId}]]*/ 0;
     const ALL_CONV_IDS = /*[[${conversations.![id]}]]*/ [];
-    const CURRENT_CONV = /*[[${currentConversation.id}]]*/ 0;
+    let CURRENT_CONV   = /*[[${currentConversation.id}]]*/ 0;
+
+    // helper để xử lý mỗi message frame
+    function onMessageFrame(convId) {
+      return frame => {
+        const m = JSON.parse(frame.body);
+        if (convId === CURRENT_CONV) renderMessage(m);
+        updateConversationList(convId, m);
+      };
+    }
 
     const sock  = new SockJS('/ws-chat');
     const stomp = Stomp.over(sock);
+
     stomp.connect({}, () => {
-      // Với mỗi convId, subscribe
-      ALL_CONV_IDS.forEach(convId => {
-        stomp.subscribe('/topic/conversation/' + convId, frame => {
-          const m = JSON.parse(frame.body);
-          // Nếu đúng conversation đang mở, render thêm tin
-          if (convId === CURRENT_CONV) {
-            renderMessage(m);
+      // 1) Subscribe tất cả conversation hiện có
+      ALL_CONV_IDS.forEach(id => {
+        stomp.subscribe(`/topic/conversation/${id}`, onMessageFrame(id));
+      });
+
+      // 2) Subscribe kênh user-specific để nhận ADD/REMOVE
+      stomp.subscribe('/user/queue/conversation-events', ({ body }) => {
+        const ev = JSON.parse(body);
+
+        if (ev.type === 'ADD') {
+          const conv = ev.data;
+          // thêm vào danh sách để future subscribe
+          ALL_CONV_IDS.push(conv.id);
+          // chèn vào sidebar
+          addConversationToSidebar(conv);
+          // subscribe topic tin nhắn mới
+          stomp.subscribe(`/topic/conversation/${conv.id}`, onMessageFrame(conv.id));
+          // tự động mở conversation mới
+          window.location.href = `/chat/${conv.id}`;
+        }
+        else if (ev.type === 'REMOVE') {
+          const conv = ev.data;
+          // nếu đang xem conversation bị remove → quay về home
+          if (CURRENT_CONV === conv.id) {
+            window.location.href = '/chat';
+            return;
           }
-          // Luôn cập nhật sidebar
-          updateConversationList(convId, m);
-        });
+          // xóa khỏi sidebar
+          const li = document.querySelector(
+                  `.conversation-list li a[href$="/chat/${conv.id}"]`
+          )?.closest('li');
+          if (li) li.remove();
+          // loại khỏi ALL_CONV_IDS
+          const idx = ALL_CONV_IDS.indexOf(conv.id);
+          if (idx > -1) ALL_CONV_IDS.splice(idx, 1);
+        }
       });
     });
 
     function sendStomp(){
       const input = document.getElementById('stompInput');
       const text  = input.value.trim();
-      if(!text) return;
       if (!text) return;
-      stomp.send('/app/chat/' + CURRENT_CONV + '/send', {}, JSON.stringify({
+      stomp.send(`/app/chat/${CURRENT_CONV}/send`, {}, JSON.stringify({
         userId:  CURRENT_ID,
         message: text
       }));
@@ -1222,34 +1269,31 @@
     function renderMessage(m){
       const list = document.querySelector('.messages-list');
       let el;
-
       if (m.system) {
         el = document.createElement('div');
         el.className = 'system-message';
         el.innerHTML = `
-      <span>${m.message}</span>
-      <div class="message-time">${m.time}</div>
-    `;
+        <span>${m.message}</span>
+        <div class="message-time">${m.time}</div>
+      `;
       } else {
-        // xác định đây là tin của mình hay tin của người khác
         const isMe = m.userId === CURRENT_ID;
         el = document.createElement('div');
         el.className = 'message-container ' + (isMe ? 'sent' : 'received');
         el.innerHTML = `
-      <div class="online-indicator">
-        <img src="${m.avatarUrl}" class="message-avatar"/>
-      </div>
-      <div class="message-bubble">
-        <div class="message-content">${m.message}</div>
-        <div class="message-time">${m.time}</div>
-      </div>
-    `;
+        <div class="online-indicator">
+          <img src="${m.avatarUrl}" class="message-avatar"/>
+        </div>
+        <div class="message-bubble">
+          <div class="message-content">${m.message}</div>
+          <div class="message-time">${m.time}</div>
+        </div>
+      `;
       }
-
       list.appendChild(el);
-      // tự động scroll xuống cuối
       list.scrollTop = list.scrollHeight;
     }
+
     function updateConversationList(convId, m){
       const link = document.querySelector(`.conversation-list a[href$="/chat/${convId}"]`);
       if (!link) return;
@@ -1269,6 +1313,24 @@
         badge.textContent = ++count;
       }
     }
+
+    function addConversationToSidebar(conv) {
+      const list = document.querySelector('.conversation-list');
+      const li   = document.createElement('li');
+      li.innerHTML = `
+      <a href="/chat/${conv.id}" class="conversation-item">
+        <img class="avatar-sm"
+             src="${conv.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/6387/6387947.png'}"
+             alt="Avatar" />
+        <div class="conversation-info">
+          <div class="conversation-name">${conv.name}</div>
+          <div class="conversation-snippet">${conv.lastMessage || ''}</div>
+        </div>
+        <div class="conversation-time">${conv.time || ''}</div>
+      </a>
+    `;
+      list.prepend(li);
+    }
   </script>
   <script th:if="${keyword == null}">
     document.addEventListener('DOMContentLoaded', () => {
@@ -1278,6 +1340,7 @@
       }
     });
   </script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('.members-toggle');
