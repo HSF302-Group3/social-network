@@ -1,14 +1,12 @@
 package com.hsf302.socialnetwork.service.impl;
 
-import com.hsf302.socialnetwork.Util.CloudiaryUtil;
+import com.hsf302.socialnetwork.util.CloudiaryUtil;
 
 import com.hsf302.socialnetwork.enity.*;
 
 import com.hsf302.socialnetwork.repo.PostRepo;
 import com.hsf302.socialnetwork.repo.UserRepo;
 import com.hsf302.socialnetwork.service.IsPostService;
-import jakarta.transaction.Transactional;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 

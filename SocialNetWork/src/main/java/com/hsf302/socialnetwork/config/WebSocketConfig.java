@@ -19,4 +19,5 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
             cfg.setApplicationDestinationPrefixes("/app");
             cfg.setUserDestinationPrefix("/user");
         }
+
     }

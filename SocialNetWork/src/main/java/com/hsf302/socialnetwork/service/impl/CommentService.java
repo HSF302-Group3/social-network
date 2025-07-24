@@ -1,6 +1,6 @@
 package com.hsf302.socialnetwork.service.impl;
 
-import com.hsf302.socialnetwork.Util.CloudiaryUtil;
+import com.hsf302.socialnetwork.util.CloudiaryUtil;
 import com.hsf302.socialnetwork.enity.Comment;
 import com.hsf302.socialnetwork.enity.Image;
 import com.hsf302.socialnetwork.enity.Post;

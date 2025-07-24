@@ -265,11 +265,11 @@ public class DataInitrizer implements CommandLineRunner {
 
         userRepo.save(user8);
 
-        AddFriend friendship4 = new AddFriend();
-        friendship4.setSendInvite(user1);
-        friendship4.setReciveInvite(user8);
-        friendship4.setFriended(true);
-        addFriendRepo.save(friendship4);
+//        AddFriend friendship4 = new AddFriend();
+//        friendship4.setSendInvite(user1);
+//        friendship4.setReciveInvite(user8);
+//        friendship4.setFriended(true);
+//        addFriendRepo.save(friendship4);
 
 
         Users user9 = new Users();

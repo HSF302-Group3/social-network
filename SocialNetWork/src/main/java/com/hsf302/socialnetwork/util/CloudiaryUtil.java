@@ -1,4 +1,4 @@
-package com.hsf302.socialnetwork.Util;
+package com.hsf302.socialnetwork.util;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
