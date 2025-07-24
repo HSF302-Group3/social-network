@@ -6,16 +6,17 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-@Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry reg) {
-        reg.addEndpoint("/ws-chat").withSockJS();
+    @Configuration
+    @EnableWebSocketMessageBroker
+    public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+        @Override
+        public void registerStompEndpoints(StompEndpointRegistry reg) {
+            reg.addEndpoint("/ws-chat").withSockJS();
+        }
+        @Override
+        public void configureMessageBroker(MessageBrokerRegistry cfg) {
+            cfg.enableSimpleBroker("/topic", "/queue");
+            cfg.setApplicationDestinationPrefixes("/app");
+            cfg.setUserDestinationPrefix("/user");
+        }
     }
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry cfg) {
-        cfg.enableSimpleBroker("/topic");
-        cfg.setApplicationDestinationPrefixes("/app");
-    }
-}
