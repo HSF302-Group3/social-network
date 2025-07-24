@@ -80,7 +80,6 @@ public class ChatController {
                 ? new ArrayList<>(currentConversation.getUsers())
                 : List.<Users>of());
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("currentUser", currentUser);
         model.addAttribute("matchedIds", List.<Long>of());
         model.addAttribute("keyword", null);
         return "chat";
