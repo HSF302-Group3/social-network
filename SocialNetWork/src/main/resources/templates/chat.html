@@ -1037,7 +1037,7 @@
 
       <!-- Conversations List -->
       <ul class="conversation-list">
-        <li th:each="conv : ${conversations}"
+        <li th:if=" ${conversations != null}" th:each="conv : ${conversations}"
             th:classappend="${conv.id == currentConversation?.id ? 'active' :'' } ">
           <a th:href="@{/chat/{id}(id=${conv.id})}" class="conversation-item">
             <img class="avatar-sm"
@@ -1198,10 +1198,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <script th:inline="javascript">
-    const CONV_ID      = /*[[${currentConversation.id}]]*/ 0;
+    const CONV_ID      = /*[[${currentConversation != null ? currentConversation.id : 0}]]*/ 0;
     const CURRENT_ID   = /*[[${currentUser.userId}]]*/ 0;
     const ALL_CONV_IDS = /*[[${conversations.![id]}]]*/ [];
-    let CURRENT_CONV   = /*[[${currentConversation.id}]]*/ 0;
+    let   CURRENT_CONV = /*[[${currentConversation != null ? currentConversation.id : 0}]]*/ 0;
 
     // helper để xử lý mỗi message frame
     function onMessageFrame(convId) {
